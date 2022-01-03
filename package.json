@@ -1,0 +1,35 @@
+{
+  "name": "tetr.js",
+  "version": "1.0.0",
+  "description": "An online tetris clone",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MasterOfBob777/tetr.js.git"
+  },
+  "author": "MasterOfBob777, Zachary Lohrman, farteryhr, Simon Laroche",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MasterOfBob777/tetr.js/issues"
+  },
+  "homepage": "https://github.com/MasterOfBob777/tetr.js#readme",
+  "dependencies": {
+    "howler": "^2.2.3",
+    "preact": "^10.6.4"
+  },
+  "devDependencies": {
+    "@masterofbob777/grunt-config": "^1.1.2",
+    "@types/howler": "^2.2.4",
+    "@typescript-eslint/eslint-plugin": "^5.8.0",
+    "@typescript-eslint/parser": "^5.8.0",
+    "eslint": "^8.5.0",
+    "eslint-plugin-eslint-comments": "^3.2.0",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-react": "^7.28.0",
+    "grunt": "^1.4.1",
+    "typescript": "^4.5.4"
+  }
+}

@@ -1,0 +1,13 @@
+{
+	"compilerOptions": {
+		"experimentalDecorators": true,
+		"outDir": "./build/",
+		"target": "ES2020",
+		"esModuleInterop": true,
+		"moduleResolution": "node",
+		"jsx": "preserve",
+		"jsxImportSource": "preact",
+	},
+	"exclude": ["./build/", "./node_modules/"],
+	"include": ["./src/**/*"],
+}
