@@ -5575,7 +5575,7 @@
         src: [path("start")],
         volume: settings.MusicVol / 100,
         onend: () => {
-          Mutable.currentMusic = this.music[this.currentMusicName + "loop"].play();
+          this.currentMusic = this.music[this.currentMusicName + "loop"].play();
         }
       });
       this.music[iname + "loop"] = new import_howler.Howl({
@@ -5589,7 +5589,7 @@
         src: [path("start")],
         volume: 0,
         onend: () => {
-          Mutable.currentMusic = this.music[this.sideMusicName + "loop"].play();
+          this.currentMusic = this.music[this.sideMusicName + "loop"].play();
         }
       });
       this.music[iname + "loop"] = new import_howler.Howl({
@@ -5724,8 +5724,8 @@
         this.music[name + "start"] = new import_howler.Howl({
           src: ["assets/bgm/" + name + "start.ogg"],
           volume: settings.MusicVol / 100,
-          onend: function() {
-            Mutable.currentMusic = this.music[this.currentMusicName + "loop"].play();
+          onend: () => {
+            this.currentMusic = this.music[this.currentMusicName + "loop"].play();
           }
         });
         this.music[name + "loop"] = new import_howler.Howl({
@@ -5743,8 +5743,8 @@
         this.music[name + "start"] = new import_howler.Howl({
           src: ["assets/bgm/" + name + "start.ogg"],
           volume: 0,
-          onend: function() {
-            Mutable.sideMusic = this.music[this.sideMusicName + "loop"].play();
+          onend: () => {
+            this.sideMusic = this.music[this.sideMusicName + "loop"].play();
           }
         });
         this.music[name + "loop"] = new import_howler.Howl({
@@ -5760,7 +5760,7 @@
           name += arg;
         }
         this.currentMusicName = name;
-        Mutable.currentMusic = this.music[name + "start"].play();
+        this.currentMusic = this.music[name + "start"].play();
       }
     }
     playsidebgm(name, arg) {
@@ -5769,7 +5769,7 @@
           name += arg;
         }
         this.sideMusicName = name;
-        Mutable.sideMusic = this.music[name + "start"].play();
+        this.sideMusic = this.music[name + "start"].play();
       }
     }
     killbgm() {
@@ -6710,7 +6710,7 @@
     const list = listNormalize(str);
     return function* () {
       if (first)
-        yield first[Math.floor(rng.next() * first.length)];
+        yield chooseRandom(first);
       while (true) {
         yield list[Math.floor(rng.next() * list.length)];
       }
