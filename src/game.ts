@@ -18,17 +18,18 @@ import { stack } from "./display/tetrion/stack";
 import { resize } from "./display/size";
 import { piece, resetPiece } from "./display/tetrion/piece";
 import { hold } from "./logic/hold";
-import {  makeSprite } from "./logic/view";
+import { makeSprite } from "./logic/view";
 import { t } from "./utils/lang";
 import { updateMatrixPosition } from "./display/tetrion/matrix";
 import { statistics, statisticsStack } from "./display/tetrion/stats";
 import { clearTetrisMessage } from "./display/tetrion/messages";
-import { timeString } from "./utils/string";
-import { updateSprint40PB } from "./sliders";
-import { scoreNesRefresh, tetRateNesRefresh, updateScoreTime } from "./random_stuff";
+import {
+	scoreNesRefresh,
+	tetRateNesRefresh,
+	updateScoreTime,
+} from "./random_stuff";
 import { Sprint } from "./gametypes/sprint";
 import { Dig } from "./gametypes/dig";
-import { DigZen } from "./gametypes/digzen";
 import { Marathon } from "./gametypes/marathon";
 import { Master } from "./gametypes/master";
 import { Retro } from "./gametypes/retro";
@@ -115,7 +116,7 @@ export class Game {
 		Mutable.frame = 0;
 		Mutable.frameSkipped = 0;
 		Mutable.lastPos = "reset";
-		stack.new(10, 20, 4);
+		stack["new"](10, 20, 4);
 		Mutable.toGreyRow = stack.height - 1;
 		hold.piece = undefined;
 		if (settings.Gravity === Gravity.Auto) Mutable.gravity = gravityUnit;
@@ -198,7 +199,7 @@ export class Game {
 		}
 
 		//html5 mobile device sound
-	
+
 		menu();
 
 		// Only start a loop if one is not running already.
@@ -216,7 +217,7 @@ export class Game {
 		Game.paused = false;
 		statisticsStack();
 		preview.draw();
-		Game.state = 2;
+		Game.state = GameState.Countdown;
 
 		resize();
 	}
@@ -757,7 +758,7 @@ export class Game {
 							piece.are >= piece.areLimit)
 					) {
 						document.body.style.backgroundColor = "black";
-						Game.state = 0;
+						Game.state = GameState.Normal;
 						// console.time("123");
 						if (piece.ihs && Game.type !== 8) {
 							hold.soundCancel = 1;
@@ -765,7 +766,7 @@ export class Game {
 							sound.playSFX("initialhold");
 							piece.hold();
 						} else {
-							piece.new(preview.next());
+							piece["new"](preview.next());
 						}
 						piece.draw();
 						// console.timeEnd("123");
@@ -779,9 +780,7 @@ export class Game {
 					$("stack").classList.remove("invisible-replay");
 					$("stack").classList.remove("invisible");
 					if (Mutable.toGreyRow >= stack.hiddenHeight) {
-						/**
-						 * Fade to grey animation played when player loses.
-						 */
+						// Fade to grey animation played when player loses.
 						if (Mutable.frame % 2) {
 							for (let x = 0; x < stack.width; x++) {
 								/* farter */ //WTF gamestate-1
@@ -797,7 +796,7 @@ export class Game {
 						//clear(activeCtx);
 						//piece.dead = true;
 						// trysubmitscore(); disabled score submissions because they don't work
-						Game.state = 3;
+						Game.state = GameState.NotPlayed;
 					}
 				}
 				Mutable.frame++;
@@ -843,8 +842,8 @@ export class Game {
 		) {
 			// 40L
 			if (Mutable.lines >= Mutable.lineLimit) {
-				Game.state = 1;
-				if (Game.params && Game.params.backFire) {
+				Game.state = GameState.Win;
+				if (Game.params?.backFire) {
 					Elements.msg.innerHTML = "GREAT!";
 				} else {
 					let rank = null;
@@ -859,28 +858,15 @@ export class Game {
 						}
 					}
 					if (Game.type !== 8) {
-						Elements.msg.innerHTML = "<small>" + rank.b + "</small>";
+						Elements.msg.innerHTML =
+							"<small>" + rank.b + "</small>";
 					}
 				}
 				piece.dead = true;
 				menu(3);
 				sound.playSFX("endingstart");
 				sound.playvox("win");
-				// console.log(Mutable.scoreTime)
-				const sprintPB = localStorage.getItem("sprint40pb");
-				if (
-					(Mutable.scoreTime < parseInt(sprintPB) ||
-						sprintPB == undefined) &&
-					Game.params.recordPB == true &&
-					Mutable.watchingReplay == false
-				) {
-					localStorage.setItem("sprint40pb", Mutable.scoreTime);
-					localStorage.setItem(
-						"sprint40pbvisual",
-						timeString(Mutable.scoreTime)
-					);
-				}
-				updateSprint40PB();
+				Game.types[Game.type].win();
 			}
 		} else {
 			let isend = false;
@@ -924,7 +910,7 @@ export class Game {
 				}
 			}
 			if (isend) {
-				Game.state = 1;
+				Game.state = GameState.Win;
 				$setText(Elements.msg, "GREAT!");
 				piece.dead = true;
 				menu(3);
@@ -935,11 +921,11 @@ export class Game {
 	}
 }
 
-Game.addGameType(GameTypeEnum.Sprint, new Sprint);
-Game.addGameType(GameTypeEnum.Marathon, new Marathon);
-Game.addGameType(GameTypeEnum.ScoreAttack, new ScoreAttack);
-Game.addGameType(GameTypeEnum.Dig, new Dig);
-Game.addGameType(GameTypeEnum.Master, new Master);
-Game.addGameType(GameTypeEnum.Retro, new Retro);
-Game.addGameType(GameTypeEnum.Grades, new Grades);
+Game.addGameType(GameTypeEnum.Sprint, new Sprint());
+Game.addGameType(GameTypeEnum.Marathon, new Marathon());
+Game.addGameType(GameTypeEnum.ScoreAttack, new ScoreAttack());
+Game.addGameType(GameTypeEnum.Dig, new Dig());
+Game.addGameType(GameTypeEnum.Master, new Master());
+Game.addGameType(GameTypeEnum.Retro, new Retro());
+Game.addGameType(GameTypeEnum.Grades, new Grades());
 // Game.addGameType(GameTypeEnum.DigZen, new DigZen);

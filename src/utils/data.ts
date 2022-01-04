@@ -5,18 +5,18 @@ import { $, $$ } from "./utils";
 
 export class Mutable {
 	// Scoreing related status
-	static allclear: number;
+	static allclear = 0;
 
-	static combo: number;
+	static combo = 0;
 
-	static level: number;
+	static level = 0;
 
-	static leveltgm: number;
+	static leveltgm = 0;
 
-	static leveltgmvisible: number;
+	static leveltgmvisible = 0;
 
 	// Stats related status
-	static lines: number;
+	static lines = 0;
 
 	static lineAmount = 0;
 
@@ -30,19 +30,19 @@ export class Mutable {
 
 	static newScore = 0n;
 
-	static statsFinesse: number;
+	static statsFinesse = 0;
 
-	static piecesSet: number;
+	static piecesSet = 0;
 
-	static scoreTime: number;
+	static scoreTime = 0;
 
-	static scoreStartTime: number;
+	static scoreStartTime = 0;
 
 	static digLines = [];
 
-	static b2b: number;
+	static b2b = 0;
 
-	static gravity: number;
+	static gravity = 0;
 
 	static gravityArr = (() => {
 		const array = [];
@@ -52,47 +52,47 @@ export class Mutable {
 		return array;
 	})();
 
-	static lineLimit: number;
+	static lineLimit = 0;
 
 	/**
 	 * Playfield.
 	 */
-	static cellSize: number;
+	static cellSize = 0;
 
-	static column: number;
+	static column = 0;
 
 	static lockDelayLimit = undefined;
 
 	static sdArray = [];
 
-	static frame: number;
+	static frame = 0;
 
-	static frameSkipped: number;
+	static frameSkipped = 0;
 
 	/**
 	 * for dig challenge mode
 	 */
-	static frameLastRise: number;
+	static frameLastRise = 0;
 
-	static frameLastHarddropDown: number;
+	static frameLastHarddropDown = 0;
 
 	/**
 	 * for dig zen mode
 	 */
-	static digZenBuffer: number;
+	static digZenBuffer = 0;
 
-	static lastPiecesSet: number;
+	static lastPiecesSet = 0;
 
-	static toGreyRow: number;
+	static toGreyRow = 0;
 
 	//TODO Make dirty flags for each canvas, draw them all at once during frame call.
-	static lastX: number;
+	static lastX = 0;
 
-	static lastY: number;
+	static lastY = 0;
 
-	static lastPos: number;
+	static lastPos: number | string = 0;
 
-	static lastLockDelay: number;
+	static lastLockDelay = 0;
 
 	static usedHardDrop = false;
 
@@ -114,11 +114,11 @@ export class Mutable {
 
 	static stepSEPlayed: boolean;
 
-	static keysDown: number;
+	static keysDown = 0;
 
-	static lastKeys: number;
+	static lastKeys = 0;
 
-	static released: number;
+	static released = 0;
 
 	static alarm = false;
 
@@ -138,13 +138,13 @@ export class Mutable {
 
 	static currentLoading = "";
 
-	static scoreNes: number;
+	static scoreNes = 0;
 
-	static nontetNes: number;
+	static nontetNes = 0;
 
-	static tetNes: number;
+	static tetNes = 0;
 
-	static tetRateNes: number;
+	static tetRateNes = 0;
 
 	static isSpin = false;
 
@@ -164,7 +164,7 @@ export class Mutable {
 
 	static clearRows = [];
 
-	static levelCheck: number;
+	static levelCheck = 0;
 }
 
 export let binds: { [key: string]: number } = {

@@ -1,24 +1,13 @@
 import { Game } from "../game";
-import { makeSprite } from "../logic/view";
 import { SettingMap, settings } from "../settings";
-import { Elements, setBinds } from "../utils/data";
+import { Elements, setBinds, version } from "../utils/data";
 import { $setText, $$ } from "../utils/utils";
 import { resize } from "./size";
 import { sound } from "./sound/sound";
 
-const version = "0.7.4";
 let setLoop;
 let arrowReleased = true;
 let arrowDelay = 0;
-
-export function saveSpecificSetting(name, val) {
-	settings[name] = val;
-	saveSetting();
-
-	if (name === "Block" || name === "Monochrome") {
-		makeSprite();
-	}
-}
 
 export function resetGameSettings() {
 	Game.settings = Game.defaultGameSettings;
@@ -37,7 +26,7 @@ let menuStack = [];
 
 export function menu(menuIndex?, stackOper?) {
 	const menus = $$(".menu");
-	
+
 	sound.init();
 	let current;
 	for (let i = 0, len = menus.length; i < len; i++) {
@@ -80,7 +69,6 @@ export function settingsLoop() {
 			settings[s] =
 				settings[s] === settings[s].length - 1 ? 0 : settings[s] + 1;
 		}
-		saveSetting();
 		arrowReleased = false;
 	} else {
 		arrowDelay++;
@@ -128,14 +116,24 @@ export function right(e) {
 	settingsLoop();
 }
 
+function parseVersion(v) {
+	return v.split(".").map(Number);
+}
+
 export function loadLocalData() {
 	const bindData = localStorage.getItem("binds");
 	if (bindData) {
 		setBinds(JSON.parse(bindData));
 	}
+	const storedVersion = parseVersion(localStorage.getItem("version"));
+	const parsedVersion = parseVersion(version);
 	// TODO When new version just update with new stuff, rest stays unchanged.
-	if (localStorage.getItem("version") !== version) {
+	if (
+		storedVersion[0] !== parsedVersion[0] ||
+		storedVersion[1] !== parsedVersion[1]
+	) {
 		localStorage.removeItem("settings");
+		localStorage.removeItem("Game.settings");
 		localStorage.removeItem("binds");
 		localStorage.setItem("version", version);
 		resetGameSettings();
@@ -148,7 +146,7 @@ export function loadLocalData() {
 	}
 }
 
-export function main() {
+export function data() {
 	const storedSettings = localStorage.getItem("settings");
 	if (storedSettings && localStorage.getItem("version") == version) {
 		// console.log("not reset")
@@ -162,7 +160,9 @@ export function main() {
 	}
 
 	loadLocalData();
+}
 
+export function main() {
 	for (const s in settings) {
 		const setting = settings.getRaw(s as keyof SettingMap);
 

@@ -10,11 +10,6 @@ export function statistics() {
 	const {
 		timeCanvas,
 		timeCtx,
-		statsPiece,
-		statsLines,
-		statsLevel,
-		statsIpieces,
-		statsScore,
 	} = Elements;
 
 	const time = timeString(Mutable.scoreTime || 0);
@@ -39,8 +34,6 @@ export function statistics() {
 
 export function statisticsStack() {
 	const {
-		timeCanvas,
-		timeCtx,
 		statsPiece,
 		statsLines,
 		statsLevel,
@@ -90,8 +83,8 @@ export function statisticsStack() {
 		$setText(statsLines, Mutable.lines);
 		levelEle.innerHTML = t("level_m", Mutable.level + 1);
 	} else if (Game.type === GameType.Survival) {
-		if (Game.params["digOffset"] || Game.params["digOffset"] !== 0) {
-			$setText(statsLevel, Game.params["digOffset"] + "+");
+		if (Game.params.digOffset || Game.params.digOffset !== 0) {
+			$setText(statsLevel, Game.params.digOffset + "+");
 		} else {
 			$setText(statsLevel, "");
 		}

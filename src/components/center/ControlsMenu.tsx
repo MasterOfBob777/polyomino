@@ -86,7 +86,7 @@ export function ControlsMenu() {
 				Click on the item you want to change, then press any key.
 			</p>
 			<table id="controls" style="margin-top: 0px">
-				<ControlButton 
+				<ControlButton
 					default="←"
 					text="Move"
 					icon="left"
@@ -160,12 +160,7 @@ export function ControlsMenu() {
 				/>
 			</table>
 
-			<Btn
-				click={() => {
-					menu(0);
-				}}
-				class="btn-bottom"
-			>
+			<Btn click={() => menu(0)} class="btn-bottom">
 				{t("menu-done")}
 			</Btn>
 		</div>

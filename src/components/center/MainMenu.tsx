@@ -7,20 +7,21 @@ export function MainMenu() {
 	return (
 		<nav class="menu on">
 			{/*
-        <img
-            class="no-margin"
-            width="72%"
-            src="tetrjslogoenhanced.svg"
-        />
-        */}
+			<img
+				class="no-margin"
+				width="72%"
+				src="tetrjslogoenhanced.svg"
+			/> 
+			*/}
 			<h1 style="font-weight: 4; font-size: 2rem; margin: 0px">
 				Polyomino
 			</h1>
 			<p class="no-margin">
-				v0.7.7
+				{/*
 				<a class="link" href="changelog.html">
 					(view changelog)
 				</a>
+				*/}
 			</p>
 
 			<div class="btn-container no-margin">

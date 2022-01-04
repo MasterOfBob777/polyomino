@@ -5,7 +5,7 @@ Enhanced by Dr Ocelot
 Remade by MasterOfBob777
 */
 import { h, render } from "preact";
-import { main as initMenuData } from "./display/menu";
+import { data as initMenuData , main as initMenu  } from "./display/menu";
 import { resize } from "./display/size";
 import { $ } from "./utils/utils";
 import MainComponent from "./components/main";
@@ -32,10 +32,11 @@ window.addEventListener("blur", () => {
 	} catch (error) {}
 });
 */
+initMenuData()
+
 render(h(MainComponent, {}), $("content"));
 
 addEventListener("resize", resize, false);
 addEventListener("load", resize, false);
 
-resize();
-initMenuData();
+initMenu();

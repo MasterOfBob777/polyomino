@@ -27,6 +27,7 @@ export enum GameState {
 	NotPlayed = 3,
 	Paused = 4, // maybe?
 	Loss = 5,
+	BlockOut = 9,
 }
 
 export enum Gravity {

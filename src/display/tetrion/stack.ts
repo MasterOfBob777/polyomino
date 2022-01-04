@@ -29,10 +29,6 @@ class Stack {
 
 	grid;
 
-	constructor() {
-		//this.grid;
-	}
-
 	/**
 	 * Creates a matrix for the playfield.
 	 */

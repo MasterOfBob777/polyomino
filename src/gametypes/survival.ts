@@ -3,7 +3,8 @@ import { sound } from "../display/sound/sound";
 import { piece } from "../display/tetrion/piece";
 import { stack } from "../display/tetrion/stack";
 import { Game } from "../game";
-import { flags, arrStages, msg, Mutable } from "../utils/data";
+import { flags, arrStages, Mutable, Elements } from "../utils/data";
+import { GameState } from "../utils/enums";
 import { rng } from "../utils/randomizer";
 import { $setText } from "../utils/utils";
 import { GameType } from "./base";
@@ -20,7 +21,7 @@ export class Survival extends GameType {
 		Mutable.frameLastRise = 0;
 
 		if (Game.settings.survival.zen.val == 1) {
-			Game.type = 7;
+			Game.params.zen = true;
 		}
 		Game.params.digOffset = 500 * Game.settings.survival.slevel.val;
 	}
@@ -40,7 +41,7 @@ export class Survival extends GameType {
 		while (
 			curStage < arrStages.length &&
 			arrStages[curStage].begin <=
-				Mutable.lines + (Game.params["digOffset"] || 0)
+				Mutable.lines + (Game.params.digOffset || 0)
 		) {
 			curStage++;
 		}
@@ -86,8 +87,8 @@ export class Survival extends GameType {
 			}
 			if (topOut) {
 				piece.dead = true;
-				Game.state = 9;
-				$setText(msg, "TOP OUT!");
+				Game.state = GameState.BlockOut;
+				$setText(Elements.msg, "TOP OUT!");
 				menu(3);
 				sound.playSFX("gameover");
 				sound.playvox("lose");

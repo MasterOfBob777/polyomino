@@ -13,10 +13,6 @@ export function SettingsMenu() {
 			<a class="btn" onClick={() => menu(14)}>
 				Audio
 			</a>
-			{/*
-			<a class="btn" onClick={() => menu(0)}>Back</a>
-			<a class="btn" onClick={() => menu(0)}>Back</a>
-			*/}
 			<a class="btn" onClick={() => menu(0)}>
 				Back
 			</a>

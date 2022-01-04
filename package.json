@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MasterOfBob777/tetr.js.git"
+    "url": "git+https://github.com/MasterOfBob777/polyomino.git"
   },
   "author": "MasterOfBob777, Zachary Lohrman, farteryhr, Simon Laroche",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/MasterOfBob777/tetr.js/issues"
+    "url": "https://github.com/MasterOfBob777/polyomino/issues"
   },
-  "homepage": "https://github.com/MasterOfBob777/tetr.js#readme",
+  "homepage": "https://github.com/MasterOfBob777/polyomino#readme",
   "dependencies": {
     "howler": "^2.2.3",
     "preact": "^10.6.4"

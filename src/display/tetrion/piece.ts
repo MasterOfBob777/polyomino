@@ -318,7 +318,7 @@ class Piece {
 			if (Game.type !== (8 || 9)) {
 				piece.y -= 2;
 			}
-			Game.state = 9;
+			Game.state = GameState.BlockOut;
 			$setText(Elements.msg, "BLOCK OUT!");
 			if (Game.params.tournament == true) {
 				$setText(Elements.msg, "GAME SET");
@@ -874,7 +874,7 @@ class Piece {
 							// IRS IHS not possible
 							this["new"](preview.next()); // may die-in-one-frame
 						} else {
-							Game.state = 4;
+							Game.state = GameState.Paused;
 							this.are = 0;
 							// $("irs-indicator").classList.add("gone");
 						}
