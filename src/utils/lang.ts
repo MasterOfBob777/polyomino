@@ -284,6 +284,8 @@ const strs = {
 	"setting-MasterLock-desc": {
 		en: "Determines how the lockdown will function.\n\nForgiving: Lock delay will reset upon all manipulations\n\nLimited: Lock delay will reset for a limited amount of manipulations\n\nStrict: Lock delay will reset only when a piece has fallen",
 	},
+	"setting-ResetPB-title": { en: "Reset PB" },
+	"setting-ResetPB-desc": { en: "Reset if over personal best" },
 	"menu-back": { en: "Back" },
 	"menu-start": { en: "Start" },
 	"menu-done": { en: "Done" },

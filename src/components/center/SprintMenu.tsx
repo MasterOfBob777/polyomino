@@ -1,14 +1,23 @@
 import { changeGameSetting, menu } from "../../display/menu";
 import { Game } from "../../game";
 import { t } from "../../utils/lang";
+import { timeString } from "../../utils/string";
 import { GroupSetting } from "../settings/GroupSetting";
 import { Btn } from "../utils/Btn";
 
 export function SprintMenu() {
+	const sprintPB = localStorage.getItem("sprint40pb");
 	return (
 		<nav class="menu">
 			<h1 class="boldish">Sprint</h1>
-			<p class="no-margin">Clear the lines as fast as you can!</p>
+			<p class="no-margin">
+				Clear the lines as fast as you can! <br />
+				Fastest time:{" "}
+				<span id="sprint-pb">
+					{timeString(sprintPB ? parseInt(sprintPB) : 0)}
+				</span>
+			</p>
+
 			<div class="no-margin btn-container">
 				<GroupSetting
 					setting="SprintLimit"
@@ -38,7 +47,7 @@ export function SprintMenu() {
 				/>
 
 				<br />
-				
+
 				<Btn click={() => Game.init(0)} class="btn-inline width-50">
 					{t("menu-start")}
 				</Btn>

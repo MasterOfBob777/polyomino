@@ -4,6 +4,7 @@ import { getStringKeys } from "../../utils/enum";
 import { Gravity, SoftDrop, IRSMode, IHSMode, RotSys } from "../../utils/enums";
 import { t } from "../../utils/lang";
 import { GroupListSetting } from "../settings/GroupListSetting";
+import { GroupSetting } from "../settings/GroupSetting";
 import { GroupSliderSetting } from "../settings/GroupSliderSetting";
 import { Btn } from "../utils/Btn";
 
@@ -105,6 +106,15 @@ export function TuningMenu() {
 				selected={settings.RotSys}
 				onClick={(index) => {
 					settings.set("RotSys", index);
+				}}
+			/>
+
+			<GroupSetting
+				setting="ResetPB"
+				data={["Off", "On"]}
+				selected={settings.ResetPB ? 1 : 0}
+				onClick={(index) => {
+					settings.ResetPB = index == 1;
 				}}
 			/>
 

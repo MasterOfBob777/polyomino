@@ -187,6 +187,7 @@ export interface SettingMap {
 	IHSMode: EnumSetting<IHSMode>;
 	InitialVis: BooleanSetting;
 	Monochrome: BooleanSetting;
+	ResetPB: BooleanSetting;
 }
 
 const defaultSettings: SettingMap = {
@@ -234,6 +235,7 @@ const defaultSettings: SettingMap = {
 	IHSMode: new EnumSetting<IHSMode>("IHS Mode", 0, getStringKeys(IHSMode)),
 	InitialVis: new BooleanSetting("Initial Visibility", true),
 	Monochrome: new BooleanSetting("Monochrome", false),
+	ResetPB: new BooleanSetting("Reset PB", false),
 };
 
 type getSettingTypes<T extends keyof SettingMap> =
