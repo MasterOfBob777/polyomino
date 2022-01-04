@@ -56,10 +56,6 @@ class Stack {
 		Mutable.lockflashTetro = tetro;
 		Mutable.lockflash = 2;
 		Mutable.lockflashOn = true;
-		const bottomRow = []; // for backfire
-		for (let x = 0; x < this.width; x++) {
-			bottomRow.push(this.grid[x][this.height - 1]);
-		}
 
 		// spin check
 		/*
@@ -100,8 +96,11 @@ class Stack {
 
 		// Lock out
 		if (!valid) {
-			Game.state = 9;
+			Game.state = GameState.BlockOut;
 			$setText(Elements.msg, t("lock_out"));
+
+			Game.types[Game.type].die();
+
 			menu(3);
 			sound.playSFX("gameover");
 			sound.playvox("lose");
@@ -320,6 +319,8 @@ class Stack {
 				Mutable.isSpin,
 				Mutable.isMini && Mutable.isSpin
 			);
+
+			Game.types[Game.type].lineClear(Mutable.lineClear);
 		} else {
 			if (Mutable.isSpin) {
 				scoreAdd *= 2n ** BigInt(Mutable.b2b) * 400n;
@@ -449,7 +450,7 @@ class Stack {
 		}
 
 		const { backFire } = Game.params;
-		if (Game.params && backFire) {
+		if (backFire) {
 			if (backFire === 1) {
 				garbage = [0, 0, 1, 2, 4][Mutable.lineClear];
 			} else if (backFire === 3) {
@@ -457,6 +458,12 @@ class Stack {
 			}
 			if (garbage !== 0) {
 				if (backFire === 1) {
+					const bottomRow = [];
+					for (let x = 0; x < this.width; x++) {
+						bottomRow.push(
+							this.grid[x][this.height - 1] > 0 ? 8 : 0
+						);
+					}
 					for (let y = 0; y < garbage; y++) {
 						this.rowRise(bottomRow, piece);
 					}
@@ -609,9 +616,10 @@ class Stack {
 			}
 		}
 		if (topout) {
-			Game.state = 9;
+			Game.state = GameState.BlockOut;
 			$setText(Elements.msg, "TOP OUT!");
 			menu(3);
+			Game.types[Game.type].die();
 			sound.playSFX("gameover");
 			sound.playvox("lose");
 		}
@@ -626,9 +634,11 @@ class Stack {
 					this.hiddenHeight - 2
 				) {
 					// the bottom is >=2 cell away from visible part
-					Game.state = 9;
+					Game.state = GameState.BlockOut;
 					$setText(Elements.msg, "OOPS!");
 					menu(3);
+					Game.types[Game.type].die();
+
 					sound.playSFX("gameover");
 					sound.playvox("lose");
 				}

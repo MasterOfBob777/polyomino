@@ -1,22 +1,56 @@
 import { sound } from "../display/sound/sound";
+import { piece } from "../display/tetrion/piece";
 import { stack } from "../display/tetrion/stack";
 import { Game } from "../game";
 import { Elements, Mutable } from "../utils/data";
+import { clamp } from "../utils/math";
 import { rng } from "../utils/randomizer";
 import { range, $setText } from "../utils/utils";
 import { GameType } from "./base";
 
 export class Dig extends GameType {
 	update(): void {
-		// TODO: figure out if any code needs to go here
+		if (Game.params.zen) {
+			for (
+				;
+				Mutable.lastPiecesSet < Mutable.piecesSet;
+				Mutable.lastPiecesSet++
+			) {
+				Mutable.digZenBuffer++;
+				const piecePerRise = [
+					8,
+					6.5,
+					4,
+					3.5,
+					10 / 3,
+					3,
+					2.8,
+					2.6,
+					2.4,
+					2.2,
+					2,
+				][clamp(Mutable.level, 0, 10)];
+				if (Mutable.digZenBuffer - piecePerRise > -0.000000001) {
+					Mutable.digZenBuffer -= piecePerRise;
+					if (Math.abs(Mutable.digZenBuffer) < -0.000000001) {
+						Mutable.digZenBuffer = 0;
+					}
+					const arrRow = [8, 8, 8, 8, 8, 8, 8, 8, 8, 8];
+					arrRow[~~(rng.next() * 10)] = 0;
+
+					stack.rowRise(arrRow, piece);
+					sound.playSFX("garbage");
+				}
+			}
+		}
 	}
 
 	init() {
 		sound.loadbgm("sprint");
 
-		// Dig Race
-		// make ten random numbers, make sure next isn't the same as last? t=rnd()*(size-1);t>=arr[i-1]?t++:; /* farter */
-		//TODO make into function or own file.
+		Mutable.lastPiecesSet = 0;
+		Mutable.digZenBuffer = 0;
+		
 		if (Game.settings.dig.checker.val == 1) {
 			Game.params.digraceType = "checker";
 		} else {
@@ -24,8 +58,8 @@ export class Dig extends GameType {
 		}
 
 		if (
-			Game.params["digraceType"] === undefined ||
-			Game.params["digraceType"] === "checker"
+			Game.params.digraceType === undefined ||
+			Game.params.digraceType === "checker"
 		) {
 			// harder digrace: checkerboard
 			Mutable.digLines = range(stack.height - 10, stack.height);
@@ -35,7 +69,7 @@ export class Dig extends GameType {
 					if ((x + y) & 1) stack.grid[x][y] = 8;
 				}
 			}
-		} else if (Game.params["digraceType"] === "easy") {
+		} else if (Game.params.digraceType === "easy") {
 			const begin = ~~(rng.next() * stack.width);
 			const dire = ~~(rng.next() * 2) * 2 - 1;
 			Mutable.digLines = range(stack.height - 10, stack.height);
@@ -47,6 +81,11 @@ export class Dig extends GameType {
 				}
 			}
 		}
+
+		Game.params.zen = Game.settings.dig.zen.val == 1;
+
 		//stack.draw(); //resize
 	}
+
+	lineClear(lines: number): void {}
 }

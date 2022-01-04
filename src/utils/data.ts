@@ -3,6 +3,8 @@ import { Mino, RotSys } from "./enums";
 import { rng } from "./randomizer";
 import { $, $$ } from "./utils";
 
+export const version = "0.7.7";
+
 export class Mutable {
 	// Scoreing related status
 	static allclear = 0;
@@ -2717,6 +2719,10 @@ export class Elements {
 
 	@lazy static get statsPiece() {
 		return $("piece");
+	}
+
+	@lazy static get statsFinesse() {
+		return $("finesse");
 	}
 
 	@lazy static get statsScore() {

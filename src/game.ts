@@ -35,6 +35,7 @@ import { Master } from "./gametypes/master";
 import { Retro } from "./gametypes/retro";
 import { ScoreAttack } from "./gametypes/scoreattack";
 import { Grades } from "./gametypes/grades";
+import { Survival } from "./gametypes/survival";
 
 // TODO: Check all settings and make them work better with the new settings system.
 
@@ -78,6 +79,11 @@ export class Game {
 	 * Resets all the settings and starts the game.
 	 */
 	static init(gt: GameTypeEnum | "replay", params?) {
+
+		if (gt !== "replay") {
+			Game.types[Game.type].done();
+		}
+
 		try {
 			sound.killbgm();
 		} catch (e) {}
@@ -135,14 +141,9 @@ export class Game {
 		}
 
 		Mutable.digLines = [];
-		if (Game.type === GameTypeEnum.Unknown) {
-			Mutable.lastPiecesSet = 0;
-			Mutable.digZenBuffer = 0;
-		}
 		if (Game.params.noGravity == true) {
 			settings.Gravity = 1;
 		}
-
 
 		clear(Elements.stackCtx);
 		clear(Elements.activeCtx);
@@ -291,6 +292,10 @@ export class Game {
 		},
 		dig: {
 			checker: {
+				val: 0,
+				max: 1,
+			},
+			zen: {
 				val: 0,
 				max: 1,
 			},
@@ -928,4 +933,5 @@ Game.addGameType(GameTypeEnum.Dig, new Dig());
 Game.addGameType(GameTypeEnum.Master, new Master());
 Game.addGameType(GameTypeEnum.Retro, new Retro());
 Game.addGameType(GameTypeEnum.Grades, new Grades());
+Game.addGameType(GameTypeEnum.Survival, new Survival());
 // Game.addGameType(GameTypeEnum.DigZen, new DigZen);

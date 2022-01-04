@@ -1755,10 +1755,10 @@
             return;
           }
           if (/^data:[^;]+;base64,/.test(url)) {
-            var data = atob(url.split(",")[1]);
-            var dataView = new Uint8Array(data.length);
-            for (var i3 = 0; i3 < data.length; ++i3) {
-              dataView[i3] = data.charCodeAt(i3);
+            var data2 = atob(url.split(",")[1]);
+            var dataView = new Uint8Array(data2.length);
+            for (var i3 = 0; i3 < data2.length; ++i3) {
+              dataView[i3] = data2.charCodeAt(i3);
             }
             decodeAudioData(dataView.buffer, self);
           } else {
@@ -2324,6 +2324,7 @@
     GameState2[GameState2["NotPlayed"] = 3] = "NotPlayed";
     GameState2[GameState2["Paused"] = 4] = "Paused";
     GameState2[GameState2["Loss"] = 5] = "Loss";
+    GameState2[GameState2["BlockOut"] = 9] = "BlockOut";
   })(GameState || (GameState = {}));
   var Gravity;
   (function(Gravity3) {
@@ -2534,15 +2535,28 @@
   var rng = new Random();
 
   // jscc_temp/src/utils/data.ts
+  var version = "0.7.7";
   var Mutable = class {
   };
+  Mutable.allclear = 0;
+  Mutable.combo = 0;
+  Mutable.level = 0;
+  Mutable.leveltgm = 0;
+  Mutable.leveltgmvisible = 0;
+  Mutable.lines = 0;
   Mutable.lineAmount = 0;
   Mutable.lineARE = 0;
   Mutable.lineAREb = 0;
   Mutable.lineDrought = 0;
   Mutable.score = 0n;
   Mutable.newScore = 0n;
+  Mutable.statsFinesse = 0;
+  Mutable.piecesSet = 0;
+  Mutable.scoreTime = 0;
+  Mutable.scoreStartTime = 0;
   Mutable.digLines = [];
+  Mutable.b2b = 0;
+  Mutable.gravity = 0;
   Mutable.gravityArr = (() => {
     const array = [];
     array.push(0);
@@ -2552,8 +2566,22 @@
       array.push(i3);
     return array;
   })();
+  Mutable.lineLimit = 0;
+  Mutable.cellSize = 0;
+  Mutable.column = 0;
   Mutable.lockDelayLimit = void 0;
   Mutable.sdArray = [];
+  Mutable.frame = 0;
+  Mutable.frameSkipped = 0;
+  Mutable.frameLastRise = 0;
+  Mutable.frameLastHarddropDown = 0;
+  Mutable.digZenBuffer = 0;
+  Mutable.lastPiecesSet = 0;
+  Mutable.toGreyRow = 0;
+  Mutable.lastX = 0;
+  Mutable.lastY = 0;
+  Mutable.lastPos = 0;
+  Mutable.lastLockDelay = 0;
   Mutable.usedHardDrop = false;
   Mutable.spinY = 0;
   Mutable.spinX = 0;
@@ -2563,6 +2591,9 @@
   Mutable.classicSoftDrop = 0;
   Mutable.classicGravTest = 0;
   Mutable.classicStoredY = 0;
+  Mutable.keysDown = 0;
+  Mutable.lastKeys = 0;
+  Mutable.released = 0;
   Mutable.alarm = false;
   Mutable.lineClear = 0;
   Mutable.playedLevelingbgmGrades = [false, false];
@@ -2570,6 +2601,10 @@
   Mutable.lastbgmTime = 0;
   Mutable.killAllbgm = false;
   Mutable.currentLoading = "";
+  Mutable.scoreNes = 0;
+  Mutable.nontetNes = 0;
+  Mutable.tetNes = 0;
+  Mutable.tetRateNes = 0;
   Mutable.isSpin = false;
   Mutable.isMini = false;
   Mutable.lockflashX = 0;
@@ -2578,6 +2613,7 @@
   Mutable.lockflashOn = false;
   Mutable.alarmtest = false;
   Mutable.clearRows = [];
+  Mutable.levelCheck = 0;
   var binds = {
     pause: 27,
     moveLeft: 37,
@@ -5078,6 +5114,9 @@
     static get statsPiece() {
       return $2("piece");
     }
+    static get statsFinesse() {
+      return $2("finesse");
+    }
     static get statsScore() {
       return $2("score");
     }
@@ -5158,6 +5197,9 @@
   __decorateClass([
     lazy
   ], Elements, "statsPiece", 1);
+  __decorateClass([
+    lazy
+  ], Elements, "statsFinesse", 1);
   __decorateClass([
     lazy
   ], Elements, "statsScore", 1);
@@ -5341,7 +5383,8 @@
     IRSMode: new EnumSetting("IRS Mode", 0, getStringKeys(IRSMode)),
     IHSMode: new EnumSetting("IHS Mode", 0, getStringKeys(IHSMode)),
     InitialVis: new BooleanSetting("Initial Visibility", true),
-    Monochrome: new BooleanSetting("Monochrome", false)
+    Monochrome: new BooleanSetting("Monochrome", false),
+    ResetPB: new BooleanSetting("Reset PB", false)
   };
   var SettingManager = class {
     #settings = {};
@@ -6735,6 +6778,8 @@
   var sega = rand("1000 random sequence of I,J,L,O,S,T,Z");
   var bonusBag = rand("7+1 bag of I,J,L,O,S,T,Z");
   var bag8 = rand("8 bag of I,J,L,O,S,T,Z");
+  var iOnly = rand("I");
+  var noI = rand("bag of J,L,O,S,T,Z");
 
   // jscc_temp/src/display/tetrion/piece.ts
   init_preact_shim();
@@ -7107,6 +7152,10 @@
     "setting-MasterLock-desc": {
       en: "Determines how the lockdown will function.\n\nForgiving: Lock delay will reset upon all manipulations\n\nLimited: Lock delay will reset for a limited amount of manipulations\n\nStrict: Lock delay will reset only when a piece has fallen"
     },
+    "setting-ResetPB-title": { en: "Reset PB" },
+    "setting-ResetPB-desc": { en: "Reset if over personal best" },
+    "setting-DigZen-title": { en: "Zen Mode" },
+    "setting-DigZen-desc": { en: "" },
     "menu-back": { en: "Back" },
     "menu-start": { en: "Start" },
     "menu-done": { en: "Done" },
@@ -7228,12 +7277,7 @@
   function statistics() {
     const {
       timeCanvas,
-      timeCtx,
-      statsPiece,
-      statsLines,
-      statsLevel,
-      statsIpieces,
-      statsScore
+      timeCtx
     } = Elements;
     const time = timeString(Mutable.scoreTime || 0);
     const fsbl = 30;
@@ -7249,15 +7293,15 @@
   }
   function statisticsStack() {
     const {
-      timeCanvas,
-      timeCtx,
       statsPiece,
       statsLines,
       statsLevel,
       statsIpieces,
-      statsScore
+      statsScore,
+      statsFinesse
     } = Elements;
     $setText(statsPiece, Mutable.piecesSet);
+    $setText(statsFinesse, Mutable.statsFinesse);
     const scoreEle = $2("score");
     const scoreLabelEle = $2("score-label");
     const newScoreEle = $2("nesscore");
@@ -7298,8 +7342,8 @@
       $setText(statsLines, Mutable.lines);
       levelEle.innerHTML = t2("level_m", Mutable.level + 1);
     } else if (Game.type === GameType.Survival) {
-      if (Game.params["digOffset"] || Game.params["digOffset"] !== 0) {
-        $setText(statsLevel, Game.params["digOffset"] + "+");
+      if (Game.params.digOffset || Game.params.digOffset !== 0) {
+        $setText(statsLevel, Game.params.digOffset + "+");
       } else {
         $setText(statsLevel, "");
       }
@@ -7421,8 +7465,6 @@
 
   // jscc_temp/src/display/tetrion/stack.ts
   var Stack = class {
-    constructor() {
-    }
     new(x3, y2, hy) {
       const cells = new Array(x3);
       for (let i3 = 0; i3 < x3; i3++) {
@@ -7444,10 +7486,6 @@
       Mutable.lockflashTetro = tetro;
       Mutable.lockflash = 2;
       Mutable.lockflashOn = true;
-      const bottomRow = [];
-      for (let x3 = 0; x3 < this.width; x3++) {
-        bottomRow.push(this.grid[x3][this.height - 1]);
-      }
       spinCheck();
       let range2 = [];
       let valid = false;
@@ -7468,8 +7506,9 @@
         }
       }
       if (!valid) {
-        Game.state = 9;
+        Game.state = GameState.BlockOut;
         $setText(Elements.msg, t2("lock_out"));
+        Game.types[Game.type].die();
         menu(3);
         sound.playSFX("gameover");
         sound.playvox("lose");
@@ -7636,6 +7675,7 @@
           }
         }
         sendClearTetrisMessage(Mutable.isSpin, Mutable.isMini && Mutable.isSpin);
+        Game.types[Game.type].lineClear(Mutable.lineClear);
       } else {
         if (Mutable.isSpin) {
           scoreAdd *= 2n ** BigInt(Mutable.b2b) * 400n;
@@ -7750,7 +7790,7 @@
         garbage += 10;
       }
       const { backFire } = Game.params;
-      if (Game.params && backFire) {
+      if (backFire) {
         if (backFire === 1) {
           garbage = [0, 0, 1, 2, 4][Mutable.lineClear];
         } else if (backFire === 3) {
@@ -7758,6 +7798,10 @@
         }
         if (garbage !== 0) {
           if (backFire === 1) {
+            const bottomRow = [];
+            for (let x3 = 0; x3 < this.width; x3++) {
+              bottomRow.push(this.grid[x3][this.height - 1] > 0 ? 8 : 0);
+            }
             for (let y2 = 0; y2 < garbage; y2++) {
               this.rowRise(bottomRow, piece);
             }
@@ -7864,9 +7908,10 @@
         }
       }
       if (topout) {
-        Game.state = 9;
+        Game.state = GameState.BlockOut;
         $setText(Elements.msg, "TOP OUT!");
         menu(3);
+        Game.types[Game.type].die();
         sound.playSFX("gameover");
         sound.playvox("lose");
       }
@@ -7877,9 +7922,10 @@
         if (!piece.moveValid(0, 0, piece.tetro)) {
           piece.y -= 1;
           if (piece.y + pieces[piece.index].rect[3] <= this.hiddenHeight - 2) {
-            Game.state = 9;
+            Game.state = GameState.BlockOut;
             $setText(Elements.msg, "OOPS!");
             menu(3);
+            Game.types[Game.type].die();
             sound.playSFX("gameover");
             sound.playvox("lose");
           }
@@ -8252,11 +8298,12 @@
         if (Game.type !== 8) {
           piece.y -= 2;
         }
-        Game.state = 9;
+        Game.state = GameState.BlockOut;
         $setText(Elements.msg, "BLOCK OUT!");
         if (Game.params.tournament == true) {
           $setText(Elements.msg, "GAME SET");
         }
+        Game.types[Game.type].die();
         menu(3);
         sound.playSFX("gameover");
         sound.playvox("lose");
@@ -8690,7 +8737,7 @@
               if (this.areLimit === 0) {
                 this["new"](preview.next());
               } else {
-                Game.state = 4;
+                Game.state = GameState.Paused;
                 this.are = 0;
               }
             }
@@ -9232,25 +9279,20 @@
     }
   }
 
-  // jscc_temp/src/sliders.ts
-  init_preact_shim();
-  function updateSprint40PB() {
-    const sprintPB = localStorage.getItem("sprint40pbvisual");
-    if (sprintPB != void 0) {
-      $2("sprint-pb").innerHTML = sprintPB;
-      $2("sprint-pb-menu").innerHTML = sprintPB;
-    } else {
-      $2("sprint-pb").innerHTML = "?????";
-      $2("sprint-pb-menu").innerHTML = "?????";
-    }
-  }
-
   // jscc_temp/src/gametypes/sprint.ts
   init_preact_shim();
 
   // jscc_temp/src/gametypes/base.ts
   init_preact_shim();
   var GameType3 = class {
+    win() {
+    }
+    die() {
+    }
+    done() {
+    }
+    lineClear(lineClear) {
+    }
   };
 
   // jscc_temp/src/gametypes/sprint.ts
@@ -9260,6 +9302,19 @@
     init() {
       sound.loadbgm("sprint");
       Game.params.pieceSet = Game.settings.sprint.piece.val;
+      preview.randomizer.reset();
+      switch (Game.params.pieceSet) {
+        case 0:
+          preview.randomizer = guideline;
+          break;
+        case 1:
+          preview.randomizer = noI;
+          break;
+        case 2:
+          preview.randomizer = iOnly;
+          break;
+      }
+      preview.reset();
       Game.params.backFire = Game.settings.sprint.backfire.val;
       switch (Game.settings.sprint.limit.val) {
         case 0:
@@ -9284,21 +9339,58 @@
           break;
       }
     }
+    win() {
+      const sprintPB = localStorage.getItem("sprint40pb");
+      if ((Mutable.scoreTime < parseInt(sprintPB) || sprintPB == void 0) && Mutable.watchingReplay == false && Game.params.pieceSet == 0 && Game.params.backFire > 0) {
+        localStorage.setItem("sprint40pb", Mutable.scoreTime.toString());
+        $setText($2("sprint-pb"), timeString(parseInt(sprintPB)));
+      }
+    }
   };
 
   // jscc_temp/src/gametypes/dig.ts
   init_preact_shim();
   var Dig = class extends GameType3 {
     update() {
+      if (Game.params.zen) {
+        for (; Mutable.lastPiecesSet < Mutable.piecesSet; Mutable.lastPiecesSet++) {
+          Mutable.digZenBuffer++;
+          const piecePerRise = [
+            8,
+            6.5,
+            4,
+            3.5,
+            10 / 3,
+            3,
+            2.8,
+            2.6,
+            2.4,
+            2.2,
+            2
+          ][clamp(Mutable.level, 0, 10)];
+          if (Mutable.digZenBuffer - piecePerRise > -1e-9) {
+            Mutable.digZenBuffer -= piecePerRise;
+            if (Math.abs(Mutable.digZenBuffer) < -1e-9) {
+              Mutable.digZenBuffer = 0;
+            }
+            const arrRow = [8, 8, 8, 8, 8, 8, 8, 8, 8, 8];
+            arrRow[~~(rng.next() * 10)] = 0;
+            stack.rowRise(arrRow, piece);
+            sound.playSFX("garbage");
+          }
+        }
+      }
     }
     init() {
       sound.loadbgm("sprint");
+      Mutable.lastPiecesSet = 0;
+      Mutable.digZenBuffer = 0;
       if (Game.settings.dig.checker.val == 1) {
         Game.params.digraceType = "checker";
       } else {
         Game.params.digraceType = "easy";
       }
-      if (Game.params["digraceType"] === void 0 || Game.params["digraceType"] === "checker") {
+      if (Game.params.digraceType === void 0 || Game.params.digraceType === "checker") {
         Mutable.digLines = range(stack.height - 10, stack.height);
         $setText(Elements.statsLines, 10);
         for (let y2 = stack.height - 1; y2 > stack.height - 10 - 1; y2--) {
@@ -9307,7 +9399,7 @@
               stack.grid[x3][y2] = 8;
           }
         }
-      } else if (Game.params["digraceType"] === "easy") {
+      } else if (Game.params.digraceType === "easy") {
         const begin = ~~(rng.next() * stack.width);
         const dire = ~~(rng.next() * 2) * 2 - 1;
         Mutable.digLines = range(stack.height - 10, stack.height);
@@ -9319,6 +9411,9 @@
           }
         }
       }
+      Game.params.zen = Game.settings.dig.zen.val == 1;
+    }
+    lineClear(lines) {
     }
   };
 
@@ -9462,9 +9557,101 @@
     }
   };
 
+  // jscc_temp/src/gametypes/survival.ts
+  init_preact_shim();
+  var frameLastRise;
+  var Survival = class extends GameType3 {
+    init() {
+      sound.cutsidebgm();
+      sound.loadbgm("survival");
+      sound.loadsidebgm("survivaldire");
+      frameLastRise = 0;
+      Mutable.frameLastRise = 0;
+      if (Game.settings.survival.zen.val == 1) {
+        Game.params.zen = true;
+      }
+      Game.params.digOffset = 500 * Game.settings.survival.slevel.val;
+    }
+    update() {
+      const fromLastRise = Mutable.frame - frameLastRise;
+      const fromLastHD = flags.hardDrop & Mutable.keysDown ? Mutable.frame - Mutable.frameLastRise : 0;
+      const arrRow = [8, 8, 8, 8, 8, 8, 8, 8, 8, 8];
+      let curStage = 0;
+      const objCurStage = arrStages[curStage];
+      while (curStage < arrStages.length && arrStages[curStage].begin <= Mutable.lines + (Game.params.digOffset || 0)) {
+        curStage++;
+      }
+      curStage--;
+      if (fromLastRise >= objCurStage.delay || fromLastHD >= 20 && fromLastRise >= 15) {
+        const arrRainbow = [
+          2,
+          -1,
+          1,
+          5,
+          4,
+          3,
+          7,
+          6,
+          -1,
+          8,
+          8,
+          8,
+          8,
+          6,
+          6,
+          2,
+          1,
+          5,
+          8,
+          -1,
+          7,
+          7,
+          -1,
+          8,
+          8
+        ];
+        const flagAll = ~~(objCurStage.begin / 50) % 2;
+        let idxRainbow = ~~(objCurStage.begin / 100);
+        if (idxRainbow >= arrRainbow.length) {
+          idxRainbow = arrRainbow.length - 1;
+        }
+        const colorUsed = arrRainbow[idxRainbow];
+        for (let x3 = 0; x3 < stack.width; x3 += flagAll === 1 ? 1 : stack.width - 1) {
+          if (colorUsed === -1) {
+            arrRow[x3] = ~~(rng.next() * 8 + 1);
+          } else {
+            arrRow[x3] = colorUsed;
+          }
+        }
+        objCurStage.gen(arrRow, stack);
+        stack.rowRise(arrRow, piece);
+        frameLastRise = Mutable.frame;
+        sound.playSFX("garbage");
+        let topOut = false;
+        for (const test in stack.grid) {
+          if (stack.grid[test][0] != void 0) {
+            topOut = true;
+          }
+        }
+        if (topOut) {
+          piece.dead = true;
+          Game.state = GameState.BlockOut;
+          $setText(Elements.msg, "TOP OUT!");
+          menu(3);
+          sound.playSFX("gameover");
+          sound.playvox("lose");
+          return;
+        }
+      }
+    }
+  };
+
   // jscc_temp/src/game.ts
   var _Game = class {
     static init(gt, params) {
+      if (gt !== "replay") {
+        _Game.types[_Game.type].done();
+      }
       try {
         sound.killbgm();
       } catch (e3) {
@@ -9497,7 +9684,7 @@
       Mutable.frame = 0;
       Mutable.frameSkipped = 0;
       Mutable.lastPos = "reset";
-      stack.new(10, 20, 4);
+      stack["new"](10, 20, 4);
       Mutable.toGreyRow = stack.height - 1;
       hold.piece = void 0;
       if (settings.Gravity === Gravity.Auto)
@@ -9515,10 +9702,6 @@
         Mutable.level = 0;
       }
       Mutable.digLines = [];
-      if (_Game.type === GameType.Unknown) {
-        Mutable.lastPiecesSet = 0;
-        Mutable.digZenBuffer = 0;
-      }
       if (_Game.params.noGravity == true) {
         settings.Gravity = 1;
       }
@@ -9574,7 +9757,7 @@
       _Game.paused = false;
       statisticsStack();
       preview.draw();
-      _Game.state = 2;
+      _Game.state = GameState.Countdown;
       resize();
     }
     static addGameType(num, type) {
@@ -9664,9 +9847,13 @@
       }
       const timeEle = $2("time");
       if (_Game.type === GameType.Sprint) {
-        if (Mutable.scoreTime >= parseInt(localStorage.getItem("sprint40pb")) + 100) {
+        const sprintPB = parseInt(localStorage.getItem("sprint40pb"));
+        if (Mutable.scoreTime >= sprintPB + 100) {
           Elements.timeCtx.fillStyle = "#f00";
           timeEle.classList.add("drought-flash");
+          if (settings.ResetPB) {
+            _Game.init(_Game.type, _Game.params);
+          }
         } else {
           Elements.timeCtx.fillStyle = "#fff";
           timeEle.classList.remove("drought-flash");
@@ -9881,14 +10068,14 @@
             }
             if (_Game.state === GameState.Countdown && Mutable.frame >= fps * time2 / 6 || _Game.state === GameState.Paused && piece.are >= piece.areLimit) {
               document.body.style.backgroundColor = "black";
-              _Game.state = 0;
+              _Game.state = GameState.Normal;
               if (piece.ihs && _Game.type !== 8) {
                 hold.soundCancel = 1;
                 piece.index = preview.next();
                 sound.playSFX("initialhold");
                 piece.hold();
               } else {
-                piece.new(preview.next());
+                piece["new"](preview.next());
               }
               piece.draw();
               updateScoreTime();
@@ -9906,7 +10093,7 @@
                 Mutable.toGreyRow--;
               }
             } else {
-              _Game.state = 3;
+              _Game.state = GameState.NotPlayed;
             }
           }
           Mutable.frame++;
@@ -9933,8 +10120,8 @@
     static checkWin() {
       if (_Game.type === GameType.Sprint || _Game.type === GameType.Retro && _Game.params.bType == true) {
         if (Mutable.lines >= Mutable.lineLimit) {
-          _Game.state = 1;
-          if (_Game.params && _Game.params.backFire) {
+          _Game.state = GameState.Win;
+          if (_Game.params?.backFire) {
             Elements.msg.innerHTML = "GREAT!";
           } else {
             let rank = null;
@@ -9953,12 +10140,7 @@
           menu(3);
           sound.playSFX("endingstart");
           sound.playvox("win");
-          const sprintPB = localStorage.getItem("sprint40pb");
-          if ((Mutable.scoreTime < parseInt(sprintPB) || sprintPB == void 0) && _Game.params.recordPB == true && Mutable.watchingReplay == false) {
-            localStorage.setItem("sprint40pb", Mutable.scoreTime);
-            localStorage.setItem("sprint40pbvisual", timeString(Mutable.scoreTime));
-          }
-          updateSprint40PB();
+          _Game.types[_Game.type].win();
         }
       } else {
         let isend = false;
@@ -9985,7 +10167,7 @@
           }
         }
         if (isend) {
-          _Game.state = 1;
+          _Game.state = GameState.Win;
           $setText(Elements.msg, "GREAT!");
           piece.dead = true;
           menu(3);
@@ -10043,6 +10225,10 @@
       checker: {
         val: 0,
         max: 1
+      },
+      zen: {
+        val: 0,
+        max: 1
       }
     },
     survival: {
@@ -10098,9 +10284,9 @@
   Game.addGameType(GameType.Master, new Master());
   Game.addGameType(GameType.Retro, new Retro());
   Game.addGameType(GameType.Grades, new Grades());
+  Game.addGameType(GameType.Survival, new Survival());
 
   // jscc_temp/src/display/menu.ts
-  var version = "0.7.4";
   var setLoop;
   var arrowReleased = true;
   var arrowDelay = 0;
@@ -10148,7 +10334,6 @@
       } else {
         settings[s2] = settings[s2] === settings[s2].length - 1 ? 0 : settings[s2] + 1;
       }
-      saveSetting();
       arrowReleased = false;
     } else {
       arrowDelay++;
@@ -10192,13 +10377,19 @@
     }
     settingsLoop();
   }
+  function parseVersion(v3) {
+    return v3.split(".").map(Number);
+  }
   function loadLocalData() {
     const bindData = localStorage.getItem("binds");
     if (bindData) {
       setBinds(JSON.parse(bindData));
     }
-    if (localStorage.getItem("version") !== version) {
+    const storedVersion = parseVersion(localStorage.getItem("version"));
+    const parsedVersion = parseVersion(version);
+    if (storedVersion[0] !== parsedVersion[0] || storedVersion[1] !== parsedVersion[1]) {
       localStorage.removeItem("settings");
+      localStorage.removeItem("Game.settings");
       localStorage.removeItem("binds");
       localStorage.setItem("version", version);
       resetGameSettings();
@@ -10210,7 +10401,7 @@
       }
     }
   }
-  function main() {
+  function data() {
     const storedSettings = localStorage.getItem("settings");
     if (storedSettings && localStorage.getItem("version") == version) {
       const parsed = JSON.parse(storedSettings);
@@ -10222,6 +10413,8 @@
       resetGameSettings();
     }
     loadLocalData();
+  }
+  function main() {
     for (const s4 in settings) {
       const setting = settings.getRaw(s4);
       const div = document.createElement("div");
@@ -10369,11 +10562,11 @@
   }
 
   // jscc_temp/src/components/utils/ButtonGroup.tsx
-  function ButtonGroup({ onClick, data, selected }) {
+  function ButtonGroup({ onClick, data: data2, selected }) {
     const [selectedIndex, setSelectedIndex] = l2(selected);
     return /* @__PURE__ */ v("div", {
       class: "btn-group"
-    }, data.map((item, index) => /* @__PURE__ */ v("button", __spreadValues({
+    }, data2.map((item, index) => /* @__PURE__ */ v("button", __spreadValues({
       key: index,
       onClick: () => {
         onClick(index);
@@ -10386,7 +10579,7 @@
   function GroupListSetting({
     setting,
     onClick,
-    data,
+    data: data2,
     selected
   }) {
     return /* @__PURE__ */ v(d, null, /* @__PURE__ */ v("h4", {
@@ -10394,7 +10587,7 @@
     }, t2(`setting-${setting}-title`)), /* @__PURE__ */ v("p", {
       class: "option-description"
     }, t2(`setting-${setting}-desc`)), /* @__PURE__ */ v(ButtonGroup, {
-      data,
+      data: data2,
       selected,
       onClick
     }));
@@ -10405,7 +10598,7 @@
   function GroupSetting({
     setting,
     onClick,
-    data,
+    data: data2,
     selected
   }) {
     return /* @__PURE__ */ v(d, null, /* @__PURE__ */ v("h4", {
@@ -10413,7 +10606,7 @@
     }, t2(`setting-${setting}-title`)), /* @__PURE__ */ v("p", {
       class: "option-description"
     }, t2(`setting-${setting}-desc`)), /* @__PURE__ */ v(ButtonGroup, {
-      data,
+      data: data2,
       selected,
       onClick
     }));
@@ -10675,9 +10868,7 @@
       icon: "pause",
       id: "pause"
     })), /* @__PURE__ */ v(Btn, {
-      click: () => {
-        menu(0);
-      },
+      click: () => menu(0),
       class: "btn-bottom"
     }, t2("menu-done")));
   }
@@ -10697,6 +10888,13 @@
       selected: Game.settings.dig.checker.val ? 1 : 0,
       onClick: (index) => {
         changeGameSetting("dig", "checker", index);
+      }
+    }), /* @__PURE__ */ v(GroupSetting, {
+      setting: "DigZen",
+      data: ["Off", "On"],
+      selected: Game.settings.dig.zen.val ? 1 : 0,
+      onClick: (index) => {
+        changeGameSetting("dig", "zen", index);
       }
     }), /* @__PURE__ */ v("br", null), /* @__PURE__ */ v(Btn, {
       click: () => Game.init(4),
@@ -10864,10 +11062,7 @@
       style: "font-weight: 4; font-size: 2rem; margin: 0px"
     }, "Polyomino"), /* @__PURE__ */ v("p", {
       class: "no-margin"
-    }, "v0.7.7", /* @__PURE__ */ v("a", {
-      class: "link",
-      href: "changelog.html"
-    }, "(view changelog)")), /* @__PURE__ */ v("div", {
+    }, version), /* @__PURE__ */ v("div", {
       class: "btn-container no-margin"
     }, /* @__PURE__ */ v("a", {
       class: "btn btn-inline",
@@ -11190,13 +11385,16 @@
   // jscc_temp/src/components/center/SprintMenu.tsx
   init_preact_shim();
   function SprintMenu() {
+    const sprintPB = localStorage.getItem("sprint40pb");
     return /* @__PURE__ */ v("nav", {
       class: "menu"
     }, /* @__PURE__ */ v("h1", {
       class: "boldish"
     }, "Sprint"), /* @__PURE__ */ v("p", {
       class: "no-margin"
-    }, "Clear the lines as fast as you can!"), /* @__PURE__ */ v("div", {
+    }, "Clear the lines as fast as you can! ", /* @__PURE__ */ v("br", null), "Fastest time:", " ", /* @__PURE__ */ v("span", {
+      id: "sprint-pb"
+    }, timeString(sprintPB ? parseInt(sprintPB) : 0))), /* @__PURE__ */ v("div", {
       class: "no-margin btn-container"
     }, /* @__PURE__ */ v(GroupSetting, {
       setting: "SprintLimit",
@@ -11337,6 +11535,13 @@
       onClick: (index) => {
         settings.set("RotSys", index);
       }
+    }), /* @__PURE__ */ v(GroupSetting, {
+      setting: "ResetPB",
+      data: ["Off", "On"],
+      selected: settings.ResetPB ? 1 : 0,
+      onClick: (index) => {
+        settings.ResetPB = index == 1;
+      }
     }), /* @__PURE__ */ v("br", null), /* @__PURE__ */ v(Btn, {
       click: () => menu(12)
     }, t2("menu-back")));
@@ -11422,6 +11627,10 @@
       class: "white-border-span"
     }, "Pieces"), /* @__PURE__ */ v("td", {
       id: "piece"
+    }, "0")), /* @__PURE__ */ v("tr", null, /* @__PURE__ */ v("th", {
+      class: "white-border-span"
+    }, "Finesse"), /* @__PURE__ */ v("td", {
+      id: "finesse"
     }, "0")), /* @__PURE__ */ v("tr", null, /* @__PURE__ */ v("th", {
       id: "time"
     }, /* @__PURE__ */ v("canvas", null))));
@@ -11528,10 +11737,10 @@
   }
 
   // jscc_temp/src/main.ts
+  data();
   S(v(MainComponent, {}), $2("content"));
   addEventListener("resize", resize, false);
   addEventListener("load", resize, false);
-  resize();
   main();
 })();
 /*!

@@ -323,6 +323,7 @@ class Piece {
 			if (Game.params.tournament == true) {
 				$setText(Elements.msg, "GAME SET");
 			}
+			Game.types[Game.type].die();
 			menu(3);
 			sound.playSFX("gameover");
 			sound.playvox("lose");

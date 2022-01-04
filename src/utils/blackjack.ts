@@ -217,3 +217,6 @@ export const sega = rand("1000 random sequence of I,J,L,O,S,T,Z");
 export const bonusBag = rand("7+1 bag of I,J,L,O,S,T,Z");
 // this is different because once finished with the bag it generates a new piece randomly
 export const bag8 = rand("8 bag of I,J,L,O,S,T,Z");
+
+export const iOnly = rand("I");
+export const noI = rand("bag of J,L,O,S,T,Z");

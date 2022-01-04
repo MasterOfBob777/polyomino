@@ -20,8 +20,17 @@ export function DigMenu() {
 					changeGameSetting("dig", "checker", index);
 				}}
 			/>
+
+			<GroupSetting
+				setting="DigZen"
+				data={["Off", "On"]}
+				selected={Game.settings.dig.zen.val ? 1 : 0}
+				onClick={(index) => {
+					changeGameSetting("dig", "zen", index);
+				}}
+			/>
 			<br />
-			
+
 			<Btn click={() => Game.init(4)} class="btn-inline width-50">
 				{t("menu-start")}
 			</Btn>

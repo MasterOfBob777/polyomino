@@ -90,6 +90,7 @@ export class Survival extends GameType {
 				Game.state = GameState.BlockOut;
 				$setText(Elements.msg, "TOP OUT!");
 				menu(3);
+				Game.types[Game.type].die();
 				sound.playSFX("gameover");
 				sound.playvox("lose");
 				return;

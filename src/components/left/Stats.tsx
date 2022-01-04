@@ -31,6 +31,10 @@ export function Stats({ }) {
 				<td id="piece">0</td>
 			</tr>
 			<tr>
+				<th class="white-border-span">Finesse</th>
+				<td id="finesse">0</td>
+			</tr>
+			<tr>
 				<th id="time">
 					<canvas />
 				</th>

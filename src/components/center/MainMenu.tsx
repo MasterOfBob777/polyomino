@@ -1,4 +1,5 @@
 import { menu } from "../../display/menu";
+import { version } from "../../utils/data";
 import { t } from "../../utils/lang";
 import { Btn } from "../utils/Btn";
 import { Icon } from "../utils/Icon";
@@ -17,6 +18,7 @@ export function MainMenu() {
 				Polyomino
 			</h1>
 			<p class="no-margin">
+				{version}
 				{/*
 				<a class="link" href="changelog.html">
 					(view changelog)

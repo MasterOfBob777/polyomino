@@ -286,6 +286,8 @@ const strs = {
 	},
 	"setting-ResetPB-title": { en: "Reset PB" },
 	"setting-ResetPB-desc": { en: "Reset if over personal best" },
+	"setting-DigZen-title": { en: "Zen Mode" },
+	"setting-DigZen-desc": { en: "" },
 	"menu-back": { en: "Back" },
 	"menu-start": { en: "Start" },
 	"menu-done": { en: "Done" },

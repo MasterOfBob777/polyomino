@@ -39,9 +39,11 @@ export function statisticsStack() {
 		statsLevel,
 		statsIpieces,
 		statsScore,
+		statsFinesse
 	} = Elements;
 
 	$setText(statsPiece, Mutable.piecesSet);
+	$setText(statsFinesse, Mutable.statsFinesse);
 
 	const scoreEle = $("score");
 	const scoreLabelEle = $("score-label");
