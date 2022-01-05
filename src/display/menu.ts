@@ -117,49 +117,39 @@ export function right(e) {
 }
 
 function parseVersion(v) {
-	return v.split(".").map(Number);
+	return v ? v.split(".").map(Number) : [0, 0, 0];
 }
 
-export function loadLocalData() {
-	const bindData = localStorage.getItem("binds");
-	if (bindData) {
-		setBinds(JSON.parse(bindData));
-	}
-	const storedVersion = parseVersion(localStorage.getItem("version"));
-	const parsedVersion = parseVersion(version);
-	// TODO When new version just update with new stuff, rest stays unchanged.
-	if (
-		storedVersion[0] !== parsedVersion[0] ||
-		storedVersion[1] !== parsedVersion[1]
-	) {
+function differentVersion(v1, v2) {
+	const v1p = parseVersion(v1);
+	const v2p = parseVersion(v2);
+
+	return v1p[0] !== v2p[0] || v1p[1] !== v2p[1];
+}
+
+export function data() {
+	if (differentVersion(localStorage.getItem("version"), version)) {
 		localStorage.removeItem("settings");
 		localStorage.removeItem("Game.settings");
 		localStorage.removeItem("binds");
 		localStorage.setItem("version", version);
 		resetGameSettings();
+		return;
 	}
-	if (localStorage.getItem("settings")) {
-		const storedSettings = JSON.parse(localStorage.getItem("settings"));
-		for (const setting in storedSettings) {
-			settings[setting] = storedSettings[setting];
-		}
-	}
-}
-
-export function data() {
+	
 	const storedSettings = localStorage.getItem("settings");
-	if (storedSettings && localStorage.getItem("version") == version) {
+	if (storedSettings) {
 		// console.log("not reset")
 		const parsed = JSON.parse(storedSettings);
 		for (const setting in parsed) {
 			settings[setting] = parsed[setting];
 		}
-	} else {
-		console.log("Game Settings Reset");
-		resetGameSettings();
 	}
 
-	loadLocalData();
+	const bindData = localStorage.getItem("binds");
+	if (bindData) {
+		setBinds(JSON.parse(bindData));
+	}
 }
 
 export function main() {

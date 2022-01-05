@@ -9638,6 +9638,7 @@
           Game.state = GameState.BlockOut;
           $setText(Elements.msg, "TOP OUT!");
           menu(3);
+          Game.types[Game.type].die();
           sound.playSFX("gameover");
           sound.playvox("lose");
           return;
@@ -10378,41 +10379,33 @@
     settingsLoop();
   }
   function parseVersion(v3) {
-    return v3.split(".").map(Number);
+    return v3 ? v3.split(".").map(Number) : [0, 0, 0];
   }
-  function loadLocalData() {
-    const bindData = localStorage.getItem("binds");
-    if (bindData) {
-      setBinds(JSON.parse(bindData));
-    }
-    const storedVersion = parseVersion(localStorage.getItem("version"));
-    const parsedVersion = parseVersion(version);
-    if (storedVersion[0] !== parsedVersion[0] || storedVersion[1] !== parsedVersion[1]) {
+  function differentVersion(v1, v22) {
+    const v1p = parseVersion(v1);
+    const v2p = parseVersion(v22);
+    return v1p[0] !== v2p[0] || v1p[1] !== v2p[1];
+  }
+  function data() {
+    if (differentVersion(localStorage.getItem("version"), version)) {
       localStorage.removeItem("settings");
       localStorage.removeItem("Game.settings");
       localStorage.removeItem("binds");
       localStorage.setItem("version", version);
       resetGameSettings();
+      return;
     }
-    if (localStorage.getItem("settings")) {
-      const storedSettings = JSON.parse(localStorage.getItem("settings"));
-      for (const setting in storedSettings) {
-        settings[setting] = storedSettings[setting];
-      }
-    }
-  }
-  function data() {
     const storedSettings = localStorage.getItem("settings");
-    if (storedSettings && localStorage.getItem("version") == version) {
+    if (storedSettings) {
       const parsed = JSON.parse(storedSettings);
       for (const setting in parsed) {
         settings[setting] = parsed[setting];
       }
-    } else {
-      console.log("Game Settings Reset");
-      resetGameSettings();
     }
-    loadLocalData();
+    const bindData = localStorage.getItem("binds");
+    if (bindData) {
+      setBinds(JSON.parse(bindData));
+    }
   }
   function main() {
     for (const s4 in settings) {
