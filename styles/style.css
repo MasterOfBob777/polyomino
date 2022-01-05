@@ -195,9 +195,11 @@
 	background-color: white;
 	color: black;
 }
+/* Doesn't work well with flex
 .btn-group button:not(:last-child) {
-	border-right: none; /* Prevent double borders */
+	border-right: none; /* Prevent double borders * /
 }
+*/
 
 /* Clear floats (clearfix hack) */
 .btn-group:after {
@@ -431,6 +433,13 @@ h5,
 h6 {
 	font-family: "Roboto", "Trebuchet MS", "Microsoft Yahei", "Hiragino Sans GB",
 		sans-serif;
+}
+
+.btn-group {
+	flex-wrap: wrap;
+	display: inline-flex;
+	padding: 0.5em 1em;
+	justify-content: center;
 }
 
 span.rank-score {
