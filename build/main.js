@@ -195,27 +195,27 @@
     this.l[n2.type + true](l.event ? l.event(n2) : n2);
   }
   function j(n2, u3, i3, t4, r3, o3, f3, e3, c3) {
-    var s4, h2, v3, y2, p2, k3, b3, m3, g3, x3, A, P2 = u3.type;
+    var s4, h2, v3, y3, p2, k3, b3, m3, g3, x3, A, P2 = u3.type;
     if (u3.constructor !== void 0)
       return null;
     i3.__h != null && (c3 = i3.__h, e3 = u3.__e = i3.__e, u3.__h = null, o3 = [e3]), (s4 = l.__b) && s4(u3);
     try {
       n:
         if (typeof P2 == "function") {
-          if (m3 = u3.props, g3 = (s4 = P2.contextType) && t4[s4.__c], x3 = s4 ? g3 ? g3.props.value : s4.__ : t4, i3.__c ? b3 = (h2 = u3.__c = i3.__c).__ = h2.__E : ("prototype" in P2 && P2.prototype.render ? u3.__c = h2 = new P2(m3, x3) : (u3.__c = h2 = new _(m3, x3), h2.constructor = P2, h2.render = O), g3 && g3.sub(h2), h2.props = m3, h2.state || (h2.state = {}), h2.context = x3, h2.__n = t4, v3 = h2.__d = true, h2.__h = []), h2.__s == null && (h2.__s = h2.state), P2.getDerivedStateFromProps != null && (h2.__s == h2.state && (h2.__s = a({}, h2.__s)), a(h2.__s, P2.getDerivedStateFromProps(m3, h2.__s))), y2 = h2.props, p2 = h2.state, v3)
+          if (m3 = u3.props, g3 = (s4 = P2.contextType) && t4[s4.__c], x3 = s4 ? g3 ? g3.props.value : s4.__ : t4, i3.__c ? b3 = (h2 = u3.__c = i3.__c).__ = h2.__E : ("prototype" in P2 && P2.prototype.render ? u3.__c = h2 = new P2(m3, x3) : (u3.__c = h2 = new _(m3, x3), h2.constructor = P2, h2.render = O), g3 && g3.sub(h2), h2.props = m3, h2.state || (h2.state = {}), h2.context = x3, h2.__n = t4, v3 = h2.__d = true, h2.__h = []), h2.__s == null && (h2.__s = h2.state), P2.getDerivedStateFromProps != null && (h2.__s == h2.state && (h2.__s = a({}, h2.__s)), a(h2.__s, P2.getDerivedStateFromProps(m3, h2.__s))), y3 = h2.props, p2 = h2.state, v3)
             P2.getDerivedStateFromProps == null && h2.componentWillMount != null && h2.componentWillMount(), h2.componentDidMount != null && h2.__h.push(h2.componentDidMount);
           else {
-            if (P2.getDerivedStateFromProps == null && m3 !== y2 && h2.componentWillReceiveProps != null && h2.componentWillReceiveProps(m3, x3), !h2.__e && h2.shouldComponentUpdate != null && h2.shouldComponentUpdate(m3, h2.__s, x3) === false || u3.__v === i3.__v) {
+            if (P2.getDerivedStateFromProps == null && m3 !== y3 && h2.componentWillReceiveProps != null && h2.componentWillReceiveProps(m3, x3), !h2.__e && h2.shouldComponentUpdate != null && h2.shouldComponentUpdate(m3, h2.__s, x3) === false || u3.__v === i3.__v) {
               h2.props = m3, h2.state = h2.__s, u3.__v !== i3.__v && (h2.__d = false), h2.__v = u3, u3.__e = i3.__e, u3.__k = i3.__k, u3.__k.forEach(function(n3) {
                 n3 && (n3.__ = u3);
               }), h2.__h.length && f3.push(h2);
               break n;
             }
             h2.componentWillUpdate != null && h2.componentWillUpdate(m3, h2.__s, x3), h2.componentDidUpdate != null && h2.__h.push(function() {
-              h2.componentDidUpdate(y2, p2, k3);
+              h2.componentDidUpdate(y3, p2, k3);
             });
           }
-          h2.context = x3, h2.props = m3, h2.state = h2.__s, (s4 = l.__r) && s4(u3), h2.__d = false, h2.__v = u3, h2.__P = n2, s4 = h2.render(h2.props, h2.state, h2.context), h2.state = h2.__s, h2.getChildContext != null && (t4 = a(a({}, t4), h2.getChildContext())), v3 || h2.getSnapshotBeforeUpdate == null || (k3 = h2.getSnapshotBeforeUpdate(y2, p2)), A = s4 != null && s4.type === d && s4.key == null ? s4.props.children : s4, w(n2, Array.isArray(A) ? A : [A], u3, i3, t4, r3, o3, f3, e3, c3), h2.base = u3.__e, u3.__h = null, h2.__h.length && f3.push(h2), b3 && (h2.__E = h2.__ = null), h2.__e = false;
+          h2.context = x3, h2.props = m3, h2.state = h2.__s, (s4 = l.__r) && s4(u3), h2.__d = false, h2.__v = u3, h2.__P = n2, s4 = h2.render(h2.props, h2.state, h2.context), h2.state = h2.__s, h2.getChildContext != null && (t4 = a(a({}, t4), h2.getChildContext())), v3 || h2.getSnapshotBeforeUpdate == null || (k3 = h2.getSnapshotBeforeUpdate(y3, p2)), A = s4 != null && s4.type === d && s4.key == null ? s4.props.children : s4, w(n2, Array.isArray(A) ? A : [A], u3, i3, t4, r3, o3, f3, e3, c3), h2.base = u3.__e, u3.__h = null, h2.__h.length && f3.push(h2), b3 && (h2.__E = h2.__ = null), h2.__e = false;
         } else
           o3 == null && u3.__v === i3.__v ? (u3.__k = i3.__k, u3.__e = i3.__e) : u3.__e = L(i3.__e, u3, i3, t4, r3, o3, f3, c3);
       (s4 = l.diffed) && s4(u3);
@@ -235,7 +235,7 @@
     });
   }
   function L(l3, u3, i3, t4, r3, o3, f3, c3) {
-    var s4, a3, v3, y2 = i3.props, p2 = u3.props, d3 = u3.type, _2 = 0;
+    var s4, a3, v3, y3 = i3.props, p2 = u3.props, d3 = u3.type, _2 = 0;
     if (d3 === "svg" && (r3 = true), o3 != null) {
       for (; _2 < o3.length; _2++)
         if ((s4 = o3[_2]) && "setAttribute" in s4 == !!d3 && (d3 ? s4.localName === d3 : s4.nodeType === 3)) {
@@ -249,20 +249,20 @@
       l3 = r3 ? document.createElementNS("http://www.w3.org/2000/svg", d3) : document.createElement(d3, p2.is && p2), o3 = null, c3 = false;
     }
     if (d3 === null)
-      y2 === p2 || c3 && l3.data === p2 || (l3.data = p2);
+      y3 === p2 || c3 && l3.data === p2 || (l3.data = p2);
     else {
-      if (o3 = o3 && n.call(l3.childNodes), a3 = (y2 = i3.props || e).dangerouslySetInnerHTML, v3 = p2.dangerouslySetInnerHTML, !c3) {
+      if (o3 = o3 && n.call(l3.childNodes), a3 = (y3 = i3.props || e).dangerouslySetInnerHTML, v3 = p2.dangerouslySetInnerHTML, !c3) {
         if (o3 != null)
-          for (y2 = {}, _2 = 0; _2 < l3.attributes.length; _2++)
-            y2[l3.attributes[_2].name] = l3.attributes[_2].value;
+          for (y3 = {}, _2 = 0; _2 < l3.attributes.length; _2++)
+            y3[l3.attributes[_2].name] = l3.attributes[_2].value;
         (v3 || a3) && (v3 && (a3 && v3.__html == a3.__html || v3.__html === l3.innerHTML) || (l3.innerHTML = v3 && v3.__html || ""));
       }
-      if (C(l3, p2, y2, r3, c3), v3)
+      if (C(l3, p2, y3, r3, c3), v3)
         u3.__k = [];
       else if (_2 = u3.props.children, w(l3, Array.isArray(_2) ? _2 : [_2], u3, i3, t4, r3 && d3 !== "foreignObject", o3, f3, o3 ? o3[0] : i3.__k && k(i3, 0), c3), o3 != null)
         for (_2 = o3.length; _2--; )
           o3[_2] != null && h(o3[_2]);
-      c3 || ("value" in p2 && (_2 = p2.value) !== void 0 && (_2 !== y2.value || _2 !== l3.value || d3 === "progress" && !_2) && H(l3, "value", _2, y2.value, false), "checked" in p2 && (_2 = p2.checked) !== void 0 && _2 !== l3.checked && H(l3, "checked", _2, y2.checked, false));
+      c3 || ("value" in p2 && (_2 = p2.value) !== void 0 && (_2 !== y3.value || _2 !== l3.value || d3 === "progress" && !_2) && H(l3, "value", _2, y3.value, false), "checked" in p2 && (_2 = p2.checked) !== void 0 && _2 !== l3.checked && H(l3, "checked", _2, y3.checked, false));
     }
     return l3;
   }
@@ -1901,15 +1901,15 @@
           }
           return self;
         };
-        HowlerGlobal.prototype.pos = function(x3, y2, z2) {
+        HowlerGlobal.prototype.pos = function(x3, y3, z2) {
           var self = this;
           if (!self.ctx || !self.ctx.listener) {
             return self;
           }
-          y2 = typeof y2 !== "number" ? self._pos[1] : y2;
+          y3 = typeof y3 !== "number" ? self._pos[1] : y3;
           z2 = typeof z2 !== "number" ? self._pos[2] : z2;
           if (typeof x3 === "number") {
-            self._pos = [x3, y2, z2];
+            self._pos = [x3, y3, z2];
             if (typeof self.ctx.listener.positionX !== "undefined") {
               self.ctx.listener.positionX.setTargetAtTime(self._pos[0], Howler.ctx.currentTime, 0.1);
               self.ctx.listener.positionY.setTargetAtTime(self._pos[1], Howler.ctx.currentTime, 0.1);
@@ -1922,28 +1922,28 @@
           }
           return self;
         };
-        HowlerGlobal.prototype.orientation = function(x3, y2, z2, xUp, yUp, zUp) {
+        HowlerGlobal.prototype.orientation = function(x3, y3, z2, xUp, yUp, zUp) {
           var self = this;
           if (!self.ctx || !self.ctx.listener) {
             return self;
           }
           var or = self._orientation;
-          y2 = typeof y2 !== "number" ? or[1] : y2;
+          y3 = typeof y3 !== "number" ? or[1] : y3;
           z2 = typeof z2 !== "number" ? or[2] : z2;
           xUp = typeof xUp !== "number" ? or[3] : xUp;
           yUp = typeof yUp !== "number" ? or[4] : yUp;
           zUp = typeof zUp !== "number" ? or[5] : zUp;
           if (typeof x3 === "number") {
-            self._orientation = [x3, y2, z2, xUp, yUp, zUp];
+            self._orientation = [x3, y3, z2, xUp, yUp, zUp];
             if (typeof self.ctx.listener.forwardX !== "undefined") {
               self.ctx.listener.forwardX.setTargetAtTime(x3, Howler.ctx.currentTime, 0.1);
-              self.ctx.listener.forwardY.setTargetAtTime(y2, Howler.ctx.currentTime, 0.1);
+              self.ctx.listener.forwardY.setTargetAtTime(y3, Howler.ctx.currentTime, 0.1);
               self.ctx.listener.forwardZ.setTargetAtTime(z2, Howler.ctx.currentTime, 0.1);
               self.ctx.listener.upX.setTargetAtTime(xUp, Howler.ctx.currentTime, 0.1);
               self.ctx.listener.upY.setTargetAtTime(yUp, Howler.ctx.currentTime, 0.1);
               self.ctx.listener.upZ.setTargetAtTime(zUp, Howler.ctx.currentTime, 0.1);
             } else {
-              self.ctx.listener.setOrientation(x3, y2, z2, xUp, yUp, zUp);
+              self.ctx.listener.setOrientation(x3, y3, z2, xUp, yUp, zUp);
             }
           } else {
             return or;
@@ -2027,7 +2027,7 @@
           }
           return self;
         };
-        Howl.prototype.pos = function(x3, y2, z2, id) {
+        Howl.prototype.pos = function(x3, y3, z2, id) {
           var self = this;
           if (!self._webAudio) {
             return self;
@@ -2036,16 +2036,16 @@
             self._queue.push({
               event: "pos",
               action: function() {
-                self.pos(x3, y2, z2, id);
+                self.pos(x3, y3, z2, id);
               }
             });
             return self;
           }
-          y2 = typeof y2 !== "number" ? 0 : y2;
+          y3 = typeof y3 !== "number" ? 0 : y3;
           z2 = typeof z2 !== "number" ? -0.5 : z2;
           if (typeof id === "undefined") {
             if (typeof x3 === "number") {
-              self._pos = [x3, y2, z2];
+              self._pos = [x3, y3, z2];
             } else {
               return self._pos;
             }
@@ -2055,17 +2055,17 @@
             var sound2 = self._soundById(ids2[i3]);
             if (sound2) {
               if (typeof x3 === "number") {
-                sound2._pos = [x3, y2, z2];
+                sound2._pos = [x3, y3, z2];
                 if (sound2._node) {
                   if (!sound2._panner || sound2._panner.pan) {
                     setupPanner(sound2, "spatial");
                   }
                   if (typeof sound2._panner.positionX !== "undefined") {
                     sound2._panner.positionX.setValueAtTime(x3, Howler.ctx.currentTime);
-                    sound2._panner.positionY.setValueAtTime(y2, Howler.ctx.currentTime);
+                    sound2._panner.positionY.setValueAtTime(y3, Howler.ctx.currentTime);
                     sound2._panner.positionZ.setValueAtTime(z2, Howler.ctx.currentTime);
                   } else {
-                    sound2._panner.setPosition(x3, y2, z2);
+                    sound2._panner.setPosition(x3, y3, z2);
                   }
                 }
                 self._emit("pos", sound2._id);
@@ -2076,7 +2076,7 @@
           }
           return self;
         };
-        Howl.prototype.orientation = function(x3, y2, z2, id) {
+        Howl.prototype.orientation = function(x3, y3, z2, id) {
           var self = this;
           if (!self._webAudio) {
             return self;
@@ -2085,16 +2085,16 @@
             self._queue.push({
               event: "orientation",
               action: function() {
-                self.orientation(x3, y2, z2, id);
+                self.orientation(x3, y3, z2, id);
               }
             });
             return self;
           }
-          y2 = typeof y2 !== "number" ? self._orientation[1] : y2;
+          y3 = typeof y3 !== "number" ? self._orientation[1] : y3;
           z2 = typeof z2 !== "number" ? self._orientation[2] : z2;
           if (typeof id === "undefined") {
             if (typeof x3 === "number") {
-              self._orientation = [x3, y2, z2];
+              self._orientation = [x3, y3, z2];
             } else {
               return self._orientation;
             }
@@ -2104,7 +2104,7 @@
             var sound2 = self._soundById(ids2[i3]);
             if (sound2) {
               if (typeof x3 === "number") {
-                sound2._orientation = [x3, y2, z2];
+                sound2._orientation = [x3, y3, z2];
                 if (sound2._node) {
                   if (!sound2._panner) {
                     if (!sound2._pos) {
@@ -2114,10 +2114,10 @@
                   }
                   if (typeof sound2._panner.orientationX !== "undefined") {
                     sound2._panner.orientationX.setValueAtTime(x3, Howler.ctx.currentTime);
-                    sound2._panner.orientationY.setValueAtTime(y2, Howler.ctx.currentTime);
+                    sound2._panner.orientationY.setValueAtTime(y3, Howler.ctx.currentTime);
                     sound2._panner.orientationZ.setValueAtTime(z2, Howler.ctx.currentTime);
                   } else {
-                    sound2._panner.setOrientation(x3, y2, z2);
+                    sound2._panner.setOrientation(x3, y3, z2);
                   }
                 }
                 self._emit("orientation", sound2._id);
@@ -2614,7 +2614,7 @@
   Mutable.alarmtest = false;
   Mutable.clearRows = [];
   Mutable.levelCheck = 0;
-  var binds = {
+  var defaultBinds = {
     pause: 27,
     moveLeft: 37,
     moveRight: 39,
@@ -2628,8 +2628,9 @@
     rot180: 16,
     retry: 82
   };
+  var binds = JSON.parse(JSON.stringify(defaultBinds));
   function setBinds(newBinds) {
-    binds = newBinds;
+    binds = JSON.parse(JSON.stringify(newBinds));
   }
   var flags = {
     hardDrop: 1,
@@ -5904,18 +5905,18 @@
     for (let x3 = -1; x3 < ctx.canvas.width + 1; x3 += Mutable.cellSize) {
       ctx.fillRect(x3, 0, 2, ctx.canvas.height);
     }
-    for (let y2 = -1; y2 < ctx.canvas.height + 1; y2 += Mutable.cellSize) {
-      ctx.fillRect(0, y2, ctx.canvas.width, 2);
+    for (let y3 = -1; y3 < ctx.canvas.height + 1; y3 += Mutable.cellSize) {
+      ctx.fillRect(0, y3, ctx.canvas.width, 2);
     }
   }
-  function drawCell(x3, y2, color, ctx, darkness) {
+  function drawCell(x3, y3, color, ctx, darkness) {
     const spriteCanvas = Elements.spriteCanvas;
     x3 = Math.floor(x3 * Mutable.cellSize);
-    y2 = Math.floor(y2 * Mutable.cellSize);
-    ctx.drawImage(spriteCanvas, color * Mutable.cellSize, 0, Mutable.cellSize, Mutable.cellSize, x3, y2, Mutable.cellSize, Mutable.cellSize);
+    y3 = Math.floor(y3 * Mutable.cellSize);
+    ctx.drawImage(spriteCanvas, color * Mutable.cellSize, 0, Mutable.cellSize, Mutable.cellSize, x3, y3, Mutable.cellSize, Mutable.cellSize);
     if (darkness) {
       ctx.fillStyle = `rgba(0,0,0,${darkness})`;
-      ctx.fillRect(x3, y2, Mutable.cellSize, Mutable.cellSize);
+      ctx.fillRect(x3, y3, Mutable.cellSize, Mutable.cellSize);
     }
   }
   var nes = [
@@ -6371,7 +6372,7 @@
       i3 = iCurrent;
     }
   }
-  function roundRect(ctx, x3, y2, width, height, radius, fill, stroke) {
+  function roundRect(ctx, x3, y3, width, height, radius, fill, stroke) {
     if (typeof stroke == "undefined") {
       stroke = true;
     }
@@ -6387,15 +6388,15 @@
       }
     }
     ctx.beginPath();
-    ctx.moveTo(x3 + radius.tl, y2);
-    ctx.lineTo(x3 + width - radius.tr, y2);
-    ctx.quadraticCurveTo(x3 + width, y2, x3 + width, y2 + radius.tr);
-    ctx.lineTo(x3 + width, y2 + height - radius.br);
-    ctx.quadraticCurveTo(x3 + width, y2 + height, x3 + width - radius.br, y2 + height);
-    ctx.lineTo(x3 + radius.bl, y2 + height);
-    ctx.quadraticCurveTo(x3, y2 + height, x3, y2 + height - radius.bl);
-    ctx.lineTo(x3, y2 + radius.tl);
-    ctx.quadraticCurveTo(x3, y2, x3 + radius.tl, y2);
+    ctx.moveTo(x3 + radius.tl, y3);
+    ctx.lineTo(x3 + width - radius.tr, y3);
+    ctx.quadraticCurveTo(x3 + width, y3, x3 + width, y3 + radius.tr);
+    ctx.lineTo(x3 + width, y3 + height - radius.br);
+    ctx.quadraticCurveTo(x3 + width, y3 + height, x3 + width - radius.br, y3 + height);
+    ctx.lineTo(x3 + radius.bl, y3 + height);
+    ctx.quadraticCurveTo(x3, y3 + height, x3, y3 + height - radius.bl);
+    ctx.lineTo(x3, y3 + radius.tl);
+    ctx.quadraticCurveTo(x3, y3, x3 + radius.tl, y3);
     ctx.closePath();
     if (fill) {
       ctx.fill();
@@ -6406,9 +6407,9 @@
   }
   function draw(tetro, cx, cy, ctx, color, darkness) {
     for (let x3 = 0, len = tetro.length; x3 < len; x3++) {
-      for (let y2 = 0, wid = tetro[x3].length; y2 < wid; y2++) {
-        if (tetro[x3][y2]) {
-          drawCell(x3 + cx, y2 + cy, color !== void 0 ? color : tetro[x3][y2], ctx, darkness);
+      for (let y3 = 0, wid = tetro[x3].length; y3 < wid; y3++) {
+        if (tetro[x3][y3]) {
+          drawCell(x3 + cx, y3 + cy, color !== void 0 ? color : tetro[x3][y3], ctx, darkness);
         }
       }
     }
@@ -7465,13 +7466,13 @@
 
   // jscc_temp/src/display/tetrion/stack.ts
   var Stack = class {
-    new(x3, y2, hy) {
+    new(x3, y3, hy) {
       const cells = new Array(x3);
       for (let i3 = 0; i3 < x3; i3++) {
-        cells[i3] = new Array(hy + y2);
+        cells[i3] = new Array(hy + y3);
       }
       this.width = x3;
-      this.height = hy + y2;
+      this.height = hy + y3;
       this.hiddenHeight = hy;
       this.grid = cells;
       this.dirty = true;
@@ -7490,16 +7491,16 @@
       let range2 = [];
       let valid = false;
       for (let x3 = 0; x3 < tetro.length; x3++) {
-        for (let y2 = 0; y2 < tetro[x3].length; y2++) {
-          if (tetro[x3][y2] && y2 + piece.y >= 0) {
-            this.grid[x3 + piece.x][y2 + piece.y] = settings.RotSys.color[piece.index];
+        for (let y3 = 0; y3 < tetro[x3].length; y3++) {
+          if (tetro[x3][y3] && y3 + piece.y >= 0) {
+            this.grid[x3 + piece.x][y3 + piece.y] = settings.RotSys.color[piece.index];
             if (!once || x3 + piece.x < Mutable.column) {
               Mutable.column = x3 + piece.x;
               once = true;
             }
-            if (range2.indexOf(y2 + piece.y) === -1) {
-              range2.push(y2 + piece.y);
-              if (y2 + piece.y >= this.hiddenHeight)
+            if (range2.indexOf(y3 + piece.y) === -1) {
+              range2.push(y3 + piece.y);
+              if (y3 + piece.y >= this.hiddenHeight)
                 valid = true;
             }
           }
@@ -7525,15 +7526,15 @@
           Mutable.lineClear++;
           const rowInDig = Mutable.digLines.indexOf(row);
           if (rowInDig !== -1) {
-            for (let y2 = 0; y2 < rowInDig; y2++) {
-              Mutable.digLines[y2]++;
+            for (let y3 = 0; y3 < rowInDig; y3++) {
+              Mutable.digLines[y3]++;
             }
             Mutable.digLines.splice(rowInDig, 1);
           }
           Mutable.clearRows.push(row);
-          for (let y2 = row; y2 >= row; y2--) {
+          for (let y3 = row; y3 >= row; y3--) {
             for (let x3 = 0; x3 < this.width; x3++) {
-              this.grid[x3][y2] = 0;
+              this.grid[x3][y3] = 0;
             }
           }
           for (let x3 = 0; x3 < this.width; x3++) {
@@ -7779,8 +7780,8 @@
       stack.draw();
       let pc = true;
       for (let x3 = 0; x3 < this.width; x3++)
-        for (let y2 = 0; y2 < this.height; y2++)
-          if (this.grid[x3][y2])
+        for (let y3 = 0; y3 < this.height; y3++)
+          if (this.grid[x3][y3])
             pc = false;
       if (pc) {
         Mutable.score += 1000000n * 16n ** BigInt(Mutable.allclear);
@@ -7802,14 +7803,14 @@
             for (let x3 = 0; x3 < this.width; x3++) {
               bottomRow.push(this.grid[x3][this.height - 1] > 0 ? 8 : 0);
             }
-            for (let y2 = 0; y2 < garbage; y2++) {
+            for (let y3 = 0; y3 < garbage; y3++) {
               this.rowRise(bottomRow, piece);
             }
           } else if (backFire === 2 || backFire === 3) {
             const hole = ~~(rng.next() * 10);
             const arrRow = [8, 8, 8, 8, 8, 8, 8, 8, 8, 8];
             arrRow[hole] = 0;
-            for (let y2 = 0; y2 < garbage; y2++) {
+            for (let y3 = 0; y3 < garbage; y3++) {
               this.rowRise(arrRow, piece);
             }
           }
@@ -7876,9 +7877,9 @@
     }
     clearLines() {
       Mutable.clearRows.forEach((element) => {
-        for (let y2 = element; y2 >= 1; y2--) {
+        for (let y3 = element; y3 >= 1; y3--) {
           for (let x3 = 0; x3 < stack.width; x3++) {
-            stack.grid[x3][y2] = stack.grid[x3][y2 - 1];
+            stack.grid[x3][y3] = stack.grid[x3][y3 - 1];
           }
         }
       });
@@ -7893,17 +7894,17 @@
     rowRise(arrRow, objPiece) {
       let isEmpty = true;
       for (let x3 = 0; x3 < this.width; x3++) {
-        for (let y2 = 0; y2 < this.height - 1; y2++) {
-          this.grid[x3][y2] = this.grid[x3][y2 + 1];
+        for (let y3 = 0; y3 < this.height - 1; y3++) {
+          this.grid[x3][y3] = this.grid[x3][y3 + 1];
         }
         if (arrRow[x3])
           isEmpty = false;
         this.grid[x3][this.height - 1] = arrRow[x3];
       }
       let topout = false;
-      for (let y2 = 0; y2 < Mutable.digLines.length; y2++) {
-        Mutable.digLines[y2]--;
-        if (Mutable.digLines[y2] < 0) {
+      for (let y3 = 0; y3 < Mutable.digLines.length; y3++) {
+        Mutable.digLines[y3]--;
+        if (Mutable.digLines[y3] < 0) {
           topout = true;
         }
       }
@@ -7951,62 +7952,62 @@
         lineCtx.fillStyle = "rgba(255,255,255,.5)";
         lineCtx.beginPath();
         for (let x3 = 0, len = this.width; x3 < len; x3++) {
-          for (let y2 = 0, wid = this.height; y2 < wid; y2++) {
-            if (this.grid[x3][y2]) {
-              if (x3 < this.width - 1 && !this.grid[x3 + 1][y2]) {
-                lineCtx.fillRect(x3 * c3 + c3 - b3, y2 * c3 - hhc, b3, c3);
+          for (let y3 = 0, wid = this.height; y3 < wid; y3++) {
+            if (this.grid[x3][y3]) {
+              if (x3 < this.width - 1 && !this.grid[x3 + 1][y3]) {
+                lineCtx.fillRect(x3 * c3 + c3 - b3, y3 * c3 - hhc, b3, c3);
               }
-              if (x3 > 0 && !this.grid[x3 - 1][y2]) {
-                lineCtx.fillRect(x3 * c3, y2 * c3 - hhc, b3, c3);
+              if (x3 > 0 && !this.grid[x3 - 1][y3]) {
+                lineCtx.fillRect(x3 * c3, y3 * c3 - hhc, b3, c3);
               }
-              if (y2 < this.height - 1 && !this.grid[x3][y2 + 1]) {
-                lineCtx.fillRect(x3 * c3, y2 * c3 - hhc + c3 - b3, c3, b3);
+              if (y3 < this.height - 1 && !this.grid[x3][y3 + 1]) {
+                lineCtx.fillRect(x3 * c3, y3 * c3 - hhc + c3 - b3, c3, b3);
               }
-              if (!this.grid[x3][y2 - 1]) {
-                lineCtx.fillRect(x3 * c3, y2 * c3 - hhc, c3, b3);
+              if (!this.grid[x3][y3 - 1]) {
+                lineCtx.fillRect(x3 * c3, y3 * c3 - hhc, c3, b3);
               }
-              if (x3 < this.width - 1 && y2 < this.height - 1) {
-                if (!this.grid[x3 + 1][y2] && !this.grid[x3][y2 + 1]) {
-                  lineCtx.clearRect(x3 * c3 + c3 - b3, y2 * c3 - hhc + c3 - b3, b3, b3);
-                  lineCtx.fillRect(x3 * c3 + c3 - b3, y2 * c3 - hhc + c3 - b3, b3, b3);
-                } else if (!this.grid[x3 + 1][y2 + 1] && this.grid[x3 + 1][y2] && this.grid[x3][y2 + 1]) {
-                  lineCtx.moveTo(x3 * c3 + c3, y2 * c3 - hhc + c3 - b3);
-                  lineCtx.lineTo(x3 * c3 + c3, y2 * c3 - hhc + c3);
-                  lineCtx.lineTo(x3 * c3 + c3 - b3, y2 * c3 - hhc + c3);
-                  lineCtx.arc(x3 * c3 + c3, y2 * c3 - hhc + c3, b3, 3 * pi / 2, pi, true);
+              if (x3 < this.width - 1 && y3 < this.height - 1) {
+                if (!this.grid[x3 + 1][y3] && !this.grid[x3][y3 + 1]) {
+                  lineCtx.clearRect(x3 * c3 + c3 - b3, y3 * c3 - hhc + c3 - b3, b3, b3);
+                  lineCtx.fillRect(x3 * c3 + c3 - b3, y3 * c3 - hhc + c3 - b3, b3, b3);
+                } else if (!this.grid[x3 + 1][y3 + 1] && this.grid[x3 + 1][y3] && this.grid[x3][y3 + 1]) {
+                  lineCtx.moveTo(x3 * c3 + c3, y3 * c3 - hhc + c3 - b3);
+                  lineCtx.lineTo(x3 * c3 + c3, y3 * c3 - hhc + c3);
+                  lineCtx.lineTo(x3 * c3 + c3 - b3, y3 * c3 - hhc + c3);
+                  lineCtx.arc(x3 * c3 + c3, y3 * c3 - hhc + c3, b3, 3 * pi / 2, pi, true);
                 }
               }
-              if (x3 < this.width - 1 && y2 > -this.hiddenHeight) {
-                if (!this.grid[x3 + 1][y2] && !this.grid[x3][y2 - 1]) {
-                  lineCtx.clearRect(x3 * c3 + c3 - b3, y2 * c3 - hhc, b3, b3);
-                  lineCtx.fillRect(x3 * c3 + c3 - b3, y2 * c3 - hhc, b3, b3);
-                } else if (!this.grid[x3 + 1][y2 - 1] && this.grid[x3 + 1][y2] && this.grid[x3][y2 - 1]) {
-                  lineCtx.moveTo(x3 * c3 + c3 - b3, y2 * c3 - hhc);
-                  lineCtx.lineTo(x3 * c3 + c3, y2 * c3 - hhc);
-                  lineCtx.lineTo(x3 * c3 + c3, y2 * c3 - hhc + b3);
-                  lineCtx.arc(x3 * c3 + c3, y2 * c3 - hhc, b3, pi / 2, pi, false);
+              if (x3 < this.width - 1 && y3 > -this.hiddenHeight) {
+                if (!this.grid[x3 + 1][y3] && !this.grid[x3][y3 - 1]) {
+                  lineCtx.clearRect(x3 * c3 + c3 - b3, y3 * c3 - hhc, b3, b3);
+                  lineCtx.fillRect(x3 * c3 + c3 - b3, y3 * c3 - hhc, b3, b3);
+                } else if (!this.grid[x3 + 1][y3 - 1] && this.grid[x3 + 1][y3] && this.grid[x3][y3 - 1]) {
+                  lineCtx.moveTo(x3 * c3 + c3 - b3, y3 * c3 - hhc);
+                  lineCtx.lineTo(x3 * c3 + c3, y3 * c3 - hhc);
+                  lineCtx.lineTo(x3 * c3 + c3, y3 * c3 - hhc + b3);
+                  lineCtx.arc(x3 * c3 + c3, y3 * c3 - hhc, b3, pi / 2, pi, false);
                 }
               }
-              if (x3 > 0 && y2 < this.height - 1) {
-                if (!this.grid[x3 - 1][y2] && !this.grid[x3][y2 + 1]) {
-                  lineCtx.clearRect(x3 * c3, y2 * c3 - hhc + c3 - b3, b3, b3);
-                  lineCtx.fillRect(x3 * c3, y2 * c3 - hhc + c3 - b3, b3, b3);
-                } else if (!this.grid[x3 - 1][y2 + 1] && this.grid[x3 - 1][y2] && this.grid[x3][y2 + 1]) {
-                  lineCtx.moveTo(x3 * c3, y2 * c3 - hhc + c3 - b3);
-                  lineCtx.lineTo(x3 * c3, y2 * c3 - hhc + c3);
-                  lineCtx.lineTo(x3 * c3 + b3, y2 * c3 - hhc + c3);
-                  lineCtx.arc(x3 * c3, y2 * c3 - hhc + c3, b3, pi * 2, 3 * pi / 2, true);
+              if (x3 > 0 && y3 < this.height - 1) {
+                if (!this.grid[x3 - 1][y3] && !this.grid[x3][y3 + 1]) {
+                  lineCtx.clearRect(x3 * c3, y3 * c3 - hhc + c3 - b3, b3, b3);
+                  lineCtx.fillRect(x3 * c3, y3 * c3 - hhc + c3 - b3, b3, b3);
+                } else if (!this.grid[x3 - 1][y3 + 1] && this.grid[x3 - 1][y3] && this.grid[x3][y3 + 1]) {
+                  lineCtx.moveTo(x3 * c3, y3 * c3 - hhc + c3 - b3);
+                  lineCtx.lineTo(x3 * c3, y3 * c3 - hhc + c3);
+                  lineCtx.lineTo(x3 * c3 + b3, y3 * c3 - hhc + c3);
+                  lineCtx.arc(x3 * c3, y3 * c3 - hhc + c3, b3, pi * 2, 3 * pi / 2, true);
                 }
               }
-              if (x3 > 0 && y2 > -this.hiddenHeight) {
-                if (!this.grid[x3 - 1][y2] && !this.grid[x3][y2 - 1]) {
-                  lineCtx.clearRect(x3 * c3, y2 * c3 - hhc, b3, b3);
-                  lineCtx.fillRect(x3 * c3, y2 * c3 - hhc, b3, b3);
-                } else if (!this.grid[x3 - 1][y2 - 1] && this.grid[x3 - 1][y2] && this.grid[x3][y2 - 1]) {
-                  lineCtx.moveTo(x3 * c3 + b3, y2 * c3 - hhc);
-                  lineCtx.lineTo(x3 * c3, y2 * c3 - hhc);
-                  lineCtx.lineTo(x3 * c3, y2 * c3 - hhc + b3);
-                  lineCtx.arc(x3 * c3, y2 * c3 - hhc, b3, pi / 2, pi * 2, true);
+              if (x3 > 0 && y3 > -this.hiddenHeight) {
+                if (!this.grid[x3 - 1][y3] && !this.grid[x3][y3 - 1]) {
+                  lineCtx.clearRect(x3 * c3, y3 * c3 - hhc, b3, b3);
+                  lineCtx.fillRect(x3 * c3, y3 * c3 - hhc, b3, b3);
+                } else if (!this.grid[x3 - 1][y3 - 1] && this.grid[x3 - 1][y3] && this.grid[x3][y3 - 1]) {
+                  lineCtx.moveTo(x3 * c3 + b3, y3 * c3 - hhc);
+                  lineCtx.lineTo(x3 * c3, y3 * c3 - hhc);
+                  lineCtx.lineTo(x3 * c3, y3 * c3 - hhc + b3);
+                  lineCtx.arc(x3 * c3, y3 * c3 - hhc, b3, pi / 2, pi * 2, true);
                 }
               }
             }
@@ -8021,9 +8022,9 @@
       this.dirty = false;
     }
   };
-  function testSpace(x3, y2) {
-    if (stack.grid[x3] !== void 0 && y2 < 24) {
-      return stack.grid[x3][y2] !== void 0;
+  function testSpace(x3, y3) {
+    if (stack.grid[x3] !== void 0 && y3 < 24) {
+      return stack.grid[x3][y3] !== void 0;
     }
     return true;
   }
@@ -8589,8 +8590,8 @@
       cx = cx + this.x;
       cy = Math.floor(cy + this.y);
       for (let x3 = 0; x3 < tetro.length; x3++) {
-        for (let y2 = 0; y2 < tetro[x3].length; y2++) {
-          if (tetro[x3][y2] && (cx + x3 < 0 || cx + x3 >= stack.width || cy + y2 >= stack.height || cy + y2 >= 0 && stack.grid[cx + x3][cy + y2])) {
+        for (let y3 = 0; y3 < tetro[x3].length; y3++) {
+          if (tetro[x3][y3] && (cx + x3 < 0 || cx + x3 >= stack.width || cy + y3 >= stack.height || cy + y3 >= 0 && stack.grid[cx + x3][cy + y3])) {
             return false;
           }
         }
@@ -9382,10 +9383,10 @@
       if (Game.params.digraceType === void 0 || Game.params.digraceType === "checker") {
         Mutable.digLines = range(stack.height - 10, stack.height);
         $setText(Elements.statsLines, 10);
-        for (let y2 = stack.height - 1; y2 > stack.height - 10 - 1; y2--) {
+        for (let y3 = stack.height - 1; y3 > stack.height - 10 - 1; y3--) {
           for (let x3 = 0; x3 < stack.width; x3++) {
-            if (x3 + y2 & 1)
-              stack.grid[x3][y2] = 8;
+            if (x3 + y3 & 1)
+              stack.grid[x3][y3] = 8;
           }
         }
       } else if (Game.params.digraceType === "easy") {
@@ -9393,10 +9394,10 @@
         const dire = ~~(rng.next() * 2) * 2 - 1;
         Mutable.digLines = range(stack.height - 10, stack.height);
         $setText(Elements.statsLines, 10);
-        for (let y2 = stack.height - 1; y2 > stack.height - 10 - 1; y2--) {
+        for (let y3 = stack.height - 1; y3 > stack.height - 10 - 1; y3--) {
           for (let x3 = 0; x3 < stack.width; x3++) {
-            if ((begin + dire * y2 + x3 + stack.width * 2) % 10 !== 0)
-              stack.grid[x3][y2] = 8;
+            if ((begin + dire * y3 + x3 + stack.width * 2) % 10 !== 0)
+              stack.grid[x3][y3] = 8;
           }
         }
       }
@@ -10466,6 +10467,10 @@
       i3.__[0] !== t4 && (i3.__ = [t4, i3.__[1]], i3.__c.setState({}));
     }], i3.__c = u2), i3.__;
   }
+  function y2(r3, o3) {
+    var i3 = m2(t3++, 3);
+    !l.__s && k2(i3.__H, o3) && (i3.__ = r3, i3.__H = o3, u2.__H.__h.push(i3));
+  }
   function s3(n2) {
     return o2 = 5, d2(function() {
       return { current: n2 };
@@ -10710,6 +10715,21 @@
   // jscc_temp/src/components/center/ControlsMenu.tsx
   init_preact_shim();
 
+  // jscc_temp/src/components/utils/ButtonGroupList.tsx
+  init_preact_shim();
+  function ButtonGroupList({ onClick, data: data2, selected }) {
+    const [selectedIndex, setSelectedIndex] = l2(selected);
+    return /* @__PURE__ */ v("div", {
+      class: "btn-group"
+    }, data2.map((item, index) => /* @__PURE__ */ v("button", __spreadValues({
+      key: index,
+      onClick: () => {
+        onClick(index);
+        setSelectedIndex(index);
+      }
+    }, selectedIndex == index ? { class: "active" } : {}), item)));
+  }
+
   // jscc_temp/src/components/utils/Icon.tsx
   init_preact_shim();
   var ids = {
@@ -10738,6 +10758,20 @@
   var newKey;
   var currCell;
   var tempKey;
+  var bobBinds = {
+    pause: 27,
+    moveLeft: 37,
+    moveRight: 39,
+    moveLeft3: 0,
+    moveRight3: 0,
+    moveDown: 40,
+    hardDrop: 38,
+    holdPiece: 32,
+    rotRight: 88,
+    rotLeft: 90,
+    rot180: 67,
+    retry: 82
+  };
   document.addEventListener("keyup", (e3) => {
     if (currCell) {
       newKey = e3.keyCode;
@@ -10758,11 +10792,27 @@
       currCell = void 0;
     }
   }, false);
+  var buttons = [];
+  var updatedBinds = () => {
+    for (const cb of buttons) {
+      cb();
+    }
+  };
   function ControlButton({ default: def, icon, text, id }) {
     const keycode = binds[id];
     const keyText = key[keycode] || keycode;
     const [txt, setTxt] = l2(keyText || def);
     const ref = s3(null);
+    y2(() => {
+      const cb = () => {
+        const kc = binds[id];
+        setTxt(key[kc] || kc);
+      };
+      buttons.push(cb);
+      return () => {
+        buttons.splice(buttons.indexOf(cb), 1);
+      };
+    });
     return /* @__PURE__ */ v("tr", null, /* @__PURE__ */ v("th", null, text, " ", /* @__PURE__ */ v(Icon, {
       id: icon
     })), /* @__PURE__ */ v("td", {
@@ -10786,7 +10836,23 @@
       class: "no-margin"
     }, "Controls"), /* @__PURE__ */ v("p", {
       class: "no-margin"
-    }, "Click on the item you want to change, then press any key."), /* @__PURE__ */ v("table", {
+    }, "Click on the item you want to change, then press any key."), /* @__PURE__ */ v(ButtonGroupList, {
+      data: ["Custom", "Preset 1", "Preset 2"],
+      selected: 0,
+      onClick: (index) => {
+        switch (index) {
+          case 0:
+            break;
+          case 1:
+            setBinds(defaultBinds);
+            break;
+          case 2:
+            setBinds(bobBinds);
+            break;
+        }
+        updatedBinds();
+      }
+    }), /* @__PURE__ */ v("table", {
       id: "controls",
       style: "margin-top: 0px"
     }, /* @__PURE__ */ v(ControlButton, {

@@ -169,7 +169,8 @@ export class Mutable {
 	static levelCheck = 0;
 }
 
-export let binds: { [key: string]: number } = {
+
+export const defaultBinds: { [key: string]: number } = {
 	pause: 27,
 	moveLeft: 37,
 	moveRight: 39,
@@ -182,10 +183,12 @@ export let binds: { [key: string]: number } = {
 	rotLeft: 90,
 	rot180: 16,
 	retry: 82,
-};
+}
+
+export let binds: { [key: string]: number } = JSON.parse(JSON.stringify(defaultBinds));
 
 export function setBinds(newBinds) {
-	binds = newBinds;
+	binds = JSON.parse(JSON.stringify(newBinds));
 }
 
 export const flags = {

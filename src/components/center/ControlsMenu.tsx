@@ -1,10 +1,11 @@
-import { useRef, useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import { menu } from "../../display/menu";
 import { key } from "../../logic/view";
-import { binds } from "../../utils/data";
+import { binds, defaultBinds, setBinds } from "../../utils/data";
 import { t } from "../../utils/lang";
 import { $, $setText } from "../../utils/utils";
 import { Btn } from "../utils/Btn";
+import { ButtonGroupList } from "../utils/ButtonGroupList";
 import { Icon } from "../utils/Icon";
 
 /**
@@ -13,6 +14,21 @@ import { Icon } from "../utils/Icon";
 let newKey: number;
 let currCell;
 let tempKey: number;
+
+const bobBinds = {
+	pause: 27,
+	moveLeft: 37,
+	moveRight: 39,
+	moveLeft3: 0,
+	moveRight3: 0,
+	moveDown: 40,
+	hardDrop: 38,
+	holdPiece: 32,
+	rotRight: 88,
+	rotLeft: 90,
+	rot180: 67,
+	retry: 82,
+};
 
 document.addEventListener(
 	"keyup",
@@ -43,12 +59,30 @@ document.addEventListener(
 	false
 );
 
+const buttons = [];
+export const updatedBinds = () => {
+	for (const cb of buttons) {
+		cb();
+	}
+}
+
 function ControlButton({ default: def, icon, text, id }) {
 	const keycode = binds[id];
 	const keyText = key[keycode] || keycode;
 
 	const [txt, setTxt] = useState(keyText || def);
 	const ref = useRef(null);
+
+	useEffect(() => {
+		const cb = () => {
+			const kc = binds[id];
+			setTxt(key[kc] || kc)
+		}
+		buttons.push(cb)
+		return () => {
+			buttons.splice(buttons.indexOf(cb), 1)
+		}
+	})
 
 	return (
 		<tr>
@@ -85,6 +119,25 @@ export function ControlsMenu() {
 			<p class="no-margin">
 				Click on the item you want to change, then press any key.
 			</p>
+
+			<ButtonGroupList
+				data={["Custom", "Preset 1", "Preset 2"]}
+				selected={0}
+				onClick={(index) => {
+					switch (index) {
+						case 0:
+							break;
+						case 1:
+							setBinds(defaultBinds);
+							break;
+						case 2:
+							setBinds(bobBinds);
+							break;
+					}
+					updatedBinds();
+				}}
+			/>
+
 			<table id="controls" style="margin-top: 0px">
 				<ControlButton
 					default="←"
