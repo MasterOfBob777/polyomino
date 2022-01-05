@@ -9,6 +9,17 @@ import { GroupSliderSetting } from "../settings/GroupSliderSetting";
 import { Btn } from "../utils/Btn";
 
 export function TuningMenu() {
+	const framesMs = (index) =>
+		`${index} FRAMES; ${
+			Math.round(((1000 / 60) * index + 0.00001) * 100) / 100
+		} MS`;
+	const framesHz = (index) =>
+		index != 0
+			? `${index} FRAMES; ${
+					Math.round((60 / index + 0.00001) * 100) / 100
+			  } HZ`
+			: "INSTANT";
+
 	return (
 		<nav class="menu">
 			<h1 class="boldish">Tuning</h1>
@@ -22,11 +33,7 @@ export function TuningMenu() {
 				onInput={(value) => {
 					settings.DAS = value;
 				}}
-				getName={(index) =>
-					`${index} FRAMES; ${
-						Math.round(((1000 / 60) * index + 0.00001) * 100) / 100
-					} MS`
-				}
+				getName={framesMs}
 			/>
 
 			<GroupSliderSetting
@@ -38,13 +45,7 @@ export function TuningMenu() {
 				onInput={(value) => {
 					settings.ARR = value;
 				}}
-				getName={(index) =>
-					index != 0
-						? `${index} FRAMES; ${
-								Math.round((60 / index + 0.00001) * 100) / 100
-						  } HZ`
-						: "INSTANT"
-				}
+				getName={framesHz}
 			/>
 
 			<GroupSliderSetting
@@ -80,6 +81,7 @@ export function TuningMenu() {
 				onInput={(value) => {
 					settings.LockDelay = value;
 				}}
+				getName={framesMs}
 			/>
 
 			<GroupListSetting
