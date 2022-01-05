@@ -468,7 +468,7 @@ export class Game {
 		}
 		const timeEle = $("time");
 		if (Game.type === GameTypeEnum.Sprint) {
-			const sprintPB = parseInt(localStorage.getItem("sprint40pb"));
+			const sprintPB = parseFloat(localStorage.getItem("sprint40pb"));
 			if (Mutable.scoreTime >= sprintPB + 100) {
 				Elements.timeCtx.fillStyle = "#f00";
 				timeEle.classList.add("drought-flash");

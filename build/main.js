@@ -9327,23 +9327,12 @@
           Mutable.lineLimit = 200;
           break;
       }
-      switch (Game.settings.sprint.limit.val) {
-        case 0:
-          Mutable.lineLimit = 40;
-          break;
-        case 1:
-          Mutable.lineLimit = 100;
-          break;
-        case 2:
-          Mutable.lineLimit = 200;
-          break;
-      }
     }
     win() {
       const sprintPB = localStorage.getItem("sprint40pb");
-      if ((Mutable.scoreTime < parseInt(sprintPB) || sprintPB == void 0) && Mutable.watchingReplay == false && Game.params.pieceSet == 0 && Game.params.backFire > 0) {
+      if ((!sprintPB || Mutable.scoreTime < parseFloat(sprintPB)) && Mutable.watchingReplay == false && Game.params.pieceSet == 0 && Game.params.backFire == 0 && Mutable.lineLimit == 40) {
         localStorage.setItem("sprint40pb", Mutable.scoreTime.toString());
-        $setText($2("sprint-pb"), timeString(parseInt(sprintPB)));
+        $setText($2("sprint-pb"), timeString(Mutable.scoreTime));
       }
     }
   };
@@ -9848,7 +9837,7 @@
       }
       const timeEle = $2("time");
       if (_Game.type === GameType.Sprint) {
-        const sprintPB = parseInt(localStorage.getItem("sprint40pb"));
+        const sprintPB = parseFloat(localStorage.getItem("sprint40pb"));
         if (Mutable.scoreTime >= sprintPB + 100) {
           Elements.timeCtx.fillStyle = "#f00";
           timeEle.classList.add("drought-flash");
@@ -11387,7 +11376,7 @@
       class: "no-margin"
     }, "Clear the lines as fast as you can! ", /* @__PURE__ */ v("br", null), "Fastest time:", " ", /* @__PURE__ */ v("span", {
       id: "sprint-pb"
-    }, timeString(sprintPB ? parseInt(sprintPB) : 0))), /* @__PURE__ */ v("div", {
+    }, timeString(sprintPB ? parseFloat(sprintPB) : 0))), /* @__PURE__ */ v("div", {
       class: "no-margin btn-container"
     }, /* @__PURE__ */ v(GroupSetting, {
       setting: "SprintLimit",

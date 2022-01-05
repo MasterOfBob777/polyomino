@@ -14,7 +14,7 @@ export function SprintMenu() {
 				Clear the lines as fast as you can! <br />
 				Fastest time:{" "}
 				<span id="sprint-pb">
-					{timeString(sprintPB ? parseInt(sprintPB) : 0)}
+					{timeString(sprintPB ? parseFloat(sprintPB) : 0)}
 				</span>
 			</p>
 

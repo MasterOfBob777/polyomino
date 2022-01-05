@@ -30,21 +30,10 @@ export class Sprint extends GameType {
 				preview.randomizer = iOnly;
 				break;
 		}
-		
+
 		preview.reset();
 
 		Game.params.backFire = Game.settings.sprint.backfire.val;
-		switch (Game.settings.sprint.limit.val) {
-			case 0:
-				Mutable.lineLimit = 40;
-				break;
-			case 1:
-				Mutable.lineLimit = 100;
-				break;
-			case 2:
-				Mutable.lineLimit = 200;
-				break;
-		}
 		switch (Game.settings.sprint.limit.val) {
 			case 0:
 				Mutable.lineLimit = 40;
@@ -61,13 +50,14 @@ export class Sprint extends GameType {
 	win() {
 		const sprintPB = localStorage.getItem("sprint40pb");
 		if (
-			(Mutable.scoreTime < parseInt(sprintPB) || sprintPB == undefined) &&
+			(!sprintPB || Mutable.scoreTime < parseFloat(sprintPB)) &&
 			Mutable.watchingReplay == false &&
 			Game.params.pieceSet == 0 &&
-			Game.params.backFire > 0
+			Game.params.backFire == 0 &&
+			Mutable.lineLimit == 40
 		) {
 			localStorage.setItem("sprint40pb", Mutable.scoreTime.toString());
-			$setText($("sprint-pb"), timeString(parseInt(sprintPB)));
+			$setText($("sprint-pb"), timeString(Mutable.scoreTime));
 		}
 	}
 }
