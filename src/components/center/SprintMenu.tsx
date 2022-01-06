@@ -1,21 +1,18 @@
 import { changeGameSetting, menu } from "../../display/menu";
 import { Game } from "../../game";
 import { t } from "../../utils/lang";
-import { timeString } from "../../utils/string";
 import { GroupSetting } from "../settings/GroupSetting";
 import { Btn } from "../utils/Btn";
+import { PBView } from "../utils/PBView";
 
 export function SprintMenu() {
-	const sprintPB = localStorage.getItem("sprint40pb");
 	return (
 		<nav class="menu">
 			<h1 class="boldish">Sprint</h1>
 			<p class="no-margin">
-				Clear the lines as fast as you can! <br />
-				Fastest time:{" "}
-				<span id="sprint-pb">
-					{timeString(sprintPB ? parseFloat(sprintPB) : 0)}
-				</span>
+				Clear the lines as fast as you can! 
+				<br />
+				<PBView name="sprint40pb" />
 			</p>
 
 			<div class="no-margin btn-container">

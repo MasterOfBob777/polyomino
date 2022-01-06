@@ -3,6 +3,7 @@ import { Game } from "../../game";
 import { t } from "../../utils/lang";
 import { GroupSetting } from "../settings/GroupSetting";
 import { Btn } from "../utils/Btn";
+import { PBView } from "../utils/PBView";
 
 export function DigMenu() {
 	return (
@@ -10,10 +11,12 @@ export function DigMenu() {
 			<h1 class="boldish">Dig</h1>
 			<p class="no-margin">
 				Clear the bottom as line as soon as possible
+				<br />
+				<PBView name="dig10pb" />
 			</p>
 
 			<GroupSetting
-				setting="DigCheckered"
+				setting="DigCheese"
 				data={["Off", "On"]}
 				selected={Game.settings.dig.checker.val ? 1 : 0}
 				onClick={(index) => {

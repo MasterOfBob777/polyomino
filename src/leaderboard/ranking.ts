@@ -47,8 +47,8 @@ export function handleranking(xmlhttp: XMLHttpRequest) {
 					};
 					const gettimetext = function (t) {
 						let hs = Math.round(t / 10);
-						let s = ~~(hs / 100);
-						const m = ~~(s / 60);
+						let s = Math.floor(hs / 100);
+						const m = Math.floor(s / 60);
 						hs -= s * 100;
 						s -= m * 60;
 						if (m == 0) return `${s}.${(hs > 9 ? "" : "0") + hs}`;
@@ -57,7 +57,7 @@ export function handleranking(xmlhttp: XMLHttpRequest) {
 								(hs > 9 ? "" : "0") + hs
 							}`;
 						else
-							return `${m}:${(s > 9 ? "" : "0") + s}.${~~(
+							return `${m}:${(s > 9 ? "" : "0") + s}.${Math.floor(
 								hs / 10
 							)}`; //
 					};

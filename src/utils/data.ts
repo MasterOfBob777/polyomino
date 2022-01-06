@@ -1,6 +1,6 @@
 import { lazy } from "./decorators";
 import { Mino, RotSys } from "./enums";
-import { rng } from "./randomizer";
+import { randomInt, rng } from "./randomizer";
 import { $, $$ } from "./utils";
 
 export const version = "0.7.7";
@@ -40,7 +40,7 @@ export class Mutable {
 
 	static scoreStartTime = 0;
 
-	static digLines = [];
+	static digLines: number[] = [];
 
 	static b2b = 0;
 
@@ -1938,7 +1938,7 @@ export const finesse = [
 
 export const arrRowGen = {
 	simple(arr, offset, range, width) {
-		const holex = ~~(rng.next() * range) + offset;
+		const holex = randomInt(0, range) + offset;
 		for (let x = 0; x < width; x++) {
 			arr[holex + x] = 0;
 		}
@@ -1952,7 +1952,7 @@ export const arrRowGen = {
 			}
 		}
 		if (hashole === false) {
-			arr[~~(rng.next() * 10)] = 0;
+			arr[randomInt(0, 10)] = 0;
 		}
 	},
 };

@@ -72,7 +72,7 @@ export function keysEncode(keys) {
 			sum = arrHB[ptr] + 16 * 16 + 16 * 16 * 16;
 		}
 		//console.log(sum);
-		arrBase67.push(base67[sum % 67] + base67[~~(sum / 67)]);
+		arrBase67.push(base67[sum % 67] + base67[Math.floor(sum / 67)]);
 	}
 
 	return arrBase67.join("");

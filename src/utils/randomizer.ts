@@ -21,3 +21,19 @@ class Random {
 }
 
 export const rng = new Random();
+
+export function randomInt(min: number, max: number): number {
+	return Math.floor(rng.next() * (max - min + 1)) + min;
+}
+
+export function randomIntExcept(
+	min: number,
+	max: number,
+	exclude: number
+): number {
+	let r = randomInt(min, max);
+	while (r === exclude) {
+		r = randomInt(min, max);
+	}
+	return r;
+}

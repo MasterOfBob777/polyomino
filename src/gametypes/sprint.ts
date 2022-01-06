@@ -1,3 +1,4 @@
+import { getPB, setPB } from "../components/utils/PBView";
 import { sound } from "../display/sound/sound";
 import { preview } from "../display/tetrion/preview";
 import { Game } from "../game";
@@ -47,17 +48,20 @@ export class Sprint extends GameType {
 		}
 	}
 
+	pbKey = "sprint40pb";
+
+	savePB = true;
+
 	win() {
-		const sprintPB = localStorage.getItem("sprint40pb");
+		const sprintPB = getPB("sprint40pb");
 		if (
-			(!sprintPB || Mutable.scoreTime < parseFloat(sprintPB)) &&
+			(!sprintPB || Mutable.scoreTime < sprintPB) &&
 			Mutable.watchingReplay == false &&
 			Game.params.pieceSet == 0 &&
 			Game.params.backFire == 0 &&
 			Mutable.lineLimit == 40
 		) {
-			localStorage.setItem("sprint40pb", Mutable.scoreTime.toString());
-			$setText($("sprint-pb"), timeString(Mutable.scoreTime));
+			setPB("sprint40pb", Mutable.scoreTime);
 		}
 	}
 }

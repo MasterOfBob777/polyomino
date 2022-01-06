@@ -112,7 +112,7 @@ class Piece {
 
 		const rot = settings.RotSys.initinfo[index];
 		this.pos = rot[2];
-		this.x = ~~((stack.width - 4) / 2) + rot[0];
+		this.x = Math.floor((stack.width - 4) / 2) + rot[0];
 		if (Game.type === GameType.Retro || Game.type === GameType.Grades) {
 			this.y = stack.hiddenHeight - 1 + rot[1];
 		} else {
@@ -210,7 +210,7 @@ class Piece {
 			// [Scores.level];
 			// } else {
 			// this.gravity = 20;
-			// this.lockDelayLimit = ~~(30 * Math.pow(0.93, (Math.pow(Scores.level-20, 0.8)))); // magic!
+			// this.lockDelayLimit = Math.floor(30 * Math.pow(0.93, (Math.pow(Scores.level-20, 0.8)))); // magic!
 			// }
 			if (Mutable.level < 18) {
 				const x = Mutable.level + 1;
@@ -219,7 +219,7 @@ class Piece {
 				this.gravity = 19.99;
 			} else {
 				this.gravity = 20;
-				this.lockDelayLimit = ~~(
+				this.lockDelayLimit = Math.floor(
 					30 * Math.pow(0.93, Math.pow(Mutable.level - 19, 0.8))
 				); // magic!
 			}

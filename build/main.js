@@ -7,7 +7,7 @@
   var __getProtoOf = Object.getPrototypeOf;
   var __hasOwnProp = Object.prototype.hasOwnProperty;
   var __propIsEnum = Object.prototype.propertyIsEnumerable;
-  var __defNormalProp = (obj, key2, value) => key2 in obj ? __defProp(obj, key2, { enumerable: true, configurable: true, writable: true, value }) : obj[key2] = value;
+  var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
   var __spreadValues = (a3, b3) => {
     for (var prop in b3 || (b3 = {}))
       if (__hasOwnProp.call(b3, prop))
@@ -28,22 +28,22 @@
   };
   var __reExport = (target, module, desc) => {
     if (module && typeof module === "object" || typeof module === "function") {
-      for (let key2 of __getOwnPropNames(module))
-        if (!__hasOwnProp.call(target, key2) && key2 !== "default")
-          __defProp(target, key2, { get: () => module[key2], enumerable: !(desc = __getOwnPropDesc(module, key2)) || desc.enumerable });
+      for (let key of __getOwnPropNames(module))
+        if (!__hasOwnProp.call(target, key) && key !== "default")
+          __defProp(target, key, { get: () => module[key], enumerable: !(desc = __getOwnPropDesc(module, key)) || desc.enumerable });
     }
     return target;
   };
   var __toModule = (module) => {
     return __reExport(__markAsModule(__defProp(module != null ? __create(__getProtoOf(module)) : {}, "default", module && module.__esModule && "default" in module ? { get: () => module.default, enumerable: true } : { value: module, enumerable: true })), module);
   };
-  var __decorateClass = (decorators, target, key2, kind) => {
-    var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc(target, key2) : target;
+  var __decorateClass = (decorators, target, key, kind) => {
+    var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc(target, key) : target;
     for (var i3 = decorators.length - 1, decorator; i3 >= 0; i3--)
       if (decorator = decorators[i3])
-        result = (kind ? decorator(target, key2, result) : decorator(result)) || result;
+        result = (kind ? decorator(target, key, result) : decorator(result)) || result;
     if (kind && result)
-      __defProp(target, key2, result);
+      __defProp(target, key, result);
     return result;
   };
 
@@ -1767,8 +1767,8 @@
             xhr.withCredentials = self._xhr.withCredentials;
             xhr.responseType = "arraybuffer";
             if (self._xhr.headers) {
-              Object.keys(self._xhr.headers).forEach(function(key2) {
-                xhr.setRequestHeader(key2, self._xhr.headers[key2]);
+              Object.keys(self._xhr.headers).forEach(function(key) {
+                xhr.setRequestHeader(key, self._xhr.headers[key]);
               });
             }
             xhr.onload = function() {
@@ -2460,8 +2460,7 @@
   function clear(ctx) {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   }
-  function range(start, end, inc) {
-    inc = inc || 1;
+  function range(start, end, inc = 1) {
     const array = [];
     for (let i3 = start; i3 < end; i3 += inc) {
       array.push(i3);
@@ -2533,6 +2532,16 @@
     }
   };
   var rng = new Random();
+  function randomInt(min, max) {
+    return Math.floor(rng.next() * (max - min + 1)) + min;
+  }
+  function randomIntExcept(min, max, exclude) {
+    let r3 = randomInt(min, max);
+    while (r3 === exclude) {
+      r3 = randomInt(min, max);
+    }
+    return r3;
+  }
 
   // jscc_temp/src/utils/data.ts
   var version = "0.7.7";
@@ -4348,7 +4357,7 @@
   ];
   var arrRowGen = {
     simple(arr, offset, range2, width) {
-      const holex = ~~(rng.next() * range2) + offset;
+      const holex = randomInt(0, range2) + offset;
       for (let x3 = 0; x3 < width; x3++) {
         arr[holex + x3] = 0;
       }
@@ -4362,7 +4371,7 @@
         }
       }
       if (hashole === false) {
-        arr[~~(rng.next() * 10)] = 0;
+        arr[randomInt(0, 10)] = 0;
       }
     }
   };
@@ -5265,8 +5274,9 @@
 
   // jscc_temp/src/utils/enum.ts
   init_preact_shim();
+  var regex = /^\d+$/;
   function getStringKeys(obj) {
-    return Object.keys(obj).filter((key2) => !Number.isNaN(parseInt(obj[key2])));
+    return Object.keys(obj).filter((key) => regex.test(obj[key]));
   }
 
   // jscc_temp/src/settings.ts
@@ -5397,8 +5407,8 @@
       const val = this.#settings[this.#currentName][name].set(value);
       if (this.#currentName === "default") {
         const settingsCopy = {};
-        for (const key2 in this.#settings["default"]) {
-          settingsCopy[key2] = this.#settings["default"][key2].value;
+        for (const key in this.#settings["default"]) {
+          settingsCopy[key] = this.#settings["default"][key].value;
         }
         localStorage.setItem("settings", JSON.stringify(settingsCopy));
       }
@@ -6141,7 +6151,7 @@
         spriteCtx.fillStyle = tetrjs[i3][1];
         spriteCtx.fillRect(x3, 0, Mutable.cellSize, Mutable.cellSize);
       } else if (settings.Block === 2) {
-        k3 = Math.max(~~(Mutable.cellSize * 0.1), 1);
+        k3 = Math.max(Math.floor(Mutable.cellSize * 0.1), 1);
         grad = spriteCtx.createLinearGradient(x3, 0, x3 + Mutable.cellSize, Mutable.cellSize);
         grad.addColorStop(0.5, glossy[i3][3]);
         grad.addColorStop(1, glossy[i3][4]);
@@ -6160,11 +6170,11 @@
         spriteCtx.fillStyle = grad;
         spriteCtx.fillRect(x3 + k3, k3, Mutable.cellSize - k3 * 2, Mutable.cellSize - k3 * 2);
       } else if (settings.Block === 3) {
-        k3 = Math.max(~~(Mutable.cellSize * 0.125), 1);
+        k3 = Math.max(Math.floor(Mutable.cellSize * 0.125), 1);
         spriteCtx.fillStyle = tgm[i3][1];
         spriteCtx.fillRect(x3, 0, Mutable.cellSize, Mutable.cellSize);
         spriteCtx.fillStyle = tgm[i3][0];
-        spriteCtx.fillRect(x3, 0, Mutable.cellSize, ~~(Mutable.cellSize / 2));
+        spriteCtx.fillRect(x3, 0, Mutable.cellSize, Math.floor(Mutable.cellSize / 2));
         grad = spriteCtx.createLinearGradient(x3, k3, x3, Mutable.cellSize - k3);
         grad.addColorStop(0, tgm[i3][2]);
         grad.addColorStop(1, tgm[i3][3]);
@@ -6181,7 +6191,7 @@
         spriteCtx.fillStyle = grad;
         spriteCtx.fillRect(x3 + Mutable.cellSize - k3, 0, k3, Mutable.cellSize - k3);
       } else if (settings.Block === 4) {
-        k3 = Math.max(~~(Mutable.cellSize * 0.1), 1);
+        k3 = Math.max(Math.floor(Mutable.cellSize * 0.1), 1);
         grad = spriteCtx.createLinearGradient(x3, 0, x3 + Mutable.cellSize, Mutable.cellSize);
         grad.addColorStop(0.5, glossy[i3][3]);
         grad.addColorStop(1, glossy[i3][4]);
@@ -6195,7 +6205,7 @@
         spriteCtx.fillStyle = grad;
         spriteCtx.fillRect(x3 + k3, k3, Mutable.cellSize - k3 * 2, Mutable.cellSize - k3 * 2);
       } else if (settings.Block === 5) {
-        k3 = Math.max(~~(Mutable.cellSize * 0.1), 1);
+        k3 = Math.max(Math.floor(Mutable.cellSize * 0.1), 1);
         grad = spriteCtx.createLinearGradient(x3, 0, x3 + Mutable.cellSize, Mutable.cellSize);
         grad.addColorStop(0.5, tgm[i3][3]);
         grad.addColorStop(1, tgm[i3][1]);
@@ -6217,7 +6227,7 @@
         spriteCtx.fillStyle = tgm[i3][1];
         spriteCtx.fillRect(x3 + 1.5 * k3, 1.5 * k3, Mutable.cellSize / 8, Mutable.cellSize / 8);
       } else if (settings.Block === 6) {
-        const k4 = Math.max(~~(Mutable.cellSize * 0.1), 1);
+        const k4 = Math.max(Math.floor(Mutable.cellSize * 0.1), 1);
         spriteCtx.fillStyle = glossy[i3][4];
         spriteCtx.fillRect(x3, 0, Mutable.cellSize, Mutable.cellSize);
         grad = spriteCtx.createLinearGradient(x3 + Mutable.cellSize - k4, k4, x3 + k4, Mutable.cellSize - k4);
@@ -6230,7 +6240,7 @@
         spriteCtx.fillStyle = shaded[i3][1];
         spriteCtx.fillRect(x3 + Mutable.cellSize / 5.5, 0 + Mutable.cellSize / 5.5, Mutable.cellSize / 1.64, Mutable.cellSize / 1.64);
       } else if (settings.Block === 7) {
-        k3 = Math.max(~~(Mutable.cellSize * 0.1), 1);
+        k3 = Math.max(Math.floor(Mutable.cellSize * 0.1), 1);
         spriteCtx.fillStyle = "#000";
         spriteCtx.fillRect(x3, 0, Mutable.cellSize, Mutable.cellSize);
         spriteCtx.fillStyle = shaded[i3][1];
@@ -6414,7 +6424,7 @@
       }
     }
   }
-  var key = {
+  var keyToString = {
     8: "Backspace",
     9: "Tab",
     13: "Enter",
@@ -7095,9 +7105,9 @@
     "setting-RotSys-desc": {
       en: "The desired rotation system; default 'Super'"
     },
-    "setting-DigCheckered-title": { en: "Checkered" },
-    "setting-DigCheckered-desc": {
-      en: "Dig through a checkered stack instead of a diagonal one"
+    "setting-DigCheese-title": { en: "Cheesed" },
+    "setting-DigCheese-desc": {
+      en: "Dig through a cheesed stack instead of a diagonal one"
     },
     "setting-GradesGameRule-title": { en: "Game Rule" },
     "setting-GradesGameRule-desc": { en: "Determines the tuning of the game" },
@@ -7270,7 +7280,7 @@
   }
   function timeString(ms) {
     const seconds = fixed(ms % 6e4 / 1e3, 2);
-    const minutes = ~~(ms / 6e4);
+    const minutes = Math.floor(ms / 6e4);
     return `${padZero(minutes)}:${seconds < 10 ? "0" : ""}${seconds.toFixed(2)}`;
   }
 
@@ -7636,7 +7646,7 @@
           sound.playSFX("erase", Mutable.lineClear);
           sound.playvox("erase", Mutable.lineClear);
         }
-        garbage += ~~(Mutable.combo / 2);
+        garbage += Math.floor(Mutable.combo / 2);
         if (Mutable.combo < 1) {
         } else if (Mutable.combo < 5) {
           sound.playvox("ren1");
@@ -7714,16 +7724,16 @@
       }
       if (Game.type === GameType.Marathon || Game.type === GameType.Master) {
         if (Game.params.levelCap == 1) {
-          Mutable.level = Math.min(~~(Mutable.lines / 10), 14);
+          Mutable.level = Math.min(Math.floor(Mutable.lines / 10), 14);
         } else {
-          Mutable.level = ~~(Mutable.lines / 10);
+          Mutable.level = Math.floor(Mutable.lines / 10);
         }
       } else if (Game.type === 7) {
-        Mutable.level = ~~(Mutable.lines / 30);
+        Mutable.level = Math.floor(Mutable.lines / 30);
       } else if (Game.type === GameType.Retro) {
         const startLevel = Game.params.startingLevel;
         const startingLines = Math.min(Math.max(100, startLevel * 10 - 50), startLevel * 10 + 10);
-        Mutable.level = ~~Math.max((Mutable.lines + 10 - startingLines + startLevel * 10) / 10, startLevel);
+        Mutable.level = Math.floor(Math.max((Mutable.lines + 10 - startingLines + startLevel * 10) / 10, startLevel));
         makeSprite();
         stack.draw();
       }
@@ -7795,7 +7805,7 @@
         if (backFire === 1) {
           garbage = [0, 0, 1, 2, 4][Mutable.lineClear];
         } else if (backFire === 3) {
-          garbage *= ~~(Mutable.lines / 2);
+          garbage *= Math.floor(Mutable.lines / 2);
         }
         if (garbage !== 0) {
           if (backFire === 1) {
@@ -7807,7 +7817,7 @@
               this.rowRise(bottomRow, piece);
             }
           } else if (backFire === 2 || backFire === 3) {
-            const hole = ~~(rng.next() * 10);
+            const hole = randomInt(0, 10);
             const arrRow = [8, 8, 8, 8, 8, 8, 8, 8, 8, 8];
             arrRow[hole] = 0;
             for (let y3 = 0; y3 < garbage; y3++) {
@@ -7941,7 +7951,7 @@
         draw(this.grid, 0, -this.hiddenHeight, Elements.stackCtx, void 0, 0.3);
       }
       if (settings.Outline === 1 || settings.Outline === 3) {
-        const b3 = ~~(Mutable.cellSize / 8);
+        const b3 = Math.floor(Mutable.cellSize / 8);
         const c3 = Mutable.cellSize;
         const hhc = this.hiddenHeight * c3;
         const pi = Math.PI;
@@ -8104,7 +8114,7 @@
       $2("ihs-indicator").classList.add("gone");
       const rot = settings.RotSys.initinfo[index];
       this.pos = rot[2];
-      this.x = ~~((stack.width - 4) / 2) + rot[0];
+      this.x = Math.floor((stack.width - 4) / 2) + rot[0];
       if (Game.type === GameType.Retro || Game.type === GameType.Grades) {
         this.y = stack.hiddenHeight - 1 + rot[1];
       } else {
@@ -8210,7 +8220,7 @@
           this.gravity = 19.99;
         } else {
           this.gravity = 20;
-          this.lockDelayLimit = ~~(30 * Math.pow(0.93, Math.pow(Mutable.level - 19, 0.8)));
+          this.lockDelayLimit = Math.floor(30 * Math.pow(0.93, Math.pow(Mutable.level - 19, 0.8)));
         }
       } else if (Game.type === GameType.Retro) {
         if (Mutable.level <= 29) {
@@ -9219,10 +9229,10 @@
     const content = $2("content");
     const padH = 12;
     let screenHeight = window.innerHeight - padH * 2;
-    const screenWidth = ~~(screenHeight * 1);
+    const screenWidth = Math.floor(screenHeight * 1);
     if (screenWidth > window.innerWidth)
-      screenHeight = ~~(window.innerWidth / 1);
-    Mutable.cellSize = Math.max(~~(screenHeight / 20), 10);
+      screenHeight = Math.floor(window.innerWidth / 1);
+    Mutable.cellSize = Math.max(Math.floor(screenHeight / 20), 10);
     if (settings.Size === 1 && Mutable.cellSize >= 16)
       Mutable.cellSize = 16;
     else if (settings.Size === 2 && Mutable.cellSize >= 24)
@@ -9235,7 +9245,7 @@
     const padFinal = Math.min(pad / 2, padH);
     content.style.padding = padFinal + "px 0";
     stats.style.bottom = pad - padFinal + "px";
-    a3.style.padding = "0 0.5rem " + ~~(Mutable.cellSize / 2) + "px";
+    a3.style.padding = "0 0.5rem " + Math.floor(Mutable.cellSize / 2) + "px";
     stackCanvas.width = activeCanvas.width = bgStackCanvas.width = Mutable.cellSize * 10;
     stackCanvas.height = activeCanvas.height = bgStackCanvas.height = Mutable.cellSize * 20;
     b3.style.width = stackCanvas.width + "px";
@@ -9249,10 +9259,10 @@
     c3.style.width = previewCanvas.width + "px";
     c3.style.height = b3.style.height;
     $2("msgdiv").style.lineHeight = b3.style.height;
-    msg.style.fontSize = ~~(stackCanvas.width / 6) + "px";
+    msg.style.fontSize = Math.floor(stackCanvas.width / 6) + "px";
     msg.style.lineHeight = msg.style.fontSize;
-    stats.style.fontSize = ~~(stackCanvas.width / 11) + "px";
-    document.documentElement.style.fontSize = ~~(stackCanvas.width / 16) + "px";
+    stats.style.fontSize = Math.floor(stackCanvas.width / 11) + "px";
+    document.documentElement.style.fontSize = Math.floor(stackCanvas.width / 16) + "px";
     for (let i3 = 0, len = h3.length; i3 < len; i3++) {
       h3[i3].style.lineHeight = Mutable.cellSize * 2 + "px";
       h3[i3].style.fontSize = stats.style.fontSize;
@@ -9283,9 +9293,157 @@
   // jscc_temp/src/gametypes/sprint.ts
   init_preact_shim();
 
+  // jscc_temp/src/components/utils/PBView.tsx
+  init_preact_shim();
+
+  // node_modules/preact/hooks/dist/hooks.module.js
+  init_preact_shim();
+  init_preact_module();
+  var t3;
+  var u2;
+  var r2;
+  var o2 = 0;
+  var i2 = [];
+  var c2 = l.__b;
+  var f2 = l.__r;
+  var e2 = l.diffed;
+  var a2 = l.__c;
+  var v2 = l.unmount;
+  function m2(t4, r3) {
+    l.__h && l.__h(u2, t4, o2 || r3), o2 = 0;
+    var i3 = u2.__H || (u2.__H = { __: [], __h: [] });
+    return t4 >= i3.__.length && i3.__.push({}), i3.__[t4];
+  }
+  function l2(n2) {
+    return o2 = 1, p(w2, n2);
+  }
+  function p(n2, r3, o3) {
+    var i3 = m2(t3++, 2);
+    return i3.t = n2, i3.__c || (i3.__ = [o3 ? o3(r3) : w2(void 0, r3), function(n3) {
+      var t4 = i3.t(i3.__[0], n3);
+      i3.__[0] !== t4 && (i3.__ = [t4, i3.__[1]], i3.__c.setState({}));
+    }], i3.__c = u2), i3.__;
+  }
+  function y2(r3, o3) {
+    var i3 = m2(t3++, 3);
+    !l.__s && k2(i3.__H, o3) && (i3.__ = r3, i3.__H = o3, u2.__H.__h.push(i3));
+  }
+  function s2(n2) {
+    return o2 = 5, d2(function() {
+      return { current: n2 };
+    }, []);
+  }
+  function d2(n2, u3) {
+    var r3 = m2(t3++, 7);
+    return k2(r3.__H, u3) && (r3.__ = n2(), r3.__H = u3, r3.__h = n2), r3.__;
+  }
+  function x2() {
+    var t4;
+    for (i2.sort(function(n2, t5) {
+      return n2.__v.__b - t5.__v.__b;
+    }); t4 = i2.pop(); )
+      if (t4.__P)
+        try {
+          t4.__H.__h.forEach(g2), t4.__H.__h.forEach(j2), t4.__H.__h = [];
+        } catch (u3) {
+          t4.__H.__h = [], l.__e(u3, t4.__v);
+        }
+  }
+  l.__b = function(n2) {
+    u2 = null, c2 && c2(n2);
+  }, l.__r = function(n2) {
+    f2 && f2(n2), t3 = 0;
+    var r3 = (u2 = n2.__c).__H;
+    r3 && (r3.__h.forEach(g2), r3.__h.forEach(j2), r3.__h = []);
+  }, l.diffed = function(t4) {
+    e2 && e2(t4);
+    var o3 = t4.__c;
+    o3 && o3.__H && o3.__H.__h.length && (i2.push(o3) !== 1 && r2 === l.requestAnimationFrame || ((r2 = l.requestAnimationFrame) || function(n2) {
+      var t5, u3 = function() {
+        clearTimeout(r3), b2 && cancelAnimationFrame(t5), setTimeout(n2);
+      }, r3 = setTimeout(u3, 100);
+      b2 && (t5 = requestAnimationFrame(u3));
+    })(x2)), u2 = null;
+  }, l.__c = function(t4, u3) {
+    u3.some(function(t5) {
+      try {
+        t5.__h.forEach(g2), t5.__h = t5.__h.filter(function(n2) {
+          return !n2.__ || j2(n2);
+        });
+      } catch (r3) {
+        u3.some(function(n2) {
+          n2.__h && (n2.__h = []);
+        }), u3 = [], l.__e(r3, t5.__v);
+      }
+    }), a2 && a2(t4, u3);
+  }, l.unmount = function(t4) {
+    v2 && v2(t4);
+    var u3, r3 = t4.__c;
+    r3 && r3.__H && (r3.__H.__.forEach(function(n2) {
+      try {
+        g2(n2);
+      } catch (n3) {
+        u3 = n3;
+      }
+    }), u3 && l.__e(u3, r3.__v));
+  };
+  var b2 = typeof requestAnimationFrame == "function";
+  function g2(n2) {
+    var t4 = u2, r3 = n2.__c;
+    typeof r3 == "function" && (n2.__c = void 0, r3()), u2 = t4;
+  }
+  function j2(n2) {
+    var t4 = u2;
+    n2.__c = n2.__(), u2 = t4;
+  }
+  function k2(n2, t4) {
+    return !n2 || n2.length !== t4.length || t4.some(function(t5, u3) {
+      return t5 !== n2[u3];
+    });
+  }
+  function w2(n2, t4) {
+    return typeof t4 == "function" ? t4(n2) : t4;
+  }
+
+  // jscc_temp/src/components/utils/PBView.tsx
+  var pbs = {};
+  var pbValues = {};
+  function setPB(key, value) {
+    localStorage.setItem(key, value.toString());
+    pbs[key]?.();
+    pbValues[key] = value;
+  }
+  function getPB(key) {
+    const pb = pbValues[key];
+    if (pb) {
+      return pb;
+    }
+    const pbStr = localStorage.getItem(key);
+    if (pbStr) {
+      return parseFloat(pbStr);
+    }
+    return 0;
+  }
+  function PBView({ name }) {
+    const [time, setTime] = l2(getPB(name));
+    y2(() => {
+      pbs[name] = setTime;
+      return () => {
+        delete pbs[name];
+      };
+    });
+    return /* @__PURE__ */ v(d, null, "Fastest time:", " ", /* @__PURE__ */ v("span", {
+      id: "sprint-pb"
+    }, timeString(time)));
+  }
+
   // jscc_temp/src/gametypes/base.ts
   init_preact_shim();
   var GameType3 = class {
+    constructor() {
+      this.savePB = false;
+      this.pbKey = "";
+    }
     win() {
     }
     die() {
@@ -9298,6 +9456,11 @@
 
   // jscc_temp/src/gametypes/sprint.ts
   var Sprint = class extends GameType3 {
+    constructor() {
+      super(...arguments);
+      this.pbKey = "sprint40pb";
+      this.savePB = true;
+    }
     update() {
     }
     init() {
@@ -9330,10 +9493,9 @@
       }
     }
     win() {
-      const sprintPB = localStorage.getItem("sprint40pb");
-      if ((!sprintPB || Mutable.scoreTime < parseFloat(sprintPB)) && Mutable.watchingReplay == false && Game.params.pieceSet == 0 && Game.params.backFire == 0 && Mutable.lineLimit == 40) {
-        localStorage.setItem("sprint40pb", Mutable.scoreTime.toString());
-        $setText($2("sprint-pb"), timeString(Mutable.scoreTime));
+      const sprintPB = getPB("sprint40pb");
+      if ((!sprintPB || Mutable.scoreTime < sprintPB) && Mutable.watchingReplay == false && Game.params.pieceSet == 0 && Game.params.backFire == 0 && Mutable.lineLimit == 40) {
+        setPB("sprint40pb", Mutable.scoreTime);
       }
     }
   };
@@ -9341,9 +9503,14 @@
   // jscc_temp/src/gametypes/dig.ts
   init_preact_shim();
   var Dig = class extends GameType3 {
+    constructor() {
+      super(...arguments);
+      this.pbKey = "dig10pb";
+      this.savePB = true;
+    }
     update() {
       if (Game.params.zen) {
-        for (; Mutable.lastPiecesSet < Mutable.piecesSet; Mutable.lastPiecesSet++) {
+        while (Mutable.lastPiecesSet < Mutable.piecesSet) {
           Mutable.digZenBuffer++;
           const piecePerRise = [
             8,
@@ -9364,10 +9531,11 @@
               Mutable.digZenBuffer = 0;
             }
             const arrRow = [8, 8, 8, 8, 8, 8, 8, 8, 8, 8];
-            arrRow[~~(rng.next() * 10)] = 0;
+            arrRow[Math.floor(rng.next() * 10)] = 0;
             stack.rowRise(arrRow, piece);
             sound.playSFX("garbage");
           }
+          Mutable.lastPiecesSet++;
         }
       }
     }
@@ -9383,27 +9551,32 @@
       if (Game.params.digraceType === void 0 || Game.params.digraceType === "checker") {
         Mutable.digLines = range(stack.height - 10, stack.height);
         $setText(Elements.statsLines, 10);
+        let last = stack.width;
         for (let y3 = stack.height - 1; y3 > stack.height - 10 - 1; y3--) {
+          const r3 = randomIntExcept(0, stack.width - 1, last);
           for (let x3 = 0; x3 < stack.width; x3++) {
-            if (x3 + y3 & 1)
-              stack.grid[x3][y3] = 8;
+            stack.grid[x3][y3] = x3 == r3 ? 0 : 8;
           }
+          last = r3;
         }
       } else if (Game.params.digraceType === "easy") {
-        const begin = ~~(rng.next() * stack.width);
-        const dire = ~~(rng.next() * 2) * 2 - 1;
+        let begin = randomInt(0, stack.width);
         Mutable.digLines = range(stack.height - 10, stack.height);
         $setText(Elements.statsLines, 10);
         for (let y3 = stack.height - 1; y3 > stack.height - 10 - 1; y3--) {
+          const m3 = mod(begin++, stack.width);
           for (let x3 = 0; x3 < stack.width; x3++) {
-            if ((begin + dire * y3 + x3 + stack.width * 2) % 10 !== 0)
-              stack.grid[x3][y3] = 8;
+            stack.grid[x3][y3] = m3 == x3 ? 0 : 8;
           }
         }
       }
       Game.params.zen = Game.settings.dig.zen.val == 1;
     }
-    lineClear(lines) {
+    win() {
+      const digPB = getPB("dig10pb");
+      if ((!digPB || Mutable.scoreTime < digPB) && Mutable.watchingReplay == false && Game.params.digraceType == "easy") {
+        setPB("dig10pb", Mutable.scoreTime);
+      }
     }
   };
 
@@ -9600,15 +9773,15 @@
           8,
           8
         ];
-        const flagAll = ~~(objCurStage.begin / 50) % 2;
-        let idxRainbow = ~~(objCurStage.begin / 100);
+        const flagAll = Math.floor(objCurStage.begin / 50) % 2;
+        let idxRainbow = Math.floor(objCurStage.begin / 100);
         if (idxRainbow >= arrRainbow.length) {
           idxRainbow = arrRainbow.length - 1;
         }
         const colorUsed = arrRainbow[idxRainbow];
         for (let x3 = 0; x3 < stack.width; x3 += flagAll === 1 ? 1 : stack.width - 1) {
           if (colorUsed === -1) {
-            arrRow[x3] = ~~(rng.next() * 8 + 1);
+            arrRow[x3] = Math.floor(rng.next() * 8 + 1);
           } else {
             arrRow[x3] = colorUsed;
           }
@@ -9706,7 +9879,7 @@
         _Game.type = gt;
         _Game.params = params || {};
         _Game.types[_Game.type].init();
-        const seed = ~~(Math.random() * 2147483645) + 1;
+        const seed = Math.floor(Math.random() * 2147483645) + 1;
         rng.seed = seed;
         Mutable.replay = {};
         Mutable.replay.keys = {};
@@ -9837,9 +10010,9 @@
         $2("bgStack").classList.remove("alarm");
       }
       const timeEle = $2("time");
-      if (_Game.type === GameType.Sprint) {
-        const sprintPB = parseFloat(localStorage.getItem("sprint40pb"));
-        if (Mutable.scoreTime >= sprintPB + 100) {
+      if (_Game.types[_Game.type].savePB) {
+        const pb = getPB(_Game.types[_Game.type].pbKey);
+        if (Mutable.scoreTime >= pb + 100) {
           Elements.timeCtx.fillStyle = "#f00";
           timeEle.classList.add("drought-flash");
           if (settings.ResetPB) {
@@ -9855,7 +10028,7 @@
       }
       if (!_Game.paused && _Game.state !== 3) {
         window.requestAnimationFrame(_Game.gameLoop);
-        const repeat = ~~((Date.now() - _Game.startTime - _Game.pauseTime) / 1e3 * fps) - Mutable.frame;
+        const repeat = Math.floor((Date.now() - _Game.startTime - _Game.pauseTime) / 1e3 * fps) - Mutable.frame;
         if (repeat > 1) {
           Mutable.frameSkipped += repeat - 1;
         } else if (repeat <= 0) {
@@ -9990,7 +10163,7 @@
                 }
                 Mutable.clearRows = [];
                 sound.killbgm();
-              } else if (Mutable.frame === ~~(fps * time1 / 6)) {
+              } else if (Mutable.frame === Math.floor(fps * time1 / 6)) {
                 Mutable.killAllbgm = false;
                 if (tournament === true) {
                   $setText(Elements.msg, "START!");
@@ -10002,7 +10175,7 @@
                 }
                 preview.draw();
                 sound.killbgm();
-              } else if (Mutable.frame === ~~(fps * time2 / 6)) {
+              } else if (Mutable.frame === Math.floor(fps * time2 / 6)) {
                 $2("msgdiv").classList.remove("startanim");
                 $setText(Elements.msg, "");
                 Mutable.scoreStartTime = Date.now();
@@ -10162,6 +10335,7 @@
           $setText(Elements.msg, "GREAT!");
           piece.dead = true;
           menu(3);
+          _Game.types[_Game.type].win();
           sound.playSFX("endingstart");
           sound.playvox("win");
         }
@@ -10285,8 +10459,8 @@
     Game.settings = Game.defaultGameSettings;
     localStorage.setItem("Game.settings", JSON.stringify(Game.settings));
   }
-  function changeGameSetting(game, key2, val) {
-    Game.settings[game][key2].val = val;
+  function changeGameSetting(game, key, val) {
+    Game.settings[game][key].val = val;
     localStorage.setItem("Game.settings", JSON.stringify(Game.settings));
   }
   var menuStack = [];
@@ -10316,14 +10490,14 @@
       menuStack = [];
     }
   }
-  var s2;
+  var s3;
   var settingsArrow;
   function settingsLoop() {
     if (arrowReleased || arrowDelay >= 6) {
       if (settingsArrow) {
-        settings[s2] = settings[s2] === 0 ? settings[s2].length - 1 : settings[s2] - 1;
+        settings[s3] = settings[s3] === 0 ? settings[s3].length - 1 : settings[s3] - 1;
       } else {
-        settings[s2] = settings[s2] === settings[s2].length - 1 ? 0 : settings[s2] + 1;
+        settings[s3] = settings[s3] === settings[s3].length - 1 ? 0 : settings[s3] + 1;
       }
       arrowReleased = false;
     } else {
@@ -10346,7 +10520,7 @@
   }
   function left(e3) {
     settingsArrow = 1;
-    s2 = this.parentNode.id;
+    s3 = this.parentNode.id;
     this.onmouseup = arrowRelease;
     this.onmouseout = arrowRelease;
     this.ontouchend = arrowRelease;
@@ -10358,7 +10532,7 @@
   }
   function right(e3) {
     settingsArrow = 0;
-    s2 = this.parentNode.id;
+    s3 = this.parentNode.id;
     this.onmouseup = arrowRelease;
     this.onmouseout = arrowRelease;
     this.ontouchend = arrowRelease;
@@ -10438,117 +10612,6 @@
 
   // jscc_temp/src/components/utils/ButtonGroup.tsx
   init_preact_shim();
-
-  // node_modules/preact/hooks/dist/hooks.module.js
-  init_preact_shim();
-  init_preact_module();
-  var t3;
-  var u2;
-  var r2;
-  var o2 = 0;
-  var i2 = [];
-  var c2 = l.__b;
-  var f2 = l.__r;
-  var e2 = l.diffed;
-  var a2 = l.__c;
-  var v2 = l.unmount;
-  function m2(t4, r3) {
-    l.__h && l.__h(u2, t4, o2 || r3), o2 = 0;
-    var i3 = u2.__H || (u2.__H = { __: [], __h: [] });
-    return t4 >= i3.__.length && i3.__.push({}), i3.__[t4];
-  }
-  function l2(n2) {
-    return o2 = 1, p(w2, n2);
-  }
-  function p(n2, r3, o3) {
-    var i3 = m2(t3++, 2);
-    return i3.t = n2, i3.__c || (i3.__ = [o3 ? o3(r3) : w2(void 0, r3), function(n3) {
-      var t4 = i3.t(i3.__[0], n3);
-      i3.__[0] !== t4 && (i3.__ = [t4, i3.__[1]], i3.__c.setState({}));
-    }], i3.__c = u2), i3.__;
-  }
-  function y2(r3, o3) {
-    var i3 = m2(t3++, 3);
-    !l.__s && k2(i3.__H, o3) && (i3.__ = r3, i3.__H = o3, u2.__H.__h.push(i3));
-  }
-  function s3(n2) {
-    return o2 = 5, d2(function() {
-      return { current: n2 };
-    }, []);
-  }
-  function d2(n2, u3) {
-    var r3 = m2(t3++, 7);
-    return k2(r3.__H, u3) && (r3.__ = n2(), r3.__H = u3, r3.__h = n2), r3.__;
-  }
-  function x2() {
-    var t4;
-    for (i2.sort(function(n2, t5) {
-      return n2.__v.__b - t5.__v.__b;
-    }); t4 = i2.pop(); )
-      if (t4.__P)
-        try {
-          t4.__H.__h.forEach(g2), t4.__H.__h.forEach(j2), t4.__H.__h = [];
-        } catch (u3) {
-          t4.__H.__h = [], l.__e(u3, t4.__v);
-        }
-  }
-  l.__b = function(n2) {
-    u2 = null, c2 && c2(n2);
-  }, l.__r = function(n2) {
-    f2 && f2(n2), t3 = 0;
-    var r3 = (u2 = n2.__c).__H;
-    r3 && (r3.__h.forEach(g2), r3.__h.forEach(j2), r3.__h = []);
-  }, l.diffed = function(t4) {
-    e2 && e2(t4);
-    var o3 = t4.__c;
-    o3 && o3.__H && o3.__H.__h.length && (i2.push(o3) !== 1 && r2 === l.requestAnimationFrame || ((r2 = l.requestAnimationFrame) || function(n2) {
-      var t5, u3 = function() {
-        clearTimeout(r3), b2 && cancelAnimationFrame(t5), setTimeout(n2);
-      }, r3 = setTimeout(u3, 100);
-      b2 && (t5 = requestAnimationFrame(u3));
-    })(x2)), u2 = null;
-  }, l.__c = function(t4, u3) {
-    u3.some(function(t5) {
-      try {
-        t5.__h.forEach(g2), t5.__h = t5.__h.filter(function(n2) {
-          return !n2.__ || j2(n2);
-        });
-      } catch (r3) {
-        u3.some(function(n2) {
-          n2.__h && (n2.__h = []);
-        }), u3 = [], l.__e(r3, t5.__v);
-      }
-    }), a2 && a2(t4, u3);
-  }, l.unmount = function(t4) {
-    v2 && v2(t4);
-    var u3, r3 = t4.__c;
-    r3 && r3.__H && (r3.__H.__.forEach(function(n2) {
-      try {
-        g2(n2);
-      } catch (n3) {
-        u3 = n3;
-      }
-    }), u3 && l.__e(u3, r3.__v));
-  };
-  var b2 = typeof requestAnimationFrame == "function";
-  function g2(n2) {
-    var t4 = u2, r3 = n2.__c;
-    typeof r3 == "function" && (n2.__c = void 0, r3()), u2 = t4;
-  }
-  function j2(n2) {
-    var t4 = u2;
-    n2.__c = n2.__(), u2 = t4;
-  }
-  function k2(n2, t4) {
-    return !n2 || n2.length !== t4.length || t4.some(function(t5, u3) {
-      return t5 !== n2[u3];
-    });
-  }
-  function w2(n2, t4) {
-    return typeof t4 == "function" ? t4(n2) : t4;
-  }
-
-  // jscc_temp/src/components/utils/ButtonGroup.tsx
   function ButtonGroup({ onClick, data: data2, selected }) {
     const [selectedIndex, setSelectedIndex] = l2(selected);
     return /* @__PURE__ */ v("div", {
@@ -10782,12 +10845,12 @@
         for (const i3 in binds) {
           if (newKey === binds[i3]) {
             binds[i3] = void 0;
-            $setText($2(i3), key.undefined);
+            $setText($2(i3), keyToString.undefined);
           }
         }
       }
       binds[currCell.id] = newKey;
-      $setText(currCell, key[newKey] || newKey);
+      $setText(currCell, keyToString[newKey] || newKey);
       localStorage.setItem("binds", JSON.stringify(binds));
       currCell = void 0;
     }
@@ -10800,13 +10863,13 @@
   };
   function ControlButton({ default: def, icon, text, id }) {
     const keycode = binds[id];
-    const keyText = key[keycode] || keycode;
+    const keyText = keyToString[keycode] || keycode;
     const [txt, setTxt] = l2(keyText || def);
-    const ref = s3(null);
+    const ref = s2(null);
     y2(() => {
       const cb = () => {
         const kc = binds[id];
-        setTxt(key[kc] || kc);
+        setTxt(keyToString[kc] || kc);
       };
       buttons.push(cb);
       return () => {
@@ -10821,7 +10884,7 @@
       onClick: () => {
         if (currCell) {
           binds[currCell.id] = tempKey;
-          $setText(currCell, key[tempKey] || tempKey);
+          $setText(currCell, keyToString[tempKey] || tempKey);
         }
         tempKey = binds[id];
         setTxt("Press key");
@@ -10930,8 +10993,10 @@
       class: "boldish"
     }, "Dig"), /* @__PURE__ */ v("p", {
       class: "no-margin"
-    }, "Clear the bottom as line as soon as possible"), /* @__PURE__ */ v(GroupSetting, {
-      setting: "DigCheckered",
+    }, "Clear the bottom as line as soon as possible", /* @__PURE__ */ v("br", null), /* @__PURE__ */ v(PBView, {
+      name: "dig10pb"
+    })), /* @__PURE__ */ v(GroupSetting, {
+      setting: "DigCheese",
       data: ["Off", "On"],
       selected: Game.settings.dig.checker.val ? 1 : 0,
       onClick: (index) => {
@@ -11319,73 +11384,14 @@
       class: "option-header"
     }, "Starting Level"), /* @__PURE__ */ v("p", {
       class: "option-description"
-    }, "Choose a level to start"), /* @__PURE__ */ v("div", {
-      class: "btn-group btn-ensquishened",
-      style: "margin-left: 1em"
-    }, /* @__PURE__ */ v("button", {
-      id: "retro-level-0",
-      onclick: "changeSetting('retro', 'level', 0)"
-    }, "00"), /* @__PURE__ */ v("button", {
-      id: "retro-level-1",
-      onclick: "changeSetting('retro', 'level', 1)"
-    }, "01"), /* @__PURE__ */ v("button", {
-      id: "retro-level-2",
-      onclick: "changeSetting('retro', 'level', 2)"
-    }, "02"), /* @__PURE__ */ v("button", {
-      id: "retro-level-3",
-      onclick: "changeSetting('retro', 'level', 3)"
-    }, "03"), /* @__PURE__ */ v("button", {
-      id: "retro-level-4",
-      onclick: "changeSetting('retro', 'level', 4)"
-    }, "04"), /* @__PURE__ */ v("button", {
-      id: "retro-level-5",
-      onclick: "changeSetting('retro', 'level', 5)"
-    }, "05"), /* @__PURE__ */ v("button", {
-      id: "retro-level-6",
-      onclick: "changeSetting('retro', 'level', 6)"
-    }, "06"), /* @__PURE__ */ v("button", {
-      id: "retro-level-7",
-      onclick: "changeSetting('retro', 'level', 7)"
-    }, "07"), /* @__PURE__ */ v("button", {
-      id: "retro-level-8",
-      onclick: "changeSetting('retro', 'level', 8)"
-    }, "08"), /* @__PURE__ */ v("button", {
-      id: "retro-level-9",
-      onclick: "changeSetting('retro', 'level', 9)"
-    }, "09")), /* @__PURE__ */ v("div", {
-      class: "btn-group btn-ensquishened",
-      style: "margin-left: 1em"
-    }, /* @__PURE__ */ v("button", {
-      id: "retro-level-10",
-      onclick: "changeSetting('retro', 'level', 10)"
-    }, "10"), /* @__PURE__ */ v("button", {
-      id: "retro-level-11",
-      onclick: "changeSetting('retro', 'level', 11)"
-    }, "11"), /* @__PURE__ */ v("button", {
-      id: "retro-level-12",
-      onclick: "changeSetting('retro', 'level', 12)"
-    }, "12"), /* @__PURE__ */ v("button", {
-      id: "retro-level-13",
-      onclick: "changeSetting('retro', 'level', 13)"
-    }, "13"), /* @__PURE__ */ v("button", {
-      id: "retro-level-14",
-      onclick: "changeSetting('retro', 'level', 14)"
-    }, "14"), /* @__PURE__ */ v("button", {
-      id: "retro-level-15",
-      onclick: "changeSetting('retro', 'level', 15)"
-    }, "15"), /* @__PURE__ */ v("button", {
-      id: "retro-level-16",
-      onclick: "changeSetting('retro', 'level', 16)"
-    }, "16"), /* @__PURE__ */ v("button", {
-      id: "retro-level-17",
-      onclick: "changeSetting('retro', 'level', 17)"
-    }, "17"), /* @__PURE__ */ v("button", {
-      id: "retro-level-18",
-      onclick: "changeSetting('retro', 'level', 18)"
-    }, "18"), /* @__PURE__ */ v("button", {
-      id: "retro-level-19",
-      onclick: "changeSetting('retro', 'level', 19)"
-    }, "19")), /* @__PURE__ */ v(GroupSetting, {
+    }, "Choose a level to start"), /* @__PURE__ */ v(GroupSetting, {
+      setting: "RetroStartingLevel",
+      data: range(0, 20).map((v3) => padZero(v3)),
+      selected: Game.settings.retro.level.val,
+      onClick: (index) => {
+        changeGameSetting("retro", "level", index);
+      }
+    }), /* @__PURE__ */ v(GroupSetting, {
       setting: "RetroHardDrop",
       data: ["Off", "On"],
       selected: Game.settings.retro.drop.val,
@@ -11433,16 +11439,15 @@
   // jscc_temp/src/components/center/SprintMenu.tsx
   init_preact_shim();
   function SprintMenu() {
-    const sprintPB = localStorage.getItem("sprint40pb");
     return /* @__PURE__ */ v("nav", {
       class: "menu"
     }, /* @__PURE__ */ v("h1", {
       class: "boldish"
     }, "Sprint"), /* @__PURE__ */ v("p", {
       class: "no-margin"
-    }, "Clear the lines as fast as you can! ", /* @__PURE__ */ v("br", null), "Fastest time:", " ", /* @__PURE__ */ v("span", {
-      id: "sprint-pb"
-    }, timeString(sprintPB ? parseFloat(sprintPB) : 0))), /* @__PURE__ */ v("div", {
+    }, "Clear the lines as fast as you can!", /* @__PURE__ */ v("br", null), /* @__PURE__ */ v(PBView, {
+      name: "sprint40pb"
+    })), /* @__PURE__ */ v("div", {
       class: "no-margin btn-container"
     }, /* @__PURE__ */ v(GroupSetting, {
       setting: "SprintLimit",
@@ -11509,6 +11514,8 @@
   // jscc_temp/src/components/center/TuningMenu.tsx
   init_preact_shim();
   function TuningMenu() {
+    const framesMs = (index) => `${index} FRAMES; ${Math.round((1e3 / 60 * index + 1e-5) * 100) / 100} MS`;
+    const framesHz = (index) => index != 0 ? `${index} FRAMES; ${Math.round((60 / index + 1e-5) * 100) / 100} HZ` : "INSTANT";
     return /* @__PURE__ */ v("nav", {
       class: "menu"
     }, /* @__PURE__ */ v("h1", {
@@ -11522,7 +11529,7 @@
       onInput: (value) => {
         settings.DAS = value;
       },
-      getName: (index) => `${index} FRAMES; ${Math.round((1e3 / 60 * index + 1e-5) * 100) / 100} MS`
+      getName: framesMs
     }), /* @__PURE__ */ v(GroupSliderSetting, {
       setting: "ARR",
       max: 10,
@@ -11532,7 +11539,7 @@
       onInput: (value) => {
         settings.ARR = value;
       },
-      getName: (index) => index != 0 ? `${index} FRAMES; ${Math.round((60 / index + 1e-5) * 100) / 100} HZ` : "INSTANT"
+      getName: framesHz
     }), /* @__PURE__ */ v(GroupSliderSetting, {
       setting: "Gravity",
       max: 9,
@@ -11561,7 +11568,8 @@
       value: settings.LockDelay ?? 30,
       onInput: (value) => {
         settings.LockDelay = value;
-      }
+      },
+      getName: framesMs
     }), /* @__PURE__ */ v(GroupListSetting, {
       setting: "IRSMode",
       data: getStringKeys(IRSMode),

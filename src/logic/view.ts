@@ -286,7 +286,7 @@ export function makeSprite() {
 			spriteCtx.fillRect(x, 0, Mutable.cellSize, Mutable.cellSize);
 		} else if (settings.Block === 2) {
 			// Glossy
-			k = Math.max(~~(Mutable.cellSize * 0.1), 1);
+			k = Math.max(Math.floor(Mutable.cellSize * 0.1), 1);
 
 			grad = spriteCtx.createLinearGradient(
 				x,
@@ -334,7 +334,7 @@ export function makeSprite() {
 			);
 		} else if (settings.Block === 3) {
 			// Arika
-			k = Math.max(~~(Mutable.cellSize * 0.125), 1);
+			k = Math.max(Math.floor(Mutable.cellSize * 0.125), 1);
 
 			spriteCtx.fillStyle = tgm[i][1];
 			spriteCtx.fillRect(x, 0, Mutable.cellSize, Mutable.cellSize);
@@ -343,7 +343,7 @@ export function makeSprite() {
 				x,
 				0,
 				Mutable.cellSize,
-				~~(Mutable.cellSize / 2)
+				Math.floor(Mutable.cellSize / 2)
 			);
 
 			grad = spriteCtx.createLinearGradient(
@@ -385,7 +385,7 @@ export function makeSprite() {
 			);
 		} else if (settings.Block === 4) {
 			// Aqua
-			k = Math.max(~~(Mutable.cellSize * 0.1), 1);
+			k = Math.max(Math.floor(Mutable.cellSize * 0.1), 1);
 
 			grad = spriteCtx.createLinearGradient(
 				x,
@@ -412,7 +412,7 @@ export function makeSprite() {
 			);
 		} else if (settings.Block === 5) {
 			// Arcade
-			k = Math.max(~~(Mutable.cellSize * 0.1), 1);
+			k = Math.max(Math.floor(Mutable.cellSize * 0.1), 1);
 
 			grad = spriteCtx.createLinearGradient(
 				x,
@@ -469,7 +469,7 @@ export function makeSprite() {
 			);
 		} else if (settings.Block === 6) {
 			// N-Blox
-			const k = Math.max(~~(Mutable.cellSize * 0.1), 1);
+			const k = Math.max(Math.floor(Mutable.cellSize * 0.1), 1);
 
 			spriteCtx.fillStyle = glossy[i][4];
 			spriteCtx.fillRect(x, 0, Mutable.cellSize, Mutable.cellSize);
@@ -501,7 +501,7 @@ export function makeSprite() {
 			);
 		} else if (settings.Block === 7) {
 			// Bone
-			k = Math.max(~~(Mutable.cellSize * 0.1), 1);
+			k = Math.max(Math.floor(Mutable.cellSize * 0.1), 1);
 
 			spriteCtx.fillStyle = "#000";
 			spriteCtx.fillRect(x, 0, Mutable.cellSize, Mutable.cellSize);
@@ -979,7 +979,7 @@ export function draw(tetro, cx, cy, ctx, color, darkness?) {
 
 // ========================== Controller ======================================
 
-export const key = {
+export const keyToString = {
 	8: "Backspace",
 	9: "Tab",
 	13: "Enter",

@@ -1,5 +1,6 @@
 export interface GeneralSettings {
-	DigCheckered
+	DigCheese
+	DigZen
 	SurvivalZenMode
 	SurvivalStartingLevel
 	SprintLimit

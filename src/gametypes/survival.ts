@@ -57,8 +57,8 @@ export class Survival extends GameType {
 				2, -1, 1, 5, 4, 3, 7, 6, -1, 8, 8, 8, 8, 6, 6, 2, 1, 5, 8, -1,
 				7, 7, -1, 8, 8,
 			];
-			const flagAll = ~~(objCurStage.begin / 50) % 2;
-			let idxRainbow = ~~(objCurStage.begin / 100);
+			const flagAll = Math.floor(objCurStage.begin / 50) % 2;
+			let idxRainbow = Math.floor(objCurStage.begin / 100);
 			if (idxRainbow >= arrRainbow.length) {
 				idxRainbow = arrRainbow.length - 1;
 			}
@@ -69,7 +69,7 @@ export class Survival extends GameType {
 				x += flagAll === 1 ? 1 : stack.width - 1
 			) {
 				if (colorUsed === -1) {
-					arrRow[x] = ~~(rng.next() * 8 + 1);
+					arrRow[x] = Math.floor(rng.next() * 8 + 1);
 				} else {
 					arrRow[x] = colorUsed;
 				}

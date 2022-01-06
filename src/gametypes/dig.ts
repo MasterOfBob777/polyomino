@@ -1,21 +1,18 @@
+import { getPB, setPB } from "../components/utils/PBView";
 import { sound } from "../display/sound/sound";
 import { piece } from "../display/tetrion/piece";
 import { stack } from "../display/tetrion/stack";
 import { Game } from "../game";
 import { Elements, Mutable } from "../utils/data";
-import { clamp } from "../utils/math";
-import { rng } from "../utils/randomizer";
+import { clamp, mod } from "../utils/math";
+import { randomInt, randomIntExcept, rng } from "../utils/randomizer";
 import { range, $setText } from "../utils/utils";
 import { GameType } from "./base";
 
 export class Dig extends GameType {
 	update(): void {
 		if (Game.params.zen) {
-			for (
-				;
-				Mutable.lastPiecesSet < Mutable.piecesSet;
-				Mutable.lastPiecesSet++
-			) {
+			while (Mutable.lastPiecesSet < Mutable.piecesSet) {
 				Mutable.digZenBuffer++;
 				const piecePerRise = [
 					8,
@@ -36,11 +33,12 @@ export class Dig extends GameType {
 						Mutable.digZenBuffer = 0;
 					}
 					const arrRow = [8, 8, 8, 8, 8, 8, 8, 8, 8, 8];
-					arrRow[~~(rng.next() * 10)] = 0;
+					arrRow[Math.floor(rng.next() * 10)] = 0;
 
 					stack.rowRise(arrRow, piece);
 					sound.playSFX("garbage");
 				}
+				Mutable.lastPiecesSet++;
 			}
 		}
 	}
@@ -50,7 +48,7 @@ export class Dig extends GameType {
 
 		Mutable.lastPiecesSet = 0;
 		Mutable.digZenBuffer = 0;
-		
+
 		if (Game.settings.dig.checker.val == 1) {
 			Game.params.digraceType = "checker";
 		} else {
@@ -61,23 +59,24 @@ export class Dig extends GameType {
 			Game.params.digraceType === undefined ||
 			Game.params.digraceType === "checker"
 		) {
-			// harder digrace: checkerboard
 			Mutable.digLines = range(stack.height - 10, stack.height);
 			$setText(Elements.statsLines, 10);
+			let last = stack.width;
 			for (let y = stack.height - 1; y > stack.height - 10 - 1; y--) {
+				const r = randomIntExcept(0, stack.width - 1, last);
 				for (let x = 0; x < stack.width; x++) {
-					if ((x + y) & 1) stack.grid[x][y] = 8;
+					stack.grid[x][y] = x == r ? 0 : 8;
 				}
+				last = r;
 			}
 		} else if (Game.params.digraceType === "easy") {
-			const begin = ~~(rng.next() * stack.width);
-			const dire = ~~(rng.next() * 2) * 2 - 1;
+			let begin = randomInt(0, stack.width);
 			Mutable.digLines = range(stack.height - 10, stack.height);
 			$setText(Elements.statsLines, 10);
 			for (let y = stack.height - 1; y > stack.height - 10 - 1; y--) {
+				const m = mod(begin++, stack.width);
 				for (let x = 0; x < stack.width; x++) {
-					if ((begin + dire * y + x + stack.width * 2) % 10 !== 0)
-						stack.grid[x][y] = 8;
+					stack.grid[x][y] = m == x ? 0 : 8;
 				}
 			}
 		}
@@ -87,5 +86,18 @@ export class Dig extends GameType {
 		//stack.draw(); //resize
 	}
 
-	lineClear(lines: number): void {}
+	pbKey = "dig10pb";
+
+	savePB = true;
+
+	win() {
+		const digPB = getPB("dig10pb");
+		if (
+			(!digPB || Mutable.scoreTime < digPB) &&
+			Mutable.watchingReplay == false &&
+			Game.params.digraceType == "easy"
+		) {
+			setPB("dig10pb", Mutable.scoreTime);
+		}
+	}
 }

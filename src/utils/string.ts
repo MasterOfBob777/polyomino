@@ -6,6 +6,6 @@ export function padZero(v: number) {
 
 export function timeString(ms: number) {
 	const seconds = fixed((ms % 60000) / 1000, 2);
-	const minutes = ~~(ms / 60000);
+	const minutes = Math.floor(ms / 60000);
 	return `${padZero(minutes)}:${(seconds < 10 ? "0" : "")}${seconds.toFixed(2)}`;
 }

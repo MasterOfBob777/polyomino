@@ -16,9 +16,8 @@ export function clear(ctx) {
 	ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 }
 
-export function range(start, end, inc?) {
-	inc = inc || 1;
-	const array = [];
+export function range(start: number, end: number, inc = 1) {
+	const array: number[] = [];
 	for (let i = start; i < end; i += inc) {
 		array.push(i);
 	}

@@ -46,11 +46,11 @@ export function resize() {
 	// Aspect ratio: 1.024
 	const padH = 12;
 	let screenHeight = window.innerHeight - padH * 2;
-	const screenWidth = ~~(screenHeight * 1.0);
+	const screenWidth = Math.floor(screenHeight * 1.0);
 	if (screenWidth > window.innerWidth)
-		screenHeight = ~~(window.innerWidth / 1.0);
+		screenHeight = Math.floor(window.innerWidth / 1.0);
 
-	Mutable.cellSize = Math.max(~~(screenHeight / 20), 10);
+	Mutable.cellSize = Math.max(Math.floor(screenHeight / 20), 10);
 	if (settings.Size === 1 && Mutable.cellSize >= 16) Mutable.cellSize = 16;
 	else if (settings.Size === 2 && Mutable.cellSize >= 24)
 		Mutable.cellSize = 24;
@@ -74,7 +74,7 @@ export function resize() {
 	//(pad - padH) + 'px';
 
 	// Size elements
-	a.style.padding = "0 0.5rem " + ~~(Mutable.cellSize / 2) + "px";
+	a.style.padding = "0 0.5rem " + Math.floor(Mutable.cellSize / 2) + "px";
 
 	stackCanvas.width =
 		activeCanvas.width =
@@ -100,10 +100,10 @@ export function resize() {
 	// Scale the text so it fits in the thing.
 	// TODO get rid of extra font sizes here.
 	$("msgdiv").style.lineHeight = b.style.height;
-	msg.style.fontSize = ~~(stackCanvas.width / 6) + "px";
+	msg.style.fontSize = Math.floor(stackCanvas.width / 6) + "px";
 	msg.style.lineHeight = msg.style.fontSize;
-	stats.style.fontSize = ~~(stackCanvas.width / 11) + "px";
-	document.documentElement.style.fontSize = ~~(stackCanvas.width / 16) + "px";
+	stats.style.fontSize = Math.floor(stackCanvas.width / 11) + "px";
+	document.documentElement.style.fontSize = Math.floor(stackCanvas.width / 16) + "px";
 
 	for (let i = 0, len = h3.length; i < len; i++) {
 		h3[i].style.lineHeight = Mutable.cellSize * 2 + "px";

@@ -226,9 +226,9 @@ const strs = {
 	"setting-RotSys-desc": {
 		en: "The desired rotation system; default 'Super'",
 	},
-	"setting-DigCheckered-title": { en: "Checkered" },
-	"setting-DigCheckered-desc": {
-		en: "Dig through a checkered stack instead of a diagonal one",
+	"setting-DigCheese-title": { en: "Cheesed" },
+	"setting-DigCheese-desc": {
+		en: "Dig through a cheesed stack instead of a diagonal one",
 	},
 	"setting-GradesGameRule-title": { en: "Game Rule" },
 	"setting-GradesGameRule-desc": { en: "Determines the tuning of the game" },

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import { menu } from "../../display/menu";
-import { key } from "../../logic/view";
+import { keyToString } from "../../logic/view";
 import { binds, defaultBinds, setBinds } from "../../utils/data";
 import { t } from "../../utils/lang";
 import { $, $setText } from "../../utils/utils";
@@ -45,13 +45,13 @@ document.addEventListener(
 				for (const i in binds) {
 					if (newKey === binds[i]) {
 						binds[i] = undefined;
-						$setText($(i), key.undefined);
+						$setText($(i), keyToString.undefined);
 					}
 				}
 			}
 			// Binds the key and saves the data.
 			binds[currCell.id] = newKey;
-			$setText(currCell, key[newKey] || newKey);
+			$setText(currCell, keyToString[newKey] || newKey);
 			localStorage.setItem("binds", JSON.stringify(binds));
 			currCell = undefined;
 		}
@@ -68,7 +68,7 @@ export const updatedBinds = () => {
 
 function ControlButton({ default: def, icon, text, id }) {
 	const keycode = binds[id];
-	const keyText = key[keycode] || keycode;
+	const keyText = keyToString[keycode] || keycode;
 
 	const [txt, setTxt] = useState(keyText || def);
 	const ref = useRef(null);
@@ -76,7 +76,7 @@ function ControlButton({ default: def, icon, text, id }) {
 	useEffect(() => {
 		const cb = () => {
 			const kc = binds[id];
-			setTxt(key[kc] || kc)
+			setTxt(keyToString[kc] || kc)
 		}
 		buttons.push(cb)
 		return () => {
@@ -98,7 +98,7 @@ function ControlButton({ default: def, icon, text, id }) {
 						// TODO DRY
 						// Make this into a function and call it when we press Esc.
 						binds[currCell.id] = tempKey;
-						$setText(currCell, key[tempKey] || tempKey);
+						$setText(currCell, keyToString[tempKey] || tempKey);
 					}
 					tempKey = binds[id];
 					setTxt("Press key");

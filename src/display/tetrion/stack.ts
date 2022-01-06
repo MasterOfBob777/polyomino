@@ -3,7 +3,7 @@ import { makeSprite, draw } from "../../logic/view";
 import { settings } from "../../settings";
 import { finesse, pieces, Mutable, Elements } from "../../utils/data";
 import { GameState, GameType } from "../../utils/enums";
-import { rng } from "../../utils/randomizer";
+import { randomInt, rng } from "../../utils/randomizer";
 import { $, $setText, clear } from "../../utils/utils";
 import { menu } from "../menu";
 import { sound } from "../sound/sound";
@@ -270,7 +270,7 @@ class Stack {
 				sound.playSFX("erase", Mutable.lineClear);
 				sound.playvox("erase", Mutable.lineClear);
 			}
-			garbage += ~~(Mutable.combo / 2); //[0,0,1,1,2,2,3,3,4,4,5,5,6,6,...]
+			garbage += Math.floor(Mutable.combo / 2); //[0,0,1,1,2,2,3,3,4,4,5,5,6,6,...]
 			if (Mutable.combo < 1) {
 				//
 			} else if (Mutable.combo < 5) {
@@ -364,21 +364,23 @@ class Stack {
 
 		if (Game.type === GameType.Marathon || Game.type === GameType.Master) {
 			if (Game.params.levelCap == 1) {
-				Mutable.level = Math.min(~~(Mutable.lines / 10), 14);
+				Mutable.level = Math.min(Math.floor(Mutable.lines / 10), 14);
 			} else {
-				Mutable.level = ~~(Mutable.lines / 10);
+				Mutable.level = Math.floor(Mutable.lines / 10);
 			}
 		} else if (Game.type === 7) {
-			Mutable.level = ~~(Mutable.lines / 30);
+			Mutable.level = Math.floor(Mutable.lines / 30);
 		} else if (Game.type === GameType.Retro) {
 			const startLevel = Game.params.startingLevel;
 			const startingLines = Math.min(
 				Math.max(100, startLevel * 10 - 50),
 				startLevel * 10 + 10
 			);
-			Mutable.level = ~~Math.max(
-				(Mutable.lines + 10 - startingLines + startLevel * 10) / 10,
-				startLevel
+			Mutable.level = Math.floor(
+				Math.max(
+					(Mutable.lines + 10 - startingLines + startLevel * 10) / 10,
+					startLevel
+				)
 			);
 			makeSprite();
 			stack.draw();
@@ -454,7 +456,7 @@ class Stack {
 			if (backFire === 1) {
 				garbage = [0, 0, 1, 2, 4][Mutable.lineClear];
 			} else if (backFire === 3) {
-				garbage *= ~~(Mutable.lines / 2);
+				garbage *= Math.floor(Mutable.lines / 2);
 			}
 			if (garbage !== 0) {
 				if (backFire === 1) {
@@ -468,7 +470,7 @@ class Stack {
 						this.rowRise(bottomRow, piece);
 					}
 				} else if (backFire === 2 || backFire === 3) {
-					const hole = ~~(rng.next() * 10);
+					const hole = randomInt(0, 10);
 					const arrRow = [8, 8, 8, 8, 8, 8, 8, 8, 8, 8];
 					arrRow[hole] = 0;
 					for (let y = 0; y < garbage; y++) {
@@ -680,7 +682,7 @@ class Stack {
 		//stackCtx.globalCompositeOperation = 'source-over';
 
 		if (settings.Outline === 1 || settings.Outline === 3) {
-			const b = ~~(Mutable.cellSize / 8);
+			const b = Math.floor(Mutable.cellSize / 8);
 			const c = Mutable.cellSize;
 			const hhc = this.hiddenHeight * c;
 			const pi = Math.PI;

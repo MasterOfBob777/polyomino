@@ -36,6 +36,7 @@ import { Retro } from "./gametypes/retro";
 import { ScoreAttack } from "./gametypes/scoreattack";
 import { Grades } from "./gametypes/grades";
 import { Survival } from "./gametypes/survival";
+import { getPB } from "./components/utils/PBView";
 
 // TODO: Check all settings and make them work better with the new settings system.
 
@@ -79,7 +80,6 @@ export class Game {
 	 * Resets all the settings and starts the game.
 	 */
 	static init(gt: GameTypeEnum | "replay", params?) {
-
 		if (gt !== "replay") {
 			Game.types[Game.type].done();
 		}
@@ -158,7 +158,7 @@ export class Game {
 			//setup game parameters
 			Game.types[Game.type].init();
 
-			const seed = ~~(Math.random() * 2147483645) + 1;
+			const seed = Math.floor(Math.random() * 2147483645) + 1;
 			rng.seed = seed;
 
 			Mutable.replay = {};
@@ -467,9 +467,9 @@ export class Game {
 			$("bgStack").classList.remove("alarm");
 		}
 		const timeEle = $("time");
-		if (Game.type === GameTypeEnum.Sprint) {
-			const sprintPB = parseFloat(localStorage.getItem("sprint40pb"));
-			if (Mutable.scoreTime >= sprintPB + 100) {
+		if (Game.types[Game.type].savePB) {
+			const pb = getPB(Game.types[Game.type].pbKey);
+			if (Mutable.scoreTime >= pb + 100) {
 				Elements.timeCtx.fillStyle = "#f00";
 				timeEle.classList.add("drought-flash");
 
@@ -490,7 +490,7 @@ export class Game {
 			window.requestAnimationFrame(Game.gameLoop);
 
 			const repeat =
-				~~(
+				Math.floor(
 					((Date.now() - Game.startTime - Game.pauseTime) / 1000) *
 					fps
 				) - Mutable.frame;
@@ -675,7 +675,7 @@ export class Game {
 							}
 							Mutable.clearRows = [];
 							sound.killbgm();
-						} else if (Mutable.frame === ~~((fps * time1) / 6)) {
+						} else if (Mutable.frame === Math.floor((fps * time1) / 6)) {
 							Mutable.killAllbgm = false;
 							if (tournament === true) {
 								$setText(Elements.msg, "START!");
@@ -688,7 +688,7 @@ export class Game {
 							}
 							preview.draw();
 							sound.killbgm();
-						} else if (Mutable.frame === ~~((fps * time2) / 6)) {
+						} else if (Mutable.frame === Math.floor((fps * time2) / 6)) {
 							$("msgdiv").classList.remove("startanim");
 							$setText(Elements.msg, "");
 							Mutable.scoreStartTime = Date.now();
@@ -919,6 +919,7 @@ export class Game {
 				$setText(Elements.msg, "GREAT!");
 				piece.dead = true;
 				menu(3);
+				Game.types[Game.type].win();
 				sound.playSFX("endingstart");
 				sound.playvox("win");
 			}
