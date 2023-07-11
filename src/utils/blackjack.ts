@@ -1,4 +1,3 @@
-import { wrapGenerator } from "./generators";
 import { rng } from "./randomizer";
 
 /*
@@ -18,6 +17,29 @@ sequence of [list]
 	Keep a list called history of the last len pieces dealt. (Repeated pieces in list are separate pieces for purpose of the history.) Up to number times, choose a piece at random from list, and if it is not in history, deal it. Otherwise, deal the last piece chosen. Then put the piece in history and remove the oldest piece from history.
 [spec] first [list]
 	Follow spec, except choose the first piece from list.
+*/
+
+function wrapGenerator<T>(gen: () => Generator<T>) {
+	let iter = gen();
+
+	return {
+		next: () => {
+			return iter.next().value as T;
+		},
+		reset: () => {
+			iter = gen();
+		},
+		[Symbol.iterator]: () => {
+			return iter;
+		}, 
+	};
+}
+
+/*
+const rng = wrapGenerator(function* () {
+	let seed = Math.floor(Math.random() * 2147483647)
+	while (true) yield (seed = (seed * 16807) % 2147483647) / 2147483647;
+});
 */
 
 function shuffleArray<T>(array: T[]): T[] {
@@ -53,9 +75,7 @@ function chooseRandom<T>(list: T[]): T {
 	return list[Math.floor(rng.next() * list.length)];
 }
 
-export type Randomizer = () => Generator<string>;
-
-export function createRandomizer(str: string): Randomizer {
+ function createRandomizer(str: string) {
 	str = str.replace(whitespaceRegex, " ");
 
 	let first: string[] | undefined;
@@ -76,7 +96,7 @@ export function createRandomizer(str: string): Randomizer {
 		const bonus = res[2] ? parseInt(res[2], 10) : 0;
 
 		const len = count + bonus;
-		return function* (): Generator<string> {
+		return function* () {
 			let bag = shuffleArray(list.slice());
 			let bonusBag: string[] = [];
 			if (first) {
@@ -84,19 +104,19 @@ export function createRandomizer(str: string): Randomizer {
 				yield piece;
 				bag = bag.filter((x) => x !== piece);
 			}
-
+			
 			while (true) {
 				for (let i = 0; i < len; i++) {
 					if (!bag.length) {
 						if (bonus) {
 							if (!bonusBag.length)
 								bonusBag = shuffleArray(list.slice());
-							yield bonusBag.pop()!;
+							yield bonusBag.pop();
 						} else {
 							yield chooseRandom(list);
 						}
 					} else {
-						yield bag.pop()!;
+						yield bag.pop();
 					}
 				}
 				bag = shuffleArray(list.slice());
@@ -144,10 +164,7 @@ export function createRandomizer(str: string): Randomizer {
 				const arr = shuffleArray(list.slice());
 				for (let i = 0; i < (rolls ?? list.length); i++) {
 					const piece = chooseRandom(arr);
-					if (
-						!history.includes(piece) ||
-						(rolls && i + 1 === rolls)
-					) {
+					if (!history.includes(piece) || (rolls && i + 1 == rolls)) {
 						yield piece;
 						if (history.length === historyLen) history.shift();
 						history.push(piece);
@@ -183,7 +200,7 @@ export const tgm2 = rand(
 export const tgm3 = rand(
 	`5*I,5*J,5*L,5*O,5*S,5*T,5*Z
 		with 4 history 6 rolls starting with Z,S,Z,S
-		${/*weighted on frequency // maybe?*/ ""}
+		${/*weighted on frequency // maybe?*/""}
 		but first I,J,L,T`
 );
 export const ace = rand("bag of I,J,L,O,S,T,Z but first I,J,L,T");

@@ -1,20 +1,21 @@
-import { AudioMenu } from "./menu/main/settings/AudioMenu";
-import { ControlsMenu } from "./menu/main/settings/ControlsMenu";
-import { DigMenu } from "./menu/main/gametypes/DigMenu";
-import { FailedMenu } from "./menu/main/overlays/FailedMenu";
-import { GradesMenu } from "./menu/main/gametypes/GradesMenu";
-import { GraphicsMenu } from "./menu/main/settings/GraphicsMenu";
-import { MainMenu } from "./menu/MainMenu";
-import { MarathonMenu } from "./menu/main/gametypes/MarathonMenu";
-import { MasterMenu } from "./menu/main/gametypes/MasterMenu";
-import { PauseMenu } from "./menu/main/overlays/PauseMenu";
-import { RankingsMenu } from "./menu/main/overlays/RankingsMenu";
-import { ReplayMenu } from "./menu/main/overlays/ReplayMenu";
-import { RetroMenu } from "./menu/main/gametypes/RetroMenu";
-import { SettingsMenu } from "./menu/main/settings/SettingsMenu";
-import { SprintMenu } from "./menu/main/gametypes/SprintMenu";
-import { SurvialMenu } from "./menu/main/gametypes/SurvialMenu";
-import { TuningMenu } from "./menu/main/settings/TuningMenu";
+import { menu } from "../../display/menu";
+import { AudioMenu } from "./AudioMenu";
+import { ControlsMenu } from "./ControlsMenu";
+import { DigMenu } from "./DigMenu";
+import { FailedMenu } from "./FailedMenu";
+import { GradesMenu } from "./GradesMenu";
+import { GraphicsMenu } from "./GraphicsMenu";
+import { MainMenu } from "./MainMenu";
+import { MarathonMenu } from "./MarathonMenu";
+import { MasterMenu } from "./MasterMenu";
+import { PauseMenu } from "./PauseMenu";
+import { RankingsMenu } from "./RankingsMenu";
+import { ReplayMenu } from "./ReplayMenu";
+import { RetroMenu } from "./RetroMenu";
+import { SettingsMenu } from "./SettingsMenu";
+import { SprintMenu } from "./SprintMenu";
+import { SurvialMenu } from "./SurvialMenu";
+import { TuningMenu } from "./TuningMenu";
 
 export function SectionMiddle() {
 	return (
@@ -40,7 +41,18 @@ export function SectionMiddle() {
 				<span id="b2bmsg" />
 			</div>
 
-			<MainMenu  />
+			<MainMenu />
+
+			<div class="menu">
+				<h2 id="settings-button">Settings</h2>
+
+				<div id="settings" />
+				<div id="settings-done">
+					<a class="btn" onClick={() => menu(0)}>
+						Done
+					</a>
+				</div>
+			</div>
 
 			<ControlsMenu />
 			<FailedMenu />

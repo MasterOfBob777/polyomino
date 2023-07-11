@@ -1,5 +1,4 @@
 import { sound } from "../display/sound/sound";
-import { piece } from "../display/tetrion/piece";
 import { preview } from "../display/tetrion/preview";
 import { Game } from "../game";
 import { settings } from "../settings";
@@ -10,10 +9,10 @@ import { draw } from "./view";
 class Hold {
 	soundCancel = 0;
 
-	piece: number;
+	piece;
 
 	draw() {
-		if (this.soundCancel === 0 && Game.paused === false) {
+		if (this.soundCancel == 0 && Game.paused == false) {
 			sound.playSFX("hold");
 		}
 		this.soundCancel = 0;
@@ -26,7 +25,7 @@ class Hold {
 
 		clear(Elements.holdCtx);
 		let p;
-		if (piece.ihs === true) {
+		if (this.piece.ihs == true) {
 			p = preview.grabBag[0];
 		} else {
 			$("ihs-indicator").classList.add("gone");
@@ -36,7 +35,7 @@ class Hold {
 
 		const rot = settings.RotSys;
 		const initInfo = rot.initinfo[p];
-		if (pieces[p] !== undefined) {
+		if (pieces[p] != undefined) {
 			const rect = pieces[p].rect;
 			draw(
 				pieces[p].tetro[initInfo[2]],

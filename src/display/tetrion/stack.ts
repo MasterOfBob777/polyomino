@@ -3,9 +3,9 @@ import { makeSprite, draw } from "../../logic/view";
 import { settings } from "../../settings";
 import { finesse, pieces, Mutable, Elements } from "../../utils/data";
 import { GameState, GameType } from "../../utils/enums";
-import { randomInt } from "../../utils/randomizer";
+import { randomInt, rng } from "../../utils/randomizer";
 import { $, $setText, clear } from "../../utils/utils";
-import { menu } from "../../components/center/menu/menuHooks";
+import { menu } from "../menu";
 import { sound } from "../sound/sound";
 import { piece } from "./piece";
 import { MatrixDir, shiftMatrix } from "./matrix";
@@ -17,7 +17,6 @@ import {
 } from "./messages";
 import { statisticsStack } from "./stats";
 import { scoreNesRefresh, tetRateNesRefresh } from "../../random_stuff";
-import { FAILED_MENU_ID } from "../../components/center/menu/main/overlays/FailedMenu";
 
 class Stack {
 	dirty: boolean;
@@ -102,7 +101,7 @@ class Stack {
 
 			Game.types[Game.type].die();
 
-			menu(FAILED_MENU_ID);
+			menu(3);
 			sound.playSFX("gameover");
 			sound.playvox("lose");
 			return;
@@ -150,10 +149,9 @@ class Stack {
 			Mutable.lockflashOn = false;
 		}
 		if (
-			piece.areLimit === 0 &&
-			(Game.params.entryDelay !== 1 ||
-				Game.params.entryDelay !== 2 ||
-				Game.params.entryDelay === undefined)
+			piece.areLimit == 0 &&
+			(Game.params.entryDelay == !(1 || 2) ||
+				Game.params.entryDelay == undefined)
 		) {
 			stack.clearLines();
 		}
@@ -198,7 +196,6 @@ class Stack {
 			}
 		} else if (Mutable.lineClear !== 0) {
 			//console.log("C"+Scores.combo+" B"+Mutable.b2b)
-
 			if (Mutable.isSpin) {
 				scoreAdd =
 					scoreAdd *
@@ -208,8 +205,8 @@ class Stack {
 				garbage = [
 					[2, 4, 6, 8],
 					[3, 6, 9, 12],
-				][Mutable.b2b !== 0 ? 1 : 0][Mutable.lineClear - 1];
-				if (piece.index === 5) {
+				][Mutable.b2b != 0 ? 1 : 0][Mutable.lineClear - 1];
+				if (piece.index == 5) {
 					if (Mutable.b2b > 0) {
 						sound.playvox("b2b_tspin", Mutable.lineClear);
 					} else {
@@ -245,7 +242,7 @@ class Stack {
 			} else if (Mutable.lineClear === 4) {
 				scoreAdd *= 800n * 2n ** BigInt(Mutable.b2b + Mutable.combo);
 
-				garbage = [4, 5][Mutable.b2b !== 0 ? 1 : 0];
+				garbage = [4, 5][Mutable.b2b != 0 ? 1 : 0];
 				if (Mutable.b2b > 0) {
 					Mutable.newScore += BigInt(
 						Math.floor(800 * (Mutable.level + 1) * 1.5)
@@ -284,9 +281,9 @@ class Stack {
 				sound.playvox("ren3");
 			}
 			if (Mutable.combo > 0) {
-				if (Mutable.combo > 7 && settings.Soundbank === 6) {
+				if (Mutable.combo > 7 && settings.Soundbank == 6) {
 					sound.playSFX("ren/ren", 7);
-				} else if (Mutable.combo > 4 && settings.Soundbank === 9) {
+				} else if (Mutable.combo > 4 && settings.Soundbank == 9) {
 					sound.playSFX("ren/ren", 4);
 				} else if (Mutable.combo > 20) {
 					sound.playSFX("ren/ren", 20);
@@ -303,23 +300,18 @@ class Stack {
 			}
 
 			if (Game.type === GameType.Grades) {
-				switch (Mutable.lineClear) {
-					case 1:
-						Mutable.leveltgm += 1;
-						Mutable.leveltgmvisible += 1;
-						break;
-					case 2:
-						Mutable.leveltgm += 2;
-						Mutable.leveltgmvisible += 2;
-						break;
-					case 3:
-						Mutable.leveltgm += 4;
-						Mutable.leveltgmvisible += 4;
-						break;
-					case 4:
-						Mutable.leveltgm += 6;
-						Mutable.leveltgmvisible += 6;
-						break;
+				if (Mutable.lineClear == 1) {
+					Mutable.leveltgm += 1;
+					Mutable.leveltgmvisible += 1;
+				} else if (Mutable.lineClear == 2) {
+					Mutable.leveltgm += 2;
+					Mutable.leveltgmvisible += 2;
+				} else if (Mutable.lineClear == 3) {
+					Mutable.leveltgm += 4;
+					Mutable.leveltgmvisible += 4;
+				} else if (Mutable.lineClear == 4) {
+					Mutable.leveltgm += 6;
+					Mutable.leveltgmvisible += 6;
 				}
 			}
 
@@ -328,11 +320,11 @@ class Stack {
 				Mutable.isMini && Mutable.isSpin
 			);
 
-			Game.types[Game.type].onLineClear(Mutable.lineClear, piece.index, Mutable.isSpin);
+			Game.types[Game.type].lineClear(Mutable.lineClear);
 		} else {
 			if (Mutable.isSpin) {
 				scoreAdd *= 2n ** BigInt(Mutable.b2b) * 400n;
-				if (settings.Soundbank !== 0 && Mutable.lineClear === 0) {
+				if (settings.Soundbank != 0 && Mutable.lineClear == 0) {
 					sound.playSFX("tspin", Mutable.lineClear);
 				}
 
@@ -345,14 +337,14 @@ class Stack {
 				} else {
 					Mutable.newScore += 100n * BigInt(Mutable.level + 1);
 				}
-				if (piece.index === 5) {
+				if (piece.index == 5) {
 					sound.playvox("tspin", Mutable.lineClear);
 				}
 			} else {
 				scoreAdd = 0n;
 			}
 			if (Mutable.combo > 1) {
-				if (settings.Voice && settings.Voicebank === 2) {
+				if (settings.Voice && settings.Voicebank == 2) {
 					showTetrisMessage(t("ren", Mutable.combo - 1));
 				} else {
 					showTetrisMessage(t("combo", Mutable.combo - 1));
@@ -371,7 +363,7 @@ class Stack {
 		}
 
 		if (Game.type === GameType.Marathon || Game.type === GameType.Master) {
-			if (Game.types[Game.type].params.levelCap === 1) {
+			if (Game.params.levelCap == 1) {
 				Mutable.level = Math.min(Math.floor(Mutable.lines / 10), 14);
 			} else {
 				Mutable.level = Math.floor(Mutable.lines / 10);
@@ -379,7 +371,7 @@ class Stack {
 		} else if (Game.type === 7) {
 			Mutable.level = Math.floor(Mutable.lines / 30);
 		} else if (Game.type === GameType.Retro) {
-			const startLevel = Game.types[Game.type].params?.startingLevel ?? 0;
+			const startLevel = Game.params.startingLevel;
 			const startingLines = Math.min(
 				Math.max(100, startLevel * 10 - 50),
 				startLevel * 10 + 10
@@ -404,7 +396,7 @@ class Stack {
 		}
 		if (Game.type === GameType.Marathon) {
 			const stackEle = $("stack");
-			if (Game.params.invisibleMarathon === true && Mutable.level > 19) {
+			if (Game.params.invisibleMarathon == true && Mutable.level > 19) {
 				if (Mutable.watchingReplay) {
 					stackEle.classList.add("invisible-replay");
 				} else {
@@ -524,62 +516,64 @@ class Stack {
 		// NOTE Mutable
 		// TODO Might not need this (same for in init)
 		Mutable.column = 0;
-
-		const grid = this.grid;
-		let clearPath = false;
-		for (let i = 0; i < stack.width; i++) {
-			for (let j = 0; j <= stack.height; j++) {
-				if (j === stack.height) {
-					clearPath = true;
+		function checkAlarm(grid) {
+			let clearPath = false;
+			for (let i = 0; i < stack.width; i++) {
+				for (let j = 0; j <= stack.height; j++) {
+					if (j == stack.height) {
+						clearPath = true;
+					}
+					if (grid[i][j] !== undefined && grid[i][j] !== 0) {
+						break;
+					}
 				}
-				if (grid[i][j] !== undefined && grid[i][j] !== 0) {
+				if (clearPath) {
 					break;
 				}
 			}
-			if (clearPath) {
-				break;
-			}
-		}
-		Mutable.alarmtest = false;
-		for (const test in grid) {
-			if (
-				(grid[test][8] !== undefined && !Mutable.alarm && !clearPath) ||
-				(grid[test][11] !== undefined && Mutable.alarm)
-			) {
-				Mutable.alarmtest = true;
-			}
-		}
-		if (clearPath && Mutable.alarm) {
 			Mutable.alarmtest = false;
-		}
-		if (Mutable.alarmtest && !Mutable.alarm) {
-			Mutable.alarm = true;
-			Mutable.alarmtest = false;
-			sound.playSFX("alarm");
-			$("bgStack").classList.add("alarm");
-			if (
-				Game.type === GameType.Survival ||
-				Game.type === 7 ||
-				(Game.type === GameType.Master &&
-					Game.params.delayStrictness === 2)
-			) {
-				console.log("eee");
-				sound.raisesidebgm();
+			for (const test in grid) {
+				if (
+					(grid[test][8] != undefined &&
+						Mutable.alarm == false &&
+						clearPath == false) ||
+					(grid[test][11] != undefined && Mutable.alarm == true)
+				) {
+					Mutable.alarmtest = true;
+				}
 			}
-		} else if (!Mutable.alarmtest && !Mutable.alarm) {
-			Mutable.alarm = false;
-			sound.stopSFX("alarm");
-			$("bgStack").classList.remove("alarm");
-			if (
-				Game.type === GameType.Survival ||
-				Game.type === 7 ||
-				(Game.type === GameType.Master &&
-					Game.params.delayStrictness === 2)
-			) {
-				sound.lowersidebgm();
+			if (clearPath && Mutable.alarm == true) {
+				Mutable.alarmtest = false;
+			}
+			if (Mutable.alarmtest == true && Mutable.alarm == false) {
+				Mutable.alarm = true;
+				Mutable.alarmtest = false;
+				sound.playSFX("alarm");
+				$("bgStack").classList.add("alarm");
+				if (
+					Game.type === GameType.Survival ||
+					Game.type === 7 ||
+					(Game.type === GameType.Master &&
+						Game.params.delayStrictness === 2)
+				) {
+					console.log("eee");
+					sound.raisesidebgm();
+				}
+			} else if (Mutable.alarmtest == false && Mutable.alarm == true) {
+				Mutable.alarm = false;
+				sound.stopSFX("alarm");
+				$("bgStack").classList.remove("alarm");
+				if (
+					Game.type === GameType.Survival ||
+					Game.type === 7 ||
+					(Game.type === GameType.Master &&
+						Game.params.delayStrictness === 2)
+				) {
+					sound.lowersidebgm();
+				}
 			}
 		}
-
+		checkAlarm(stack.grid);
 		this.dirty = true;
 	}
 
@@ -598,7 +592,7 @@ class Stack {
 			}
 		});
 		if (Mutable.clearRows.length !== 0) {
-			if (Mutable.lineARE !== 0) {
+			if (Mutable.lineARE != 0) {
 				sound.playSFX("linefall");
 			}
 			Mutable.clearRows = [];
@@ -626,7 +620,7 @@ class Stack {
 		if (topout) {
 			Game.state = GameState.BlockOut;
 			$setText(Elements.msg, "TOP OUT!");
-			menu(FAILED_MENU_ID);
+			menu(3);
 			Game.types[Game.type].die();
 			sound.playSFX("gameover");
 			sound.playvox("lose");
@@ -644,7 +638,7 @@ class Stack {
 					// the bottom is >=2 cell away from visible part
 					Game.state = GameState.BlockOut;
 					$setText(Elements.msg, "OOPS!");
-					menu(FAILED_MENU_ID);
+					menu(3);
 					Game.types[Game.type].die();
 
 					sound.playSFX("gameover");
@@ -848,6 +842,7 @@ class Stack {
 	}
 }
 
+const classicLineClear = 0;
 /**
  * Adds tetro to the stack, and clears lines if they fill up.
  */
@@ -868,7 +863,7 @@ export function spinCheck() {
 				testSpace(
 					piece.x + pieces[piece.index].spin.highX[piece.pos][i],
 					piece.y + pieces[piece.index].spin.highY[piece.pos][i]
-				)
+				) == true
 			) {
 				spinCheckCount++;
 			}
@@ -881,31 +876,31 @@ export function spinCheck() {
 				testSpace(
 					piece.x + pieces[piece.index].spin.lowX[piece.pos][i],
 					piece.y + pieces[piece.index].spin.lowY[piece.pos][i]
-				)
+				) == true
 			) {
 				spinCheckCount++;
 			}
 		}
 		if (
 			spinCheckCount >= 3 &&
-			Mutable.spinX === piece.x &&
-			Mutable.spinY === piece.y &&
+			Mutable.spinX == piece.x &&
+			Mutable.spinY == piece.y &&
 			!Mutable.rotationFailed
 		) {
 			Mutable.isSpin = true;
 		}
-	} else if (piece.index === 0) {
+	} else if (piece.index == 0) {
 		let spinCheckCount = 0;
 		for (let i = 0; i < 2; i++) {
 			if (
 				testSpace(
 					piece.x + pieces[piece.index].spin.highX[piece.pos][i],
 					piece.y + pieces[piece.index].spin.highY[piece.pos][i]
-				) ||
+				) == true ||
 				testSpace(
 					piece.x + pieces[piece.index].spin.highX[piece.pos][i + 2],
 					piece.y + pieces[piece.index].spin.highY[piece.pos][i + 2]
-				)
+				) == true
 			) {
 				spinCheckCount++;
 			}
@@ -918,19 +913,19 @@ export function spinCheck() {
 				testSpace(
 					piece.x + pieces[piece.index].spin.lowX[piece.pos][i],
 					piece.y + pieces[piece.index].spin.lowY[piece.pos][i]
-				) ||
+				) == true ||
 				testSpace(
 					piece.x + pieces[piece.index].spin.lowX[piece.pos][i + 2],
 					piece.y + pieces[piece.index].spin.lowY[piece.pos][i + 2]
-				)
+				) == true
 			) {
 				spinCheckCount++;
 			}
 		}
 		if (
 			spinCheckCount >= 3 &&
-			Mutable.spinX === piece.x &&
-			Mutable.spinY === piece.y &&
+			Mutable.spinX == piece.x &&
+			Mutable.spinY == piece.y &&
 			!Mutable.rotationFailed
 		) {
 			Mutable.isSpin = true;

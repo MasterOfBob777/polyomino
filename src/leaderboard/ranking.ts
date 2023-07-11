@@ -1,11 +1,12 @@
+
+
 import { scorestring } from "../random_stuff";
 import { Elements } from "../utils/data";
-import { Nullable } from "../utils/types";
 import { $setText } from "../utils/utils";
 import { showreplaydata } from "./replays";
 
 export function XMLHTTP(url, obj, fun) {
-	let xmlhttp: Nullable<XMLHttpRequest> = null;
+	let xmlhttp = null;
 	const handler = function () {
 		fun(xmlhttp);
 	};
@@ -16,7 +17,7 @@ export function XMLHTTP(url, obj, fun) {
 		// code for IE5 and IE6
 		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
 	}
-	if (xmlhttp) {
+	if (xmlhttp != null) {
 		xmlhttp.onreadystatechange = handler;
 		xmlhttp.open("POST", url, true);
 		xmlhttp.send(JSON.stringify(obj));
@@ -26,9 +27,9 @@ export function XMLHTTP(url, obj, fun) {
 }
 
 export function handleranking(xmlhttp: XMLHttpRequest) {
-	if (xmlhttp.readyState === 4) {
+	if (xmlhttp.readyState == 4) {
 		// 4 = "loaded"
-		if (xmlhttp.status === 200) {
+		if (xmlhttp.status == 200) {
 			let res;
 			try {
 				res = JSON.parse(xmlhttp.responseText);
@@ -50,7 +51,7 @@ export function handleranking(xmlhttp: XMLHttpRequest) {
 						const m = Math.floor(s / 60);
 						hs -= s * 100;
 						s -= m * 60;
-						if (m === 0) return `${s}.${(hs > 9 ? "" : "0") + hs}`;
+						if (m == 0) return `${s}.${(hs > 9 ? "" : "0") + hs}`;
 						else if (m < 10)
 							return `${m}:${(s > 9 ? "" : "0") + s}.${
 								(hs > 9 ? "" : "0") + hs
@@ -141,9 +142,9 @@ export function handleranking(xmlhttp: XMLHttpRequest) {
 	}
 }
 export function handlereplay(xmlhttp: XMLHttpRequest) {
-	if (xmlhttp.readyState === 4) {
+	if (xmlhttp.readyState == 4) {
 		// 4 = "loaded"
-		if (xmlhttp.status === 200) {
+		if (xmlhttp.status == 200) {
 			let res;
 			try {
 				res = JSON.parse(xmlhttp.responseText);

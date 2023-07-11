@@ -1,5 +1,4 @@
-import { FAILED_MENU_ID } from "../components/center/menu/main/overlays/FailedMenu";
-import { menu } from "../components/center/menu/menuHooks";
+import { menu } from "../display/menu";
 import { sound } from "../display/sound/sound";
 import { piece } from "../display/tetrion/piece";
 import { stack } from "../display/tetrion/stack";
@@ -13,14 +12,6 @@ import { GameType } from "./base";
 let frameLastRise;
 
 export class Survival extends GameType {
-	isPBValid(): boolean {
-		return false;
-	}
-
-	checkWin(): boolean {
-		return false;
-	}
-
 	init() {
 		sound.cutsidebgm();
 		sound.loadbgm("survival");
@@ -90,7 +81,7 @@ export class Survival extends GameType {
 			sound.playSFX("garbage");
 			let topOut = false;
 			for (const test in stack.grid) {
-				if (stack.grid[test][0] !== undefined) {
+				if (stack.grid[test][0] != undefined) {
 					topOut = true;
 				}
 			}
@@ -98,7 +89,7 @@ export class Survival extends GameType {
 				piece.dead = true;
 				Game.state = GameState.BlockOut;
 				$setText(Elements.msg, "TOP OUT!");
-				menu(FAILED_MENU_ID);
+				menu(3);
 				Game.types[Game.type].die();
 				sound.playSFX("gameover");
 				sound.playvox("lose");

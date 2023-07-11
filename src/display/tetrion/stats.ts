@@ -69,14 +69,16 @@ export function statisticsStack() {
 		$setText(statsLevel, "");
 	} else if (Game.type === GameType.Marathon || Game.type === 7) {
 		$setText(statsLines, Mutable.lines);
-		levelEle.innerHTML = t("level", Mutable.level + 1);
+		if (Game.params.noGravity != true) {
+			levelEle.innerHTML = t("level", Mutable.level + 1);
+		}
 	} else if (Game.type === GameType.Retro) {
 		$setText(statsLines, Mutable.lines);
 		levelEle.innerHTML = t("level", Mutable.level + 1);
 		if (Mutable.lineDrought < 13) {
 			$setText(statsIpieces, Mutable.lineAmount);
 		}
-		if (Game.params.bType === true) {
+		if (Game.params.bType == true) {
 			$setText(statsLines, Mutable.lineLimit - Mutable.lines);
 		}
 	} else if (Game.type === GameType.Master) {

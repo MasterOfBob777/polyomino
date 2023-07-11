@@ -84,21 +84,6 @@ const waveData = [
 	{ path: "b2b_tspin1", type: "game" },
 	{ path: "b2b_tspin2", type: "game" },
 	{ path: "b2b_tspin3", type: "game" },
-	{ path: "grade1", type: "bgm" },
-	{ path: "grade2", type: "bgm" },
-	{ path: "grade3", type: "bgm" },
-	{ path: "marathon", type: "bgm" },
-	{ path: "marathon2", type: "bgm" },
-	{ path: "marathon3", type: "bgm" },
-	{ path: "master", type: "bgm" },
-	{ path: "masterstrictdire", type: "bgm" },
-	{ path: "masterstrict", type: "bgm" },
-	{ path: "retro", type: "bgm" },
-	{ path: "retropro", type: "bgm" },
-	{ path: "retroprodrought", type: "bgm" },
-	{ path: "sprint", type: "bgm" },
-	{ path: "survial", type: "bgm" },
-	{ path: "survialdire", type: "bgm" },
 ];
 
 class Eles {
@@ -116,13 +101,15 @@ class Eles {
 }
 
 let sidebgmraised = false;
+let soundLoaded = "";
+let amountToLoad = 0;
 let soundsLoaded = 0;
 function addToLoad(name) {
 	soundsLoaded++;
 
 	Eles.soundLoadingBar.value = soundsLoaded;
 	$setText(Eles.soundLabel, name);
-	if (Eles.soundLoadingBar.value === Eles.soundLoadingBar.max) {
+	if (Eles.soundLoadingBar.value == Eles.soundLoadingBar.max) {
 		Eles.soundsLoading.classList.add("gone");
 	}
 }
@@ -141,10 +128,6 @@ class Sound2 {
 	currentMusic: any;
 
 	sideMusic: any;
-
-	soundLoaded = "";
-
-	amountToLoad = 0;
 
 	addSound(iname: string, path: string, loop?: boolean) {
 		this.sounds[iname] = new Howl({
@@ -202,7 +185,7 @@ class Sound2 {
 		});
 	}
 
-	init() {
+	init(type?) {
 		const soundbank = settings.Soundbank;
 		const nextType = settings.NextType;
 		const voicebank = settings.Voicebank;
@@ -212,7 +195,7 @@ class Sound2 {
 
 		if (
 			`${soundbank} ${nextType} ${voicebank} ${nextSound} ${voice} ${sound}` ===
-			this.soundLoaded
+			soundLoaded
 		) {
 			return;
 		}
@@ -222,7 +205,7 @@ class Sound2 {
 		soundsLoaded = 0;
 		Eles.soundLoadingBar.value = 0;
 
-		this.amountToLoad = waveData.length;
+		amountToLoad = waveData.length;
 		Howler.unload();
 		if (!sound) return;
 
@@ -248,7 +231,7 @@ class Sound2 {
 					this.addSound(
 						iname,
 						`assets/sfx/ui/${gametypes[soundbank]}/${iname}_${
-							soundbank === 12 ? languageBase : ""
+							soundbank == 12 ? languageBase : ""
 						}.wav`
 					);
 					break;
@@ -256,9 +239,9 @@ class Sound2 {
 					//TODO: clean up logic here
 					if (nextSound) {
 						let language = "";
-						if (nextType === 3) {
+						if (nextType == 3) {
 							if (
-								navLanguage === "ja" &&
+								navLanguage == "ja" &&
 								[
 									"piece1",
 									"piece2",
@@ -268,25 +251,25 @@ class Sound2 {
 							) {
 								language = "_jp";
 							} else if (
-								(navLanguage === "en-US" ||
-									navLanguage === "en") &&
-								iname === "piece6"
+								(navLanguage == "en-US" ||
+									navLanguage == "en") &&
+								iname == "piece6"
 							) {
 								language = "_us";
 							} else if (
-								languageBase === "zh" &&
-								iname === "piece6"
+								languageBase == "zh" &&
+								iname == "piece6"
 							) {
 								language = "_us";
-							} else if (languageBase === "es") {
+							} else if (languageBase == "es") {
 								language = "_es";
 								if (
-									navLanguage === "es-ES" &&
-									iname === "piece6"
+									navLanguage == "es-ES" &&
+									iname == "piece6"
 								) {
 									language += "_spain";
 								}
-							} else if (languageBase === "fr") {
+							} else if (languageBase == "fr") {
 								language = "_fr";
 							}
 						}
@@ -308,13 +291,13 @@ class Sound2 {
 				case "fixed":
 					this.addSound(
 						iname,
-						`assets/sfx/fixed/${iname}.wav`,
+						"assets/sfx/fixed/" + iname + ".wav",
 						iname === "alarm"
 					);
 					break;
 			}
 		}
-		this.soundLoaded = `${soundbank} ${nextType} ${voicebank} ${nextSound} ${voice} ${sound}`;
+		soundLoaded = `${soundbank} ${nextType} ${voicebank} ${nextSound} ${voice} ${sound}`;
 		Eles.soundLoadingBar.max =
 			Object.keys(this.sounds).length + Object.keys(this.voices).length;
 	}
@@ -333,7 +316,7 @@ class Sound2 {
 
 	playSFX(name, arg?) {
 		let noStop;
-		if (name === "ren/ren") {
+		if (name == "ren/ren") {
 			noStop = true;
 		}
 		if (settings.Sound) {
@@ -440,7 +423,7 @@ class Sound2 {
 	raisesidebgm() {
 		sound.syncbgm();
 		if (settings.Sound) {
-			if (sidebgmraised === false) {
+			if (sidebgmraised == false) {
 				this.music[this.sideMusicName + "start"].fade(
 					0,
 					settings.MusicVol / 100,
@@ -473,7 +456,7 @@ class Sound2 {
 	}
 
 	cutsidebgm() {
-		if (!settings.Sound && sidebgmraised !== true) return;
+		if (!settings.Sound && sidebgmraised != true) return;
 
 		const vol = settings.MusicVol;
 		const musName = this.sideMusicName;

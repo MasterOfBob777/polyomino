@@ -64,8 +64,8 @@ export function resize() {
 	//console.log(pad);
 	content.style.padding =
 		//"0 0";
-		//(pad / 2) + 'px 0';
-		padFinal + "px 0";
+		//(pad / 2) + 'px' + ' 0';
+		padFinal + "px" + " 0";
 
 	stats.style.bottom =
 		//(pad) + 'px';
@@ -103,8 +103,7 @@ export function resize() {
 	msg.style.fontSize = Math.floor(stackCanvas.width / 6) + "px";
 	msg.style.lineHeight = msg.style.fontSize;
 	stats.style.fontSize = Math.floor(stackCanvas.width / 11) + "px";
-	document.documentElement.style.fontSize =
-		Math.floor(stackCanvas.width / 16) + "px";
+	document.documentElement.style.fontSize = Math.floor(stackCanvas.width / 16) + "px";
 
 	for (let i = 0, len = h3.length; i < len; i++) {
 		h3[i].style.lineHeight = Mutable.cellSize * 2 + "px";

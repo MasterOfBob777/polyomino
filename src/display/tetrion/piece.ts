@@ -1,10 +1,10 @@
-import { FAILED_MENU_ID } from "../../components/center/menu/main/overlays/FailedMenu";
-import { menu } from "../../components/center/menu/menuHooks";
-import { Game } from "../../game";
-import { hold } from "../../logic/hold";
-import { draw, drawCell } from "../../logic/view";
-import { scoreNesRefresh } from "../../random_stuff";
+import { $, $setText, clear } from "../../utils/utils";
 import { settings } from "../../settings";
+import { spinCheck, stack } from "./stack";
+import { sound } from "../sound/sound";
+import { preview } from "./preview";
+import { GameState, GameType } from "../../utils/enums";
+import { Game } from "../../game";
 import {
 	Elements,
 	flags,
@@ -14,20 +14,17 @@ import {
 	PieceData,
 	pieces,
 	speedTableTGM,
-	Tetro,
 	WKTableCultris,
 	WKTableDRS,
 	WKTableDX,
-	WKTableSRS
+	WKTableSRS,
 } from "../../utils/data";
-import { GameState, GameType, Ghost } from "../../utils/enums";
-import { getFlag } from "../../utils/keys";
+import { hold } from "../../logic/hold";
+import { draw } from "../../logic/view";
 import { mod } from "../../utils/math";
-import { $, $setText, clear } from "../../utils/utils";
-import { sound } from "../sound/sound";
+import { menu } from "../menu";
 import { MatrixDir, shiftMatrix } from "./matrix";
-import { preview } from "./preview";
-import { spinCheck, stack } from "./stack";
+import { scoreNesRefresh } from "../../random_stuff";
 
 class Piece {
 	x: number;
@@ -36,9 +33,9 @@ class Piece {
 
 	pos: number;
 
-	tetro: Tetro[number];
+	tetro: any;
 
-	index: number;
+	index: any;
 
 	gravity: any;
 
@@ -140,7 +137,7 @@ class Piece {
 		}
 		const lineVector = $<HTMLImageElement>("linevector");
 		const ivector = $("ivalue");
-		if (index === 0 && Game.type === GameType.Retro) {
+		if (index == 0 && Game.type === GameType.Retro) {
 			Mutable.lineDrought = 0;
 			Mutable.lineAmount++;
 			ivector.style.color = "#ffffff";
@@ -150,7 +147,7 @@ class Piece {
 		} else {
 			Mutable.lineDrought++;
 			if (Mutable.lineDrought >= 13) {
-				if (Game.type === GameType.Retro) {
+				if (Game.params.proMode == true) {
 					sound.raisesidebgm();
 				}
 
@@ -163,7 +160,7 @@ class Piece {
 					// sound.playse("droughtintense")
 				}
 				$setText(Elements.statsIpieces, Mutable.lineDrought);
-			} else if (Game.type === GameType.Retro) {
+			} else if (Game.params.proMode == true) {
 				sound.lowersidebgm();
 			}
 		}
@@ -173,9 +170,9 @@ class Piece {
 			sound.playSFX("initialrotate");
 			const curPos = this.pos;
 			const newPos = mod(this.pos + this.irsDir, 4);
-			const _rot = settings.RotSys.offset[this.index];
-			const offsetX = _rot[newPos][0] - _rot[curPos][0];
-			const offsetY = _rot[newPos][1] - _rot[curPos][1];
+			const rot = settings.RotSys.offset[this.index];
+			const offsetX = rot[newPos][0] - rot[curPos][0];
+			const offsetY = rot[newPos][1] - rot[curPos][1];
 			this.tetro = pieces[index].tetro[newPos];
 			if (!this.moveValid(offsetX, offsetY, this.tetro)) {
 				this.tetro = pieces[index].tetro[curPos];
@@ -190,7 +187,6 @@ class Piece {
 		}
 
 		this.lockDelayLimit = settings.LockDelay;
-		const currentGameType = Game.types[Game.type];
 		if (Game.type === GameType.Master) {
 			//Death
 			this.gravity = 20;
@@ -204,27 +200,68 @@ class Piece {
 			}
 		} else if (settings.Gravity !== 0) {
 			this.gravity = Mutable.gravityArr[settings.Gravity - 1];
-		} else if (currentGameType.params.gravityOverride) {
-			this.gravity = currentGameType.params.gravityOverride;
-		} else {
-			const grav = currentGameType.gravityFunc();
-			if (grav) {
-				this.gravity = grav;
+		} else if (Game.type === GameType.Marathon) {
+			//Marathon
+			// if (Scores.level < 20) {
+			// this.gravity = [
+			// 1/63, 1/50, 1/39, 1/30, 1/22, 1/16, 1/12, 1/8,  1/6,  1/4,
+			// 1/3,  1/2,  1,  465/256,  731/256,  1280/256,    1707/256,   14,    19,    20
+			// ]
+			// [Scores.level];
+			// } else {
+			// this.gravity = 20;
+			// this.lockDelayLimit = Math.floor(30 * Math.pow(0.93, (Math.pow(Scores.level-20, 0.8)))); // magic!
+			// }
+			if (Mutable.level < 18) {
+				const x = Mutable.level + 1;
+				this.gravity = 1 / ((0.8 - (x - 1) * 0.007) ** (x - 1) * 60);
+			} else if (Mutable.level < 19) {
+				this.gravity = 19.99;
+			} else {
+				this.gravity = 20;
+				this.lockDelayLimit = Math.floor(
+					30 * Math.pow(0.93, Math.pow(Mutable.level - 19, 0.8))
+				); // magic!
 			}
-		}
-
-		if (settings.LockDelay !== 0) {
-			this.lockDelayLimit = settings.LockDelay;
-		} else if (currentGameType.params.lockDelayOverride) {
-			this.lockDelayLimit = currentGameType.params.lockDelayOverride;
-		} else {
-			const lockDelay = currentGameType.lockDelayFunc();
-			if (lockDelay) {
-				this.lockDelayLimit = lockDelay;
+		} else if (Game.type === GameType.Retro) {
+			//Classic
+			if (Mutable.level <= 29) {
+				this.gravity = [
+					1 / 48,
+					1 / 43,
+					1 / 38,
+					1 / 33,
+					1 / 28,
+					1 / 23,
+					1 / 18,
+					1 / 13,
+					1 / 8,
+					1 / 6,
+					1 / 5,
+					1 / 5,
+					1 / 5,
+					1 / 4,
+					1 / 4,
+					1 / 4,
+					1 / 3,
+					1 / 3,
+					1 / 3,
+					1 / 2,
+					1 / 2,
+					1 / 2,
+					1 / 2,
+					1 / 2,
+					1 / 2,
+					1 / 2,
+					1 / 2,
+					1 / 2,
+					1 / 2,
+					1,
+				][Mutable.level];
+			} else {
+				this.gravity = 1;
 			}
-		}
-
-		if (Game.type === GameType.Grades) {
+		} else if (Game.type === GameType.Grades) {
 			//tgm
 
 			let speedI = 0;
@@ -256,6 +293,12 @@ class Piece {
 		} else {
 			this.gravity = gravityUnit;
 		}
+		if (Game.type === GameType.Sprint) {
+			if (this.lockDelayLimit < 8) {
+				this.lockDelayLimit = 8;
+			}
+		}
+
 		// Check for blockout.
 		let blockOut = false;
 		if (!this.moveValid(0, 0, this.tetro)) {
@@ -271,14 +314,17 @@ class Piece {
 				piece.y -= 1;
 			}
 		}
-		if (blockOut === true) {
+		if (blockOut == true) {
 			if (Game.type !== (8 || 9)) {
 				piece.y -= 2;
 			}
 			Game.state = GameState.BlockOut;
 			$setText(Elements.msg, "BLOCK OUT!");
-			currentGameType.die();
-			menu(FAILED_MENU_ID);
+			if (Game.params.tournament == true) {
+				$setText(Elements.msg, "GAME SET");
+			}
+			Game.types[Game.type].die();
+			menu(3);
 			sound.playSFX("gameover");
 			sound.playvox("lose");
 			return;
@@ -345,7 +391,7 @@ class Piece {
 		const rot = rotSys.offset[this.index];
 		const offsetX = rot[newPos][0] - rot[curPos][0];
 		const offsetY = rot[newPos][1] - rot[curPos][1];
-		let kickList: number[][] = [];
+		let kickList = [];
 		if (rotSys.id === 2 || rotSys.id === 14) {
 			//ARS, Plus
 			if (this.index === PieceData.I.index) {
@@ -394,7 +440,7 @@ class Piece {
 		Mutable.spinX = Math.floor(piece.x);
 		Mutable.spinY = Math.floor(piece.y);
 		spinCheck();
-		if (settings.Soundbank === 0 && Mutable.isSpin) {
+		if (settings.Soundbank == 0 && Mutable.isSpin) {
 			sound.playSFX("tspin0");
 		}
 		Mutable.isSpin = false;
@@ -404,8 +450,8 @@ class Piece {
 	checkShift() {
 		// Shift key pressed event.
 		if (
-			getFlag(Mutable.keysDown, flags.moveLeft) &&
-			!(getFlag(Mutable.lastKeys, flags.moveLeft))
+			Mutable.keysDown & flags.moveLeft &&
+			!(Mutable.lastKeys & flags.moveLeft)
 		) {
 			this.shiftDelay = 0;
 			this.arrDelay = 0;
@@ -413,8 +459,8 @@ class Piece {
 			this.shiftDir = -1;
 			this.finesse++;
 		} else if (
-			getFlag(Mutable.keysDown, flags.moveRight) &&
-			!(getFlag(Mutable.lastKeys, flags.moveRight))
+			Mutable.keysDown & flags.moveRight &&
+			!(Mutable.lastKeys & flags.moveRight)
 		) {
 			this.shiftDelay = 0;
 			this.arrDelay = 0;
@@ -426,9 +472,9 @@ class Piece {
 		// Shift key released event.
 		if (
 			this.shiftDir === 1 &&
-			!(getFlag(Mutable.keysDown, flags.moveRight)) &&
-			getFlag(Mutable.lastKeys, flags.moveRight) &&
-			getFlag(Mutable.keysDown, flags.moveLeft)
+			!(Mutable.keysDown & flags.moveRight) &&
+			Mutable.lastKeys & flags.moveRight &&
+			Mutable.keysDown & flags.moveLeft
 		) {
 			this.shiftDelay = 0;
 			this.arrDelay = 0;
@@ -436,31 +482,31 @@ class Piece {
 			this.shiftDir = -1;
 		} else if (
 			this.shiftDir === -1 &&
-			!(getFlag(Mutable.keysDown, flags.moveLeft)) &&
-			getFlag(Mutable.lastKeys, flags.moveLeft) &&
-			getFlag(Mutable.keysDown, flags.moveRight)
+			!(Mutable.keysDown & flags.moveLeft) &&
+			Mutable.lastKeys & flags.moveLeft &&
+			Mutable.keysDown & flags.moveRight
 		) {
 			this.shiftDelay = 0;
 			this.arrDelay = 0;
 			this.shiftReleased = true;
 			this.shiftDir = 1;
 		} else if (
-			!(getFlag(Mutable.keysDown, flags.moveRight)) &&
-			getFlag(Mutable.lastKeys, flags.moveRight) &&
-			getFlag(Mutable.keysDown, flags.moveLeft)
+			!(Mutable.keysDown & flags.moveRight) &&
+			Mutable.lastKeys & flags.moveRight &&
+			Mutable.keysDown & flags.moveLeft
 		) {
 			this.shiftDir = -1;
 		} else if (
-			!(getFlag(Mutable.keysDown, flags.moveLeft)) &&
-			getFlag(Mutable.lastKeys, flags.moveLeft) &&
-			getFlag(Mutable.keysDown, flags.moveRight)
+			!(Mutable.keysDown & flags.moveLeft) &&
+			Mutable.lastKeys & flags.moveLeft &&
+			Mutable.keysDown & flags.moveRight
 		) {
 			this.shiftDir = 1;
 		} else if (
-			(!(getFlag(Mutable.keysDown, flags.moveLeft)) &&
-				getFlag(Mutable.lastKeys, flags.moveLeft)) ||
-			(!(getFlag(Mutable.keysDown, flags.moveRight)) &&
-				getFlag(Mutable.lastKeys, flags.moveRight))
+			(!(Mutable.keysDown & flags.moveLeft) &&
+				Mutable.lastKeys & flags.moveLeft) ||
+			(!(Mutable.keysDown & flags.moveRight) &&
+				Mutable.lastKeys & flags.moveRight)
 		) {
 			this.shiftDelay = 0;
 			this.arrDelay = 0;
@@ -510,13 +556,13 @@ class Piece {
 		}
 		if (
 			flags.moveLeft3 & Mutable.keysDown &&
-			!(getFlag(Mutable.lastKeys, flags.moveLeft3))
+			!(Mutable.lastKeys & flags.moveLeft3)
 		) {
 			this.multiShift(-1, 3);
 			this.finesse++;
 		} else if (
 			flags.moveRight3 & Mutable.keysDown &&
-			!(getFlag(Mutable.lastKeys, flags.moveRight3))
+			!(Mutable.lastKeys & flags.moveRight3)
 		) {
 			this.multiShift(1, 3);
 			this.finesse++;
@@ -529,7 +575,7 @@ class Piece {
 		const DAS = settings.DAS;
 		if (ARR === 0 && this.shiftDelay === DAS) {
 			if (this.moveValid(direction, 0, this.tetro)) {
-				if (direction === 1) {
+				if (direction == 1) {
 					shiftMatrix(MatrixDir.RIGHT);
 				} else {
 					shiftMatrix(MatrixDir.LEFT);
@@ -548,12 +594,12 @@ class Piece {
 				}
 			}
 		} else if (this.moveValid(direction, 0, this.tetro)) {
-			if (this.delayCounting === true) {
+			if (this.delayCounting == true) {
 				this.moveLimit++;
 			}
 			this.x += direction;
 			sound.playSFX("move");
-		} else if (direction === 1) {
+		} else if (direction == 1) {
 			shiftMatrix(MatrixDir.RIGHT);
 		} else {
 			shiftMatrix(MatrixDir.LEFT);
@@ -599,7 +645,7 @@ class Piece {
 	}
 
 	hardDrop() {
-		if (Game.types[Game.type].params.allowHardDrop) {
+		if (Game.type !== 8 || Game.params.allowHardDrop == true) {
 			if (Game.params.classicRule === true) {
 				Mutable.usedHardDrop = false;
 			} else {
@@ -646,10 +692,10 @@ class Piece {
 			if (!this.held) {
 				if (hold.piece !== undefined) {
 					hold.piece = this.index;
-					this.new(temp);
+					this["new"](temp);
 				} else {
 					hold.piece = this.index;
-					this.new(preview.next());
+					this["new"](preview.next());
 				}
 				this.held = true;
 				$("a").classList.add("greyed");
@@ -683,13 +729,13 @@ class Piece {
 		if (
 			Game.type === GameType.Grades ||
 			(Game.type === GameType.Master &&
-				(Game.params.delayStrictness === 1 ||
-					Game.params.delayStrictness === 2))
+				(Game.params.delayStrictness == 1 ||
+					Game.params.delayStrictness == 2))
 		) {
 			if (
 				(Game.params.classicRule !== true &&
 					Game.type === GameType.Grades) ||
-				Game.params.delayStrictness === 1
+				Game.params.delayStrictness == 1
 			) {
 				if (this.landed) {
 					this.delayCounting = true;
@@ -700,8 +746,8 @@ class Piece {
 					this.lockDelay = 0;
 				}
 			} else if (
-				Game.params.classicRule === true ||
-				Game.params.delayStrictness === 2
+				Game.params.classicRule == true ||
+				Game.params.delayStrictness == 2
 			) {
 				if (this.classicRuleDelayLast < Math.floor(this.y)) {
 					this.lockDelay = 0;
@@ -747,7 +793,7 @@ class Piece {
 						Mutable.lastYFrame = 0;
 					}
 					sound.playSFX("lock");
-					if (Game.params.classicRule === true) {
+					if (Game.params.classicRule == true) {
 						this.lockDelay = 0;
 					}
 				}
@@ -755,6 +801,9 @@ class Piece {
 				this.dirty = true;
 				if (Game.state === GameState.Loss) {
 					// lockout! don't spawn next piece
+					if (Game.params.tournament === true) {
+						$setText(Elements.msg, "GAME SET");
+					}
 					return;
 				} else {
 					this.held = false;
@@ -805,14 +854,14 @@ class Piece {
 								this.areLimit += Mutable.lineAREb;
 							}
 						} else if (Game.type === GameType.Marathon) {
-							if (Game.params.entryDelay === 1) {
+							if (Game.params.entryDelay == 1) {
 								Mutable.lineARE = 12;
 								this.areLimit = 6;
 								if (Mutable.lineClear !== 0) {
 									this.areLimit = 24;
 								}
 							}
-							if (Game.params.entryDelay === 2) {
+							if (Game.params.entryDelay == 2) {
 								Mutable.lineARE = 40;
 								this.areLimit = 25;
 								if (Mutable.lineClear !== 0) {
@@ -824,7 +873,7 @@ class Piece {
 						}
 						if (this.areLimit === 0) {
 							// IRS IHS not possible
-							this.new(preview.next()); // may die-in-one-frame
+							this["new"](preview.next()); // may die-in-one-frame
 						} else {
 							Game.state = GameState.Paused;
 							this.are = 0;
@@ -902,13 +951,13 @@ class Piece {
 				flags.moveDown & Mutable.keysDown &&
 				Game.type === GameType.Grades
 			) {
-				if (Game.params.classicRule === true) {
+				if (Game.params.classicRule == true) {
 					this.lockDelay = this.lockDelayLimit;
 				} else {
 					this.lockDelay += 3;
 				}
 			}
-			if (piece.gravity !== 0) {
+			if (!Game.params.noGravity) {
 				this.lockDelay++;
 			}
 
@@ -949,7 +998,7 @@ class Piece {
 
 	drawGhost() {
 		Elements.activeCtx.globalAlpha = 0.4;
-		if (settings.Ghost === Ghost.Grey && !this.landed) {
+		if (settings.Ghost === 0 && !this.landed) {
 			draw(
 				this.tetro,
 				this.x,
@@ -958,7 +1007,7 @@ class Piece {
 				Elements.activeCtx,
 				0
 			);
-		} else if (settings.Ghost === Ghost.Colored && !this.landed) {
+		} else if (settings.Ghost === 1 && !this.landed) {
 			draw(
 				this.tetro,
 				this.x,
@@ -968,25 +1017,6 @@ class Piece {
 				settings.RotSys.color[this.index]
 			);
 		}
-
-		const customGhost = Game.types[Game.type].customGhostDisplay();
-		if (customGhost) {
-			const len = customGhost.length;
-			const width = customGhost[0].length;
-			for (let y = 0; y < width; y++) {
-				for (let x = 0; x < len; x++) {
-					if (customGhost[x][y]) {
-						drawCell(
-							y,
-							x + stack.height - stack.hiddenHeight - len,
-							customGhost[x][y],
-							Elements.activeCtx
-						);
-					}
-				}
-			}
-		}
-
 		Elements.activeCtx.globalAlpha = 1;
 	}
 }

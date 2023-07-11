@@ -1,7 +1,6 @@
 import { Game } from "../game";
 import { settings } from "../settings";
-import { binds, flags, Mutable, Elements, Tetro } from "../utils/data";
-import { getFlag, setFlag } from "../utils/keys";
+import { binds, flags, Mutable, Elements } from "../utils/data";
 
 /**
  * Draws grid in background.
@@ -20,13 +19,7 @@ export function bg(ctx: CanvasRenderingContext2D) {
 /**
  * Draws a pre-rendered mino.
  */
-export function drawCell(
-	x: number,
-	y: number,
-	color: number,
-	ctx: CanvasRenderingContext2D,
-	darkness?: number
-) {
+export function drawCell(x, y, color, ctx, darkness?: number) {
 	const spriteCanvas = Elements.spriteCanvas;
 	x = Math.floor(x * Mutable.cellSize);
 	y = Math.floor(y * Mutable.cellSize);
@@ -247,7 +240,7 @@ export const ppt = [
 
 export function makeSprite() {
 	const spriteCanvas = Elements.spriteCanvas;
-	const spriteCtx = Elements.spriteCtx;
+	const spriteCtx = Elements. spriteCtx;
 
 	spriteCanvas.width = Mutable.cellSize * 10;
 	spriteCanvas.height = Mutable.cellSize;
@@ -927,7 +920,7 @@ export function makeSprite() {
  * @param {Boolean} [stroke = true] Whether to stroke the rectangle.
  */
 export function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
-	if (typeof stroke === "undefined") {
+	if (typeof stroke == "undefined") {
 		stroke = true;
 	}
 	if (typeof radius === "undefined") {
@@ -968,14 +961,7 @@ export function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
 /**
  * Draws a 2d array of minos.
  */
-export function draw(
-	tetro: Tetro[number],
-	cx: number,
-	cy: number,
-	ctx: CanvasRenderingContext2D,
-	color?: number,
-	darkness?
-) {
+export function draw(tetro, cx, cy, ctx, color, darkness?) {
 	for (let x = 0, len = tetro.length; x < len; x++) {
 		for (let y = 0, wid = tetro[x].length; y < wid; y++) {
 			if (tetro[x][y]) {
@@ -1137,54 +1123,54 @@ export function keyUpDown(e) {
 		} else if (e.type === "keyup") {
 			if (
 				e.keyCode === binds.moveLeft &&
-				getFlag(Mutable.keysDown, flags.moveLeft)
+				Mutable.keysDown & flags.moveLeft
 			) {
-				Mutable.keysDown = setFlag(Mutable.keysDown, flags.moveLeft);
+				Mutable.keysDown ^= flags.moveLeft;
 			} else if (
 				e.keyCode === binds.moveRight &&
-				getFlag(Mutable.keysDown, flags.moveRight)
+				Mutable.keysDown & flags.moveRight
 			) {
-				Mutable.keysDown = setFlag(Mutable.keysDown, flags.moveRight);
+				Mutable.keysDown ^= flags.moveRight;
 			} else if (
 				e.keyCode === binds.moveDown &&
-				getFlag(Mutable.keysDown, flags.moveDown)
+				Mutable.keysDown & flags.moveDown
 			) {
-				Mutable.keysDown = setFlag(Mutable.keysDown, flags.moveDown);
+				Mutable.keysDown ^= flags.moveDown;
 			} else if (
 				e.keyCode === binds.hardDrop &&
-				getFlag(Mutable.keysDown, flags.hardDrop)
+				Mutable.keysDown & flags.hardDrop
 			) {
-				Mutable.keysDown = setFlag(Mutable.keysDown, flags.hardDrop);
+				Mutable.keysDown ^= flags.hardDrop;
 			} else if (
 				e.keyCode === binds.rotRight &&
-				getFlag(Mutable.keysDown, flags.rotRight)
+				Mutable.keysDown & flags.rotRight
 			) {
-				Mutable.keysDown = setFlag(Mutable.keysDown, flags.rotRight);
+				Mutable.keysDown ^= flags.rotRight;
 			} else if (
 				e.keyCode === binds.rotLeft &&
-				getFlag(Mutable.keysDown, flags.rotLeft)
+				Mutable.keysDown & flags.rotLeft
 			) {
-				Mutable.keysDown = setFlag(Mutable.keysDown, flags.rotLeft);
+				Mutable.keysDown ^= flags.rotLeft;
 			} else if (
 				e.keyCode === binds.rot180 &&
-				getFlag(Mutable.keysDown, flags.rot180)
+				Mutable.keysDown & flags.rot180
 			) {
-				Mutable.keysDown = setFlag(Mutable.keysDown, flags.rot180);
+				Mutable.keysDown ^= flags.rot180;
 			} else if (
 				e.keyCode === binds.moveLeft3 &&
-				getFlag(Mutable.keysDown, flags.moveLeft3)
+				Mutable.keysDown & flags.moveLeft3
 			) {
-				Mutable.keysDown = setFlag(Mutable.keysDown, flags.moveLeft3);
+				Mutable.keysDown ^= flags.moveLeft3;
 			} else if (
 				e.keyCode === binds.moveRight3 &&
-				getFlag(Mutable.keysDown, flags.moveRight3)
+				Mutable.keysDown & flags.moveRight3
 			) {
-				Mutable.keysDown = setFlag(Mutable.keysDown, flags.moveRight3);
+				Mutable.keysDown ^= flags.moveRight3;
 			} else if (
 				e.keyCode === binds.holdPiece &&
-				getFlag(Mutable.keysDown, flags.holdPiece)
+				Mutable.keysDown & flags.holdPiece
 			) {
-				Mutable.keysDown = setFlag(Mutable.keysDown, flags.holdPiece);
+				Mutable.keysDown ^= flags.holdPiece;
 			}
 		}
 	}

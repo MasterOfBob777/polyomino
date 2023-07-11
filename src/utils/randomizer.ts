@@ -3,16 +3,24 @@
  */
 //TODO put random seed method in here.
 
-import { wrapGenerator } from "./generators";
+class Random {
+	seed: number;
 
-let seed = Math.floor(Math.random() * 2147483647);
-export const rng = wrapGenerator(function* () {
-	while (true) yield (seed = (seed * 16807) % 2147483647) / 2147483647;
-});
+	constructor() {
+		this.seed = 1;
+	}
 
-export function setRNGSeed(newSeed: number) {
-	seed = newSeed;
+	next(): number {
+		// Returns a float between 0.0, and 1.0
+		return this.gen() / 2147483647;
+	}
+
+	gen() {
+		return (this.seed = (this.seed * 16807) % 2147483647);
+	}
 }
+
+export const rng = new Random();
 
 export function randomInt(min: number, max: number): number {
 	return Math.floor(rng.next() * (max - min + 1)) + min;

@@ -1,56 +1,64 @@
-import { FAILED_MENU_ID } from "./components/center/menu/main/overlays/FailedMenu";
-import { PAUSE_MENU_ID } from "./components/center/menu/main/overlays/PauseMenu";
-import { menu } from "./components/center/menu/menuHooks";
-import { getPB } from "./components/utils/PBView";
-import { resize } from "./display/size";
+import { GameState, GameType as GameTypeEnum, Gravity } from "./utils/enums";
+import { GameType } from "./gametypes/base";
+import { menu } from "./display/menu";
+import { $, $setText, clear } from "./utils/utils";
+import { run as runReplay } from "./leaderboard/replays";
+import { rng } from "./utils/randomizer";
+import {
+	flags,
+	gravityUnit,
+	sprintRanks,
+	Mutable,
+	Elements,
+} from "./utils/data";
+import { settings } from "./settings";
 import { sound } from "./display/sound/sound";
-import { updateMatrixPosition } from "./display/tetrion/matrix";
-import { clearTetrisMessage } from "./display/tetrion/messages";
-import { piece, resetPiece } from "./display/tetrion/piece";
 import { preview } from "./display/tetrion/preview";
 import { stack } from "./display/tetrion/stack";
-import { statistics, statisticsStack } from "./display/tetrion/stats";
-import { GameType } from "./gametypes/base";
-import { Dig } from "./gametypes/dig";
-import { Grades } from "./gametypes/grades";
-import { Marathon } from "./gametypes/marathon";
-import { Master } from "./gametypes/master";
-import { Retro } from "./gametypes/retro";
-import { ScoreAttack } from "./gametypes/scoreattack";
-import { Sprint } from "./gametypes/sprint";
-import { Survival } from "./gametypes/survival";
-import { run as runReplay } from "./leaderboard/replays";
+import { resize } from "./display/size";
+import { piece, resetPiece } from "./display/tetrion/piece";
 import { hold } from "./logic/hold";
 import { makeSprite } from "./logic/view";
+import { t } from "./utils/lang";
+import { updateMatrixPosition } from "./display/tetrion/matrix";
+import { statistics, statisticsStack } from "./display/tetrion/stats";
+import { clearTetrisMessage } from "./display/tetrion/messages";
 import {
 	scoreNesRefresh,
 	tetRateNesRefresh,
 	updateScoreTime,
 } from "./random_stuff";
-import { settings } from "./settings";
-import { Elements, flags, gravityUnit, Mutable } from "./utils/data";
-import { GameState, GameType as GameTypeEnum, Gravity } from "./utils/enums";
-import { range2x2 } from "./utils/generators";
-import { getFlag } from "./utils/keys";
-import { t } from "./utils/lang";
-import { setRNGSeed } from "./utils/randomizer";
-import { $, $setText, clear } from "./utils/utils";
+import { Sprint } from "./gametypes/sprint";
+import { Dig } from "./gametypes/dig";
+import { Marathon } from "./gametypes/marathon";
+import { Master } from "./gametypes/master";
+import { Retro } from "./gametypes/retro";
+import { ScoreAttack } from "./gametypes/scoreattack";
+import { Grades } from "./gametypes/grades";
+import { Survival } from "./gametypes/survival";
+import { getPB } from "./components/utils/PBView";
 
 // TODO: Check all settings and make them work better with the new settings system.
-// TODO: kill big loop, should be more compartmentalized
 
 export class Game {
 	static type: GameTypeEnum = 0;
 
 	static params: {
+		[x: string]: any;
 		proMode?: any;
-		pieceSet?: any;
+		tournament?: boolean;
+		allowHardDrop?: any;
 		classicRule?: any;
 		delayStrictness?: any;
-
 		entryDelay?: any;
+		noGravity?: any;
+		pieceSet?: any;
 		bType?: any;
+		startingLevel?: any;
 		backFire?: any;
+		recordPB?: any;
+		marathonLimit?: any;
+		levelCap?: any;
 		invisibleMarathon?: any;
 		retroSkin?: any;
 		digraceType?: any;
@@ -114,7 +122,7 @@ export class Game {
 		Mutable.frame = 0;
 		Mutable.frameSkipped = 0;
 		Mutable.lastPos = "reset";
-		stack.new(10, 20, 4);
+		stack["new"](10, 20, 4);
 		Mutable.toGreyRow = stack.height - 1;
 		hold.piece = undefined;
 		if (settings.Gravity === Gravity.Auto) Mutable.gravity = gravityUnit;
@@ -126,9 +134,16 @@ export class Game {
 		Mutable.score = 0n;
 		Mutable.piecesSet = 0;
 
-		Mutable.level = Game.types[Game.type].params?.startingLevel ?? 0;
+		if (Game.type == GameTypeEnum.Retro) {
+			Mutable.level = Game.params.startingLevel;
+		} else {
+			Mutable.level = 0;
+		}
 
 		Mutable.digLines = [];
+		if (Game.params.noGravity == true) {
+			settings.Gravity = 1;
+		}
 
 		clear(Elements.stackCtx);
 		clear(Elements.activeCtx);
@@ -144,7 +159,7 @@ export class Game {
 			Game.types[Game.type].init();
 
 			const seed = Math.floor(Math.random() * 2147483645) + 1;
-			setRNGSeed(seed);
+			rng.seed = seed;
 
 			Mutable.replay = {};
 			Mutable.replay.keys = {};
@@ -171,16 +186,22 @@ export class Game {
 			Game.type !== GameTypeEnum.ScoreAttack &&
 			Game.type !== GameTypeEnum.Retro
 		) {
-			if (Game.params.bType) {
+			if (Game.params.bType == true) {
 				Mutable.lineLimit = 25;
 			} else {
 				Mutable.lineLimit = 0;
 			}
 		}
 
+		if (Game.params.tournament === true) {
+			$("b").classList.add("tournament");
+		} else {
+			$("b").classList.remove("tournament");
+		}
+
 		//html5 mobile device sound
 
-		menu(-1);
+		menu();
 
 		// Only start a loop if one is not running already.
 		// don't keep looping when not played
@@ -218,7 +239,7 @@ export class Game {
 			Game.paused = true;
 			Game.startPauseTime = Date.now();
 			$setText(Elements.msg, "Paused");
-			menu(PAUSE_MENU_ID);
+			menu(4);
 		}
 	}
 
@@ -226,13 +247,12 @@ export class Game {
 		Game.paused = false;
 		Game.pauseTime += Date.now() - Game.startPauseTime;
 		$setText(Elements.msg, "");
-		menu(-1);
+		menu();
 		// console.log("start inloop", inloop);
 		Game.inloop = true;
 		window.requestAnimationFrame(() => Game.gameLoop());
 	}
 
-	// TODO: remove this
 	static defaultGameSettings = {
 		marathon: {
 			limit: {
@@ -330,28 +350,57 @@ export class Game {
 
 	static startTime;
 
-	private static calculateFinesse() {
+	static mainLoop() {
+		// for breaking
+		if (
+			!(Mutable.lastKeys & flags.holdPiece) &&
+			flags.holdPiece & Mutable.keysDown
+		) {
+			piece.hold(); // may cause death
+		}
+		if (Game.state === GameState.Loss) {
+			return;
+		}
+
 		if (
 			flags.rotLeft & Mutable.keysDown &&
-			!getFlag(Mutable.lastKeys, flags.rotLeft)
+			!(Mutable.lastKeys & flags.rotLeft)
 		) {
 			piece.rotate(-1);
 			piece.finesse++;
 		} else if (
 			flags.rotRight & Mutable.keysDown &&
-			!getFlag(Mutable.lastKeys, flags.rotRight)
+			!(Mutable.lastKeys & flags.rotRight)
 		) {
 			piece.rotate(1);
 			piece.finesse++;
 		} else if (
 			flags.rot180 & Mutable.keysDown &&
-			!getFlag(Mutable.lastKeys, flags.rot180)
+			!(Mutable.lastKeys & flags.rot180)
 		) {
 			//if (Game.type !== 8 || true) {
 			piece.rotate(2);
 			piece.finesse++;
 			//}
 		}
+
+		piece.checkShift();
+
+		if (flags.moveDown & Mutable.keysDown) {
+			piece.shiftDown();
+			//piece.finesse++;
+		}
+		if (
+			!(Mutable.lastKeys & flags.hardDrop) &&
+			flags.hardDrop & Mutable.keysDown
+		) {
+			Mutable.frameLastHarddropDown = Mutable.frame;
+			piece.hardDrop();
+		}
+
+		piece.update(); // may turn to locked, even lock out death.
+
+		Game.types[Game.type].update();
 	}
 
 	/**
@@ -371,34 +420,7 @@ export class Game {
 		}
 		*/
 
-		// for breaking
-		if (
-			!getFlag(Mutable.lastKeys, flags.holdPiece) &&
-			flags.holdPiece & Mutable.keysDown
-		) {
-			piece.hold(); // may cause death
-		}
-		if (Game.state !== GameState.Loss) {
-			Game.calculateFinesse();
-
-			piece.checkShift();
-
-			if (flags.moveDown & Mutable.keysDown) {
-				piece.shiftDown();
-				//piece.finesse++;
-			}
-			if (
-				!getFlag(Mutable.lastKeys, flags.hardDrop) &&
-				flags.hardDrop & Mutable.keysDown
-			) {
-				Mutable.frameLastHarddropDown = Mutable.frame;
-				piece.hardDrop();
-			}
-
-			piece.update(); // may turn to locked, even lock out death.
-
-			Game.types[Game.type].update();
-		}
+		Game.mainLoop();
 
 		updateScoreTime();
 
@@ -411,30 +433,66 @@ export class Game {
 		//if (Mutable.frame % 60 == 0) console.log("running");
 		const fps = 60;
 		updateMatrixPosition();
+		if (Mutable.lockflash > 0) {
+			if (piece.tetro != undefined) {
+				for (let i = 0; i < 4; i++) {
+					for (let j = 0; j < 4; j++) {
+						if (Mutable.lockflashTetro[i][j] > 0) {
+							Elements.stackCtx.fillStyle = "#ffffff";
+							Elements.stackCtx.fillRect(
+								(Mutable.lockflashX + i) * Mutable.cellSize,
+								(Math.floor(Mutable.lockflashY + j) - 4) *
+									Mutable.cellSize,
+								Mutable.cellSize,
+								Mutable.cellSize
+							);
+						}
+					}
+				}
+			}
+			Mutable.lockflash--;
+		} else if (Mutable.lockflashOn) {
+			stack.draw();
 
-		Game.handleLockflash();
-
+			Mutable.lockflash = 0;
+			Mutable.lockflashOn = false;
+		}
 		if (
-			(Game.state !== GameState.Normal &&
-				Game.state !== GameState.Paused &&
-				Game.state !== GameState.Countdown) ||
-			Mutable.killAllbgm
+			(Game.state !== 0 && Game.state !== 4 && Game.state !== 2) ||
+			Mutable.killAllbgm == true
 		) {
 			sound.killbgm();
 			Mutable.alarm = false;
 			sound.stopSFX("alarm");
 			$("bgStack").classList.remove("alarm");
 		}
+		const timeEle = $("time");
+		if (Game.types[Game.type].savePB) {
+			const pb = getPB(Game.types[Game.type].pbKey);
+			if (Mutable.scoreTime >= pb + 100) {
+				Elements.timeCtx.fillStyle = "#f00";
+				timeEle.classList.add("drought-flash");
 
-		Game.handlePB();
+				if (settings.ResetPB) {
+					Game.init(Game.type, Game.params);
+				}
+			} else {
+				Elements.timeCtx.fillStyle = "#fff";
+				timeEle.classList.remove("drought-flash");
+			}
+		} else {
+			Elements.timeCtx.fillStyle = "#fff";
+			timeEle.classList.remove("drought-flash");
+		}
 
-		if (!Game.paused && Game.state !== GameState.NotPlayed) {
+		if (!Game.paused && Game.state !== 3) {
+			// eslint-disable-next-line @typescript-eslint/unbound-method
 			window.requestAnimationFrame(Game.gameLoop);
 
 			const repeat =
 				Math.floor(
 					((Date.now() - Game.startTime - Game.pauseTime) / 1000) *
-						fps
+					fps
 				) - Mutable.frame;
 			if (repeat > 1) {
 				Mutable.frameSkipped += repeat - 1;
@@ -445,20 +503,306 @@ export class Game {
 			for (let repf = 0; repf < repeat; repf++) {
 				//TODO check to see how pause works in replays.
 
-				switch (Game.state) {
-					case GameState.Normal:
-						Game.update();
-						break;
+				if (Game.state === GameState.Normal) {
+					// Playing
 
-					case GameState.Paused:
-					case GameState.Countdown:
-						Game.initalInputs(fps);
-						break;
+					Game.update();
+				} else if (
+					Game.state === GameState.Countdown ||
+					Game.state === GameState.Paused
+				) {
+					if (
+						Mutable.lastKeys !== Mutable.keysDown &&
+						!Mutable.watchingReplay
+					) {
+						Mutable.replay.keys[Mutable.frame] = Mutable.keysDown;
+					} else if (Mutable.frame in Mutable.replay.keys) {
+						Mutable.keysDown = Mutable.replay.keys[Mutable.frame];
+					}
+					// DAS Preload
+					if (Mutable.keysDown & flags.moveLeft) {
+						// if (Game.params.classicTuning !== true) {
+						piece.shiftDelay = settings.DAS;
+						// }
 
-					case GameState.Loss:
-					case GameState.Win:
-						Game.doneAnimation();
-						break;
+						piece.shiftReleased = false;
+						piece.shiftDir = -1;
+					} else if (Mutable.keysDown & flags.moveRight) {
+						// if (Game.params.classicTuning !== true) {
+						piece.shiftDelay = settings.DAS;
+						// }
+						piece.shiftReleased = false;
+						piece.shiftDir = 1;
+					} else {
+						piece.shiftDelay = 0;
+						piece.shiftReleased = true;
+						piece.shiftDir = 0;
+					}
+					if (settings.IRSMode != 0) {
+						if (
+							flags.rotLeft & Mutable.keysDown &&
+							!(Mutable.lastKeys & flags.rotLeft)
+						) {
+							const amt = 3;
+							if (settings.IRSMode == 3) {
+								piece.irsDir =
+									((piece.irsDir + 1 + amt) % 4) - 1;
+							} else {
+								piece.irsDir = -1;
+							}
+							if (settings.InitialVis) {
+								sound.playSFX("rotate");
+								preview.draw();
+							}
+						} else if (
+							flags.rotRight & Mutable.keysDown &&
+							!(Mutable.lastKeys & flags.rotRight)
+						) {
+							const amt = 1;
+							if (settings.IRSMode == 3) {
+								piece.irsDir =
+									((piece.irsDir + 1 + amt) % 4) - 1;
+							} else {
+								piece.irsDir = amt;
+							}
+							if (settings.InitialVis) {
+								sound.playSFX("rotate");
+								preview.draw();
+							}
+						} else if (
+							flags.rot180 & Mutable.keysDown &&
+							!(Mutable.lastKeys & flags.rot180)
+						) {
+							const amt = 2;
+							if (settings.IRSMode == 3) {
+								piece.irsDir =
+									((piece.irsDir + 1 + amt) % 4) - 1;
+							} else {
+								piece.irsDir = amt;
+							}
+
+							if (settings.InitialVis) {
+								sound.playSFX("rotate");
+								preview.draw();
+							}
+						} else if (
+							piece.irsDir != 0 &&
+							(flags.rotLeft & Mutable.keysDown) == 0 &&
+							(flags.rotRight & Mutable.keysDown) == 0 &&
+							(flags.rot180 & Mutable.keysDown) == 0 &&
+							settings.IRSMode == 2
+						) {
+							piece.irsDir = 0;
+							if (settings.InitialVis) {
+								sound.playSFX("rotate");
+								preview.draw();
+							}
+						}
+					}
+					const irsIndicator = $("irs-indicator");
+					if (
+						!(Mutable.lastKeys & flags.holdPiece) &&
+						flags.holdPiece & Mutable.keysDown &&
+						piece.ihs == false &&
+						settings.IHSMode != 0
+					) {
+						if (Game.type !== 8) {
+							piece.ihs = true;
+							irsIndicator.classList.add("gone");
+							if (settings.InitialVis) {
+								hold.draw();
+								preview.draw();
+							}
+						}
+					} else if (
+						piece.ihs == true &&
+						(flags.holdPiece & Mutable.keysDown) !== 16 &&
+						settings.IHSMode == 2
+					) {
+						if (Game.type !== 8) {
+							piece.ihs = false;
+							$("ihs-indicator").classList.add("gone");
+							if (settings.InitialVis) {
+								hold.draw();
+								preview.draw();
+							}
+						}
+					}
+					if (Mutable.lastKeys !== Mutable.keysDown) {
+						Mutable.lastKeys = Mutable.keysDown;
+					}
+					const { delayStrictness, tournament } = Game.params;
+					let time1;
+					let time2;
+					if (tournament === true) {
+						time1 = 10;
+						time2 = 20;
+					} else {
+						time1 = 5;
+						time2 = 10;
+					}
+					if (Game.state === GameState.Countdown) {
+						// Count Down
+						if (piece.irsDir !== 0) {
+							irsIndicator.classList.remove("gone");
+						}
+						if (piece.ihs === true) {
+							$("ihs-indicator").classList.remove("gone");
+						}
+						const strictInd = $("strict-ind");
+						const myVideo = $("myVideo");
+						if (delayStrictness === 2) {
+							myVideo.classList.remove("gone");
+							strictInd.classList.remove("gone");
+						} else {
+							myVideo.classList.add("gone");
+							strictInd.classList.add("gone");
+						}
+						if (Mutable.frame === 0) {
+							statisticsStack();
+							makeSprite();
+
+							Mutable.playedLevelingbgmGrades = [false, false];
+							Mutable.playedLevelingbgmMarathon = [false, false];
+							Mutable.killAllbgm = true;
+							$setText(Elements.msg, t("ready"));
+							clearTetrisMessage();
+							$("msgdiv").classList.remove("startanim");
+							if (tournament === true) {
+								sound.playSFX("tourneyready");
+							} else {
+								sound.playSFX("ready");
+							}
+							Mutable.clearRows = [];
+							sound.killbgm();
+						} else if (Mutable.frame === Math.floor((fps * time1) / 6)) {
+							Mutable.killAllbgm = false;
+							if (tournament === true) {
+								$setText(Elements.msg, "START!");
+								sound.playSFX("tourneystart");
+
+								$("msgdiv").classList.add("startanim");
+							} else {
+								$setText(Elements.msg, t("start"));
+								sound.playSFX("go");
+							}
+							preview.draw();
+							sound.killbgm();
+						} else if (Mutable.frame === Math.floor((fps * time2) / 6)) {
+							$("msgdiv").classList.remove("startanim");
+							$setText(Elements.msg, "");
+							Mutable.scoreStartTime = Date.now();
+							if (Game.type === GameTypeEnum.Master) {
+								if (delayStrictness === 2) {
+									sound.playbgm("masterstrict");
+									sound.playsidebgm("masterstrictdire");
+								} else {
+									sound.playbgm("master");
+								}
+							} else if (Game.type === GameTypeEnum.Marathon) {
+								sound.playbgm("marathon");
+							} else if (
+								Game.type === GameTypeEnum.Sprint ||
+								Game.type === GameTypeEnum.Dig ||
+								Game.type === GameTypeEnum.ScoreAttack
+							) {
+								sound.playbgm("sprint");
+							} else if (
+								Game.type === GameTypeEnum.Survival ||
+								Game.type === 7
+							) {
+								sound.cutsidebgm();
+								sound.playbgm("survival");
+								sound.playsidebgm("survivaldire");
+							} else if (Game.type === GameTypeEnum.Retro) {
+								if (Game.params.proMode == false) {
+									sound.playbgm("retro");
+								} else {
+									sound.cutsidebgm();
+									sound.playbgm("retropro");
+									sound.playsidebgm("retroprodrought");
+								}
+							} else if (Game.type === GameTypeEnum.Grades) {
+								sound.playbgm("grade1");
+							}
+							sound.lowersidebgm();
+						}
+						Mutable.scoreTime = 0;
+					} else {
+						// are
+						if (Mutable.lineClear == 4) {
+							if (
+								Game.type === GameTypeEnum.Retro &&
+								Game.settings.retro.flash.val === 1
+							) {
+								if (piece.are % 2 == 0) {
+									document.body.style.backgroundColor =
+										"white";
+								} else {
+									document.body.style.backgroundColor =
+										"black";
+								}
+							}
+						}
+						if (piece.irsDir !== 0) {
+							irsIndicator.classList.remove("gone");
+						}
+						if (piece.ihs === true) {
+							$("ihs-indicator").classList.remove("gone");
+						}
+						if (piece.are >= Mutable.lineARE) {
+							stack.clearLines();
+						}
+						piece.are++;
+						updateScoreTime();
+					}
+					if (
+						(Game.state === GameState.Countdown &&
+							Mutable.frame >= (fps * time2) / 6) ||
+						(Game.state === GameState.Paused &&
+							piece.are >= piece.areLimit)
+					) {
+						document.body.style.backgroundColor = "black";
+						Game.state = GameState.Normal;
+						// console.time("123");
+						if (piece.ihs && Game.type !== 8) {
+							hold.soundCancel = 1;
+							piece.index = preview.next();
+							sound.playSFX("initialhold");
+							piece.hold();
+						} else {
+							piece["new"](preview.next());
+						}
+						piece.draw();
+						// console.timeEnd("123");
+						// console.log(Mutable.frame);
+						updateScoreTime();
+					}
+				} else if (
+					Game.state === GameState.Loss ||
+					Game.state === GameState.Win
+				) {
+					$("stack").classList.remove("invisible-replay");
+					$("stack").classList.remove("invisible");
+					if (Mutable.toGreyRow >= stack.hiddenHeight) {
+						// Fade to grey animation played when player loses.
+						if (Mutable.frame % 2) {
+							for (let x = 0; x < stack.width; x++) {
+								/* farter */ //WTF gamestate-1
+								if (stack.grid[x][Mutable.toGreyRow])
+									stack.grid[x][Mutable.toGreyRow] =
+										Game.state === GameState.Loss ? 8 : 0;
+							}
+							stack.draw();
+
+							Mutable.toGreyRow--;
+						}
+					} else {
+						//clear(activeCtx);
+						//piece.dead = true;
+						// trysubmitscore(); disabled score submissions because they don't work
+						Game.state = GameState.NotPlayed;
+					}
 				}
 				Mutable.frame++;
 			}
@@ -495,361 +839,90 @@ export class Game {
 		}
 	}
 
-	private static initalInputs(fps: number) {
-		if (Mutable.lastKeys !== Mutable.keysDown && !Mutable.watchingReplay) {
-			Mutable.replay.keys[Mutable.frame] = Mutable.keysDown;
-		} else if (Mutable.frame in Mutable.replay.keys) {
-			Mutable.keysDown = Mutable.replay.keys[Mutable.frame];
-		}
-		// DAS Preload
-		if (getFlag(Mutable.keysDown, flags.moveLeft)) {
-			// if (Game.params.classicTuning !== true) {
-			piece.shiftDelay = settings.DAS;
-			// }
-			piece.shiftReleased = false;
-			piece.shiftDir = -1;
-		} else if (getFlag(Mutable.keysDown, flags.moveRight)) {
-			// if (Game.params.classicTuning !== true) {
-			piece.shiftDelay = settings.DAS;
-			// }
-			piece.shiftReleased = false;
-			piece.shiftDir = 1;
-		} else {
-			piece.shiftDelay = 0;
-			piece.shiftReleased = true;
-			piece.shiftDir = 0;
-		}
-		if (settings.IRSMode !== 0) {
-			if (
-				getFlag(Mutable.keysDown, flags.rotLeft) &&
-				!getFlag(Mutable.lastKeys, flags.rotLeft)
-			) {
-				const amt = 3;
-				if (settings.IRSMode === 3) {
-					piece.irsDir = ((piece.irsDir + 1 + amt) % 4) - 1;
-				} else {
-					piece.irsDir = -1;
-				}
-				if (settings.InitialVis) {
-					sound.playSFX("rotate");
-					preview.draw();
-				}
-			} else if (
-				flags.rotRight & Mutable.keysDown &&
-				!getFlag(Mutable.lastKeys, flags.rotRight)
-			) {
-				const amt = 1;
-				if (settings.IRSMode === 3) {
-					piece.irsDir = ((piece.irsDir + 1 + amt) % 4) - 1;
-				} else {
-					piece.irsDir = amt;
-				}
-				if (settings.InitialVis) {
-					sound.playSFX("rotate");
-					preview.draw();
-				}
-			} else if (
-				flags.rot180 & Mutable.keysDown &&
-				!getFlag(Mutable.lastKeys, flags.rot180)
-			) {
-				const amt = 2;
-				if (settings.IRSMode === 3) {
-					piece.irsDir = ((piece.irsDir + 1 + amt) % 4) - 1;
-				} else {
-					piece.irsDir = amt;
-				}
-
-				if (settings.InitialVis) {
-					sound.playSFX("rotate");
-					preview.draw();
-				}
-			} else if (
-				piece.irsDir !== 0 &&
-				(flags.rotLeft & Mutable.keysDown) === 0 &&
-				(flags.rotRight & Mutable.keysDown) === 0 &&
-				(flags.rot180 & Mutable.keysDown) === 0 &&
-				settings.IRSMode === 2
-			) {
-				piece.irsDir = 0;
-				if (settings.InitialVis) {
-					sound.playSFX("rotate");
-					preview.draw();
-				}
-			}
-		}
-		const irsIndicator = $("irs-indicator");
-		if (
-			!getFlag(Mutable.lastKeys, flags.holdPiece) &&
-			flags.holdPiece & Mutable.keysDown &&
-			piece.ihs === false &&
-			settings.IHSMode !== 0
-		) {
-			if (Game.type !== 8) {
-				piece.ihs = true;
-				irsIndicator.classList.add("gone");
-				if (settings.InitialVis) {
-					hold.draw();
-					preview.draw();
-				}
-			}
-		} else if (
-			piece.ihs &&
-			(flags.holdPiece & Mutable.keysDown) !== 16 &&
-			settings.IHSMode === 2
-		) {
-			if (Game.type !== 8) {
-				piece.ihs = false;
-				$("ihs-indicator").classList.add("gone");
-				if (settings.InitialVis) {
-					hold.draw();
-					preview.draw();
-				}
-			}
-		}
-		if (Mutable.lastKeys !== Mutable.keysDown) {
-			Mutable.lastKeys = Mutable.keysDown;
-		}
-		const time1 = 5;
-		const time2 = 10;
-
-		if (Game.state === GameState.Countdown) {
-			Game.countDown(irsIndicator, fps, time1, time2);
-		} else {
-			// are
-			if (Mutable.lineClear === 4) {
-				if (
-					Game.type === GameTypeEnum.Retro &&
-					Game.settings.retro.flash.val === 1
-				) {
-					if (piece.are % 2 === 0) {
-						document.body.style.backgroundColor = "white";
-					} else {
-						document.body.style.backgroundColor = "black";
-					}
-				}
-			}
-			if (piece.irsDir !== 0) {
-				irsIndicator.classList.remove("gone");
-			}
-			if (piece.ihs === true) {
-				$("ihs-indicator").classList.remove("gone");
-			}
-			if (piece.are >= Mutable.lineARE) {
-				stack.clearLines();
-			}
-			piece.are++;
-			updateScoreTime();
-		}
-		if (
-			(Game.state === GameState.Countdown &&
-				Mutable.frame >= (fps * time2) / 6) ||
-			(Game.state === GameState.Paused && piece.are >= piece.areLimit)
-		) {
-			document.body.style.backgroundColor = "black";
-			Game.state = GameState.Normal;
-			// console.time("123");
-			if (piece.ihs && Game.type !== 8) {
-				hold.soundCancel = 1;
-				piece.index = preview.next();
-				sound.playSFX("initialhold");
-				piece.hold();
-			} else {
-				piece.new(preview.next());
-			}
-			piece.draw();
-			// console.timeEnd("123");
-			// console.log(Mutable.frame);
-			updateScoreTime();
-		}
-	}
-
-	private static doneAnimation() {
-		$("stack").classList.remove("invisible-replay");
-		$("stack").classList.remove("invisible");
-		if (Mutable.toGreyRow >= stack.hiddenHeight) {
-			// Fade to grey animation played when player loses.
-			if (Mutable.frame % 2) {
-				for (let x = 0; x < stack.width; x++) {
-					/* farter */ //WTF gamestate-1
-					if (stack.grid[x][Mutable.toGreyRow])
-						stack.grid[x][Mutable.toGreyRow] =
-							Game.state === GameState.Loss ? 8 : 0;
-				}
-				stack.draw();
-
-				Mutable.toGreyRow--;
-			}
-		} else {
-			//clear(activeCtx);
-			//piece.dead = true;
-			// trysubmitscore(); disabled score submissions because they don't work
-			Game.state = GameState.NotPlayed;
-		}
-	}
-
-	private static countDown(
-		irsIndicator: HTMLElement,
-		fps: number,
-		time1: number,
-		time2: number
-	) {
-		if (piece.irsDir !== 0) {
-			irsIndicator.classList.remove("gone");
-		}
-		if (piece.ihs === true) {
-			$("ihs-indicator").classList.remove("gone");
-		}
-		const strictInd = $("strict-ind");
-		const myVideo = $("myVideo");
-		if (Game.params.delayStrictness === 2) {
-			myVideo.classList.remove("gone");
-			strictInd.classList.remove("gone");
-		} else {
-			myVideo.classList.add("gone");
-			strictInd.classList.add("gone");
-		}
-		if (Mutable.frame === 0) {
-			statisticsStack();
-			makeSprite();
-
-			Mutable.playedLevelingbgmGrades = [false, false];
-			Mutable.playedLevelingbgmMarathon = [false, false];
-			Mutable.killAllbgm = true;
-			$setText(Elements.msg, t("ready"));
-			clearTetrisMessage();
-			$("msgdiv").classList.remove("startanim");
-			sound.playSFX("ready");
-			Mutable.clearRows = [];
-			sound.killbgm();
-		} else if (Mutable.frame === Math.floor((fps * time1) / 6)) {
-			Mutable.killAllbgm = false;
-			$setText(Elements.msg, t("start"));
-			sound.playSFX("go");
-			preview.draw();
-			sound.killbgm();
-		} else if (Mutable.frame === Math.floor((fps * time2) / 6)) {
-			$("msgdiv").classList.remove("startanim");
-			$setText(Elements.msg, "");
-			Mutable.scoreStartTime = Date.now();
-			switch (Game.type) {
-				case GameTypeEnum.Master:
-					if (Game.params.delayStrictness === 2) {
-						sound.playbgm("masterstrict");
-						sound.playsidebgm("masterstrictdire");
-					} else {
-						sound.playbgm("master");
-					}
-					break;
-				case GameTypeEnum.Marathon:
-					sound.playbgm("marathon");
-					break;
-				case GameTypeEnum.Sprint:
-				case GameTypeEnum.Dig:
-				case GameTypeEnum.ScoreAttack:
-					sound.playbgm("sprint");
-					break;
-				case GameTypeEnum.Survival:
-				case GameTypeEnum.Unknown:
-					sound.cutsidebgm();
-					sound.playbgm("survival");
-					sound.playsidebgm("survivaldire");
-					break;
-				case GameTypeEnum.Retro:
-					if (!Game.params.proMode) {
-						sound.playbgm("retro");
-					} else {
-						sound.cutsidebgm();
-						sound.playbgm("retropro");
-						sound.playsidebgm("retroprodrought");
-					}
-					break;
-				case GameTypeEnum.Grades:
-					sound.playbgm("grade1");
-					break;
-			}
-			sound.lowersidebgm();
-		}
-		Mutable.scoreTime = 0;
-	}
-
-	private static handlePB() {
-		const timeEle = $("time");
-		const gameType = Game.types[Game.type];
-		if (gameType.isPBValid(false)) {
-			const pb = getPB(gameType.pbKey);
-			if (Mutable.scoreTime >= pb + 100) {
-				Elements.timeCtx.fillStyle = "#f00";
-				timeEle.classList.add("drought-flash");
-
-				if (settings.ResetPB) {
-					Game.init(Game.type, Game.params);
-				}
-			} else {
-				Elements.timeCtx.fillStyle = "#fff";
-				timeEle.classList.remove("drought-flash");
-			}
-		} else {
-			Elements.timeCtx.fillStyle = "#fff";
-			timeEle.classList.remove("drought-flash");
-		}
-	}
-
-	private static handleLockflash() {
-		if (Mutable.lockflash > 0) {
-			if (piece.tetro !== undefined) {
-				for (const [i, j] of range2x2(4, 4)) {
-					if (Mutable.lockflashTetro[i][j] > 0) {
-						Elements.stackCtx.fillStyle = "#ffffff";
-						Elements.stackCtx.fillRect(
-							(Mutable.lockflashX + i) * Mutable.cellSize,
-							(Math.floor(Mutable.lockflashY + j) - 4) *
-								Mutable.cellSize,
-							Mutable.cellSize,
-							Mutable.cellSize
-						);
-					}
-				}
-			}
-			Mutable.lockflash--;
-		} else if (Mutable.lockflashOn) {
-			stack.draw();
-
-			Mutable.lockflash = 0;
-			Mutable.lockflashOn = false;
-		}
-	}
-
 	// called after piece lock, may be called multple times when die-in-one-frame
 	static checkWin() {
-		const gameType = Game.types[Game.type];
-		if (gameType.checkWin()) {
-			Game.state = GameState.Win;
+		if (
+			Game.type === GameTypeEnum.Sprint ||
+			(Game.type === GameTypeEnum.Retro && Game.params.bType == true)
+		) {
+			// 40L
+			if (Mutable.lines >= Mutable.lineLimit) {
+				Game.state = GameState.Win;
+				if (Game.params?.backFire) {
+					Elements.msg.innerHTML = "GREAT!";
+				} else {
+					let rank = null;
+					const time =
+						(Date.now() - Mutable.scoreStartTime - Game.pauseTime) /
+						1000;
 
-			const winMessage = gameType.customWinMessage();
-			$setText(Elements.msg, winMessage ?? "GREAT!");
-
-			piece.dead = true;
-			menu(FAILED_MENU_ID);
-			sound.playSFX("endingstart");
-			sound.playvox("win");
-
-			gameType.win();
-			gameType.checkPB();
-		}
-
-		if (gameType.checkDie()) {
-			Game.state = GameState.BlockOut;
-
-			const dieMessage = gameType.customWinMessage();
-			$setText(Elements.msg, dieMessage ?? "BLOCK OUT!");
-
-			piece.dead = true;
-			menu(FAILED_MENU_ID);
-			sound.playSFX("gameover");
-			sound.playvox("lose");
-
-			gameType.die();
-			gameType.checkPB();
+					for (let i = 0; i < sprintRanks.length; i++) {
+						if (time > sprintRanks[i].t) {
+							rank = sprintRanks[i];
+							break;
+						}
+					}
+					if (Game.type !== 8) {
+						Elements.msg.innerHTML =
+							"<small>" + rank.b + "</small>";
+					}
+				}
+				piece.dead = true;
+				menu(3);
+				sound.playSFX("endingstart");
+				sound.playvox("win");
+				Game.types[Game.type].win();
+			}
+		} else {
+			let isend = false;
+			if (Game.type === GameTypeEnum.Marathon) {
+				// Marathon
+				if (
+					settings.Gravity !== 0 &&
+					Mutable.lines >= 200 &&
+					Game.params.noGravity != true
+				) {
+					// not Auto, limit to 200 Lines
+					// isend = true;
+				} else if (
+					Game.params.marathonLimit != undefined &&
+					Mutable.lines >= Game.params.marathonLimit
+				) {
+					isend = true;
+				}
+			} else if (Game.type === GameTypeEnum.ScoreAttack) {
+				// Score Attack
+				if (Mutable.lines >= Mutable.lineLimit) {
+					// not Auto, limit to 200 Lines
+					isend = true;
+				}
+			} else if (Game.type === GameTypeEnum.Dig) {
+				// Dig race
+				if (Mutable.digLines.length === 0) {
+					isend = true;
+				}
+			} else if (Game.type === GameTypeEnum.Master) {
+				// 20G
+				if (Mutable.lines >= 300) {
+					// 200 + 100
+					isend = true;
+				}
+			} else if (Game.type === 7) {
+				// dig zen
+				if (Mutable.lines >= 400) {
+					// 300 + 100
+					isend = true;
+				}
+			}
+			if (isend) {
+				Game.state = GameState.Win;
+				$setText(Elements.msg, "GREAT!");
+				piece.dead = true;
+				menu(3);
+				Game.types[Game.type].win();
+				sound.playSFX("endingstart");
+				sound.playvox("win");
+			}
 		}
 	}
 }
@@ -862,3 +935,4 @@ Game.addGameType(GameTypeEnum.Master, new Master());
 Game.addGameType(GameTypeEnum.Retro, new Retro());
 Game.addGameType(GameTypeEnum.Grades, new Grades());
 Game.addGameType(GameTypeEnum.Survival, new Survival());
+// Game.addGameType(GameTypeEnum.DigZen, new DigZen);

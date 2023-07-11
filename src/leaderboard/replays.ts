@@ -1,4 +1,4 @@
-import { menu } from "../components/center/menu/menuHooks";
+import { menu } from "../display/menu";
 import { Game } from "../game";
 import { settings } from "../settings";
 import { Mutable } from "../utils/data";
@@ -45,7 +45,7 @@ export function run(params) {
 	if (params !== undefined) {
 		try {
 			if (typeof params !== "string") throw "wtf";
-			if (params === "" || !params.startsWith("{"))
+			if (params === "" || params.slice(0, 1) !== "{")
 				throw "please paste replay data, correctly...";
 			Mutable.replay = JSON.parse(params);
 			if (typeof Mutable.replay !== "object") throw "json parse fail";
