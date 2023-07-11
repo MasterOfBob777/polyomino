@@ -1,6 +1,5 @@
 
 import { Game } from "./game";
-import { keyUpDown } from "./logic/view";
 import { Mutable } from "./utils/data";
 import { clamp } from "./utils/math";
 import { $setText, $ } from "./utils/utils";
@@ -17,7 +16,7 @@ export function tetRateNesRefresh() {
 	if (
 		Mutable.tetRateNes <= 0.25 &&
 		(Mutable.tetNes > 0 || Mutable.nontetNes > 3) &&
-		Game.params.proMode == true
+		Game.params.proMode 
 	) {
 		nesRate.style.color = "#ff0000";
 		nesRate.classList.add("drought-flash");
@@ -27,9 +26,6 @@ export function tetRateNesRefresh() {
 	}
 	$setText(nesRate, Math.floor(Mutable.tetRateNes * 100).toString() + "%");
 }
-/**
- * ========================== Model ===========================================
- */
 
 export function scorestring(s, n) {
 	const strsplit = s.split("");
@@ -44,14 +40,3 @@ export function scorestring(s, n) {
 export function updateScoreTime() {
 	Mutable.scoreTime = Date.now() - Mutable.scoreStartTime - Game.pauseTime;
 }
-
-// ========================== View ============================================
-
-addEventListener("keydown", keyUpDown, false);
-addEventListener("keyup", keyUpDown, false);
-
-// ========================== Loop ============================================
-
-// break when game over
-
-//TODO Cleanup gameloop and update.

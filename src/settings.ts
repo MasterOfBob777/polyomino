@@ -257,8 +257,8 @@ class SettingManager {
 		)(value);
 		if (this.#currentName === "default") {
 			const settingsCopy = {};
-			for (const key in this.#settings["default"]) {
-				settingsCopy[key] = this.#settings["default"][key].value;
+			for (const key in this.#settings.default) {
+				settingsCopy[key] = this.#settings.default[key].value;
 			}
 			localStorage.setItem("settings", JSON.stringify(settingsCopy));
 		}

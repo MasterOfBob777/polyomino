@@ -9,6 +9,14 @@ import { RotSys } from "../utils/enums";
 import { GameType } from "./base";
 
 export class Grades extends GameType {
+	isPBValid(): boolean {
+		return false;
+	}
+
+	checkWin(): boolean {
+		throw new Error("Method not implemented.");
+	}
+
 	update(): void {
 		// TODO: figure out if any code needs to go here
 	}
@@ -28,15 +36,13 @@ export class Grades extends GameType {
 			settings.Block = 2;
 		}
 
-		if (Game.settings.grades.rule.val == 1) {
-			Game.params.classicRule = false;
-		} else {
-			Game.params.classicRule = true;
-		}
+		Game.params.classicRule = Game.settings.grades.rule.val !== 1;
 		sound.loadbgm("grade1");
 		sound.loadbgm("grade2");
 		sound.loadbgm("grade3");
 
 		preview.randomizer = tgm3;
 	}
+
+	
 }

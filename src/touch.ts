@@ -45,7 +45,7 @@ class FollowingButtonSet {
 
 	posToBinds(pos) {
 		let mindist = Infinity;
-		let minbtnid = undefined;
+		let minbtnid;
 		for (let i = 0; i < touchButtons.length; i++) {
 			const btnflw = touchButtons[i].follow;
 			const dist = Math.hypot(pos.x - btnflw.x, pos.y - btnflw.y);
@@ -275,24 +275,24 @@ export function touchButtonsLayout() {
 	setPos(touchLayout, 0, 0, buttonW, buttonH, 2, 0, 0, 0);
 	if (currLayout === -2) {
 		// none
-		layouts["NONE"]();
+		layouts.NONE();
 	} else if (currLayout === -1) {
 		// auto detection
 		if (winW < buttonW * 3) {
-			layouts["NONE"]();
+			layouts.NONE();
 		} else if (
 			winW - winH * 0.5 > buttonW * 4.5 ||
 			(winH - winW > 4 * buttonH && winW > buttonW * 5.5)
 		) {
-			layouts["KBD_R"]();
+			layouts.KBD_R();
 		} else if (winW - winH * 0.5 > buttonW * 3) {
-			layouts["JOY"]();
+			layouts.JOY();
 		} else if (winH - winW > 0) {
-			layouts["NARROW"]();
+			layouts.NARROW();
 		} else if (winW >= buttonW * 4) {
-			layouts["DELUXE"]();
+			layouts.DELUXE();
 		} else {
-			layouts["NONE"]();
+			layouts.NONE();
 		}
 	} else {
 		layouts[

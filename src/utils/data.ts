@@ -47,7 +47,7 @@ export class Mutable {
 	static gravity = 0;
 
 	static gravityArr = (() => {
-		const array = [];
+		const array: number[] = [];
 		array.push(0);
 		for (let i = 1; i < 64; i *= 2) array.push(i / 64);
 		for (let i = 1; i <= 20; i += 19) array.push(i);
@@ -185,7 +185,7 @@ export const defaultBinds: { [key: string]: number } = {
 	retry: 82,
 }
 
-export let binds: { [key: string]: number } = JSON.parse(JSON.stringify(defaultBinds));
+export let binds: Record<string, number> = JSON.parse(JSON.stringify(defaultBinds));
 
 export function setBinds(newBinds) {
 	binds = JSON.parse(JSON.stringify(newBinds));
@@ -330,7 +330,10 @@ export const miscTableTGM = [
  */
 
 // [r][x][y]
-export const TetroI = [
+
+export type Tetro = [number, number, number, number][][];
+
+export const TetroI: Tetro = [
 	[
 		[0, 1, 0, 0],
 		[0, 1, 0, 0],
@@ -356,7 +359,7 @@ export const TetroI = [
 		[0, 0, 0, 0],
 	],
 ];
-export const TetroJ = [
+export const TetroJ: Tetro = [
 	[
 		[2, 2, 0, 0],
 		[0, 2, 0, 0],
@@ -382,7 +385,7 @@ export const TetroJ = [
 		[0, 0, 0, 0],
 	],
 ];
-export const TetroL = [
+export const TetroL: Tetro = [
 	[
 		[0, 3, 0, 0],
 		[0, 3, 0, 0],
@@ -408,7 +411,7 @@ export const TetroL = [
 		[0, 0, 0, 0],
 	],
 ];
-export const TetroO = [
+export const TetroO: Tetro = [
 	[
 		[0, 0, 0, 0],
 		[4, 4, 0, 0],
@@ -434,7 +437,7 @@ export const TetroO = [
 		[0, 0, 0, 0],
 	],
 ];
-export const TetroS = [
+export const TetroS: Tetro = [
 	[
 		[0, 5, 0, 0],
 		[5, 5, 0, 0],
@@ -460,7 +463,7 @@ export const TetroS = [
 		[0, 0, 0, 0],
 	],
 ];
-export const TetroT = [
+export const TetroT: Tetro = [
 	[
 		[0, 6, 0, 0],
 		[6, 6, 0, 0],
@@ -486,7 +489,7 @@ export const TetroT = [
 		[0, 0, 0, 0],
 	],
 ];
-export const TetroZ = [
+export const TetroZ: Tetro = [
 	[
 		[7, 0, 0, 0],
 		[7, 7, 0, 0],
@@ -2781,31 +2784,31 @@ export class Elements {
 	}
 
 	@lazy static get holdCtx() {
-		return Elements.holdCanvas.getContext("2d");
+		return Elements.holdCanvas.getContext("2d")!;
 	}
 
 	@lazy static get bgStackCtx() {
-		return Elements.bgStackCanvas.getContext("2d");
+		return Elements.bgStackCanvas.getContext("2d")!;
 	}
 
 	@lazy static get stackCtx() {
-		return Elements.stackCanvas.getContext("2d");
+		return Elements.stackCanvas.getContext("2d")!;
 	}
 
 	@lazy static get activeCtx() {
-		return Elements.activeCanvas.getContext("2d");
+		return Elements.activeCanvas.getContext("2d")!;
 	}
 
 	@lazy static get previewCtx() {
-		return Elements.previewCanvas.getContext("2d");
+		return Elements.previewCanvas.getContext("2d")!;
 	}
 
 	@lazy static get spriteCtx() {
-		return Elements.spriteCanvas.getContext("2d");
+		return Elements.spriteCanvas.getContext("2d")!;
 	}
 
 	@lazy static get timeCtx() {
-		return Elements.timeCanvas.getContext("2d");
+		return Elements.timeCanvas.getContext("2d")!;
 	}
 }
 

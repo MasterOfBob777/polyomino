@@ -13,7 +13,7 @@ export function showTetrisMessage(contents) {
 		clearEle.classList.add("flyaway");
 
 		const comboname =
-			settings.Voice && settings.Voicebank == 2 ? "ren" : "combo";
+			settings.Voice && settings.Voicebank === 2 ? "ren" : "combo";
 
 		const renEle = $("renmsg");
 		const renDiv = $("rendiv");

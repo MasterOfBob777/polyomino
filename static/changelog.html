@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Tetr.js Enhanced Changelog</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
+  <link rel="manifest" href="icons/site.webmanifest">
+  <link rel="mask-icon" href="icons/safari-pinned-tab.svg" color="#8e24aa">
+  <link rel="shortcut icon" href="icons/favicon.ico">
+  <meta name="msapplication-TileColor" content="#9f00a7">
+  <meta name="msapplication-config" content="icons/browserconfig.xml">
+</head>
+<style>
+  a {
+    color: cornflowerblue;
+  }
+
+  a:visited {
+    color: mediumpurple;
+  }
+
+  a:hover {
+    color: lightsteelblue;
+  }
+
+  a:active {
+    color: lightsteelblue;
+  }
+</style>
+
+<body style="font-family: sans-serif;background-color: #111; color: #fff">
+  <img style="margin: 10px" width="300px" src=tetrjslogoenhanced.svg>
+  <h1>Tetr.js Enhanced Changelog</h1>
+  <a href="index.html">Return to the game</a>
+  
+  <h4>2019-10-14 v0.7.7</h4>
+  <ul>
+    <li>New Skins
+      <ul>
+       <li>Tetr.js</li>
+      </ul>
+    </li>  
+    <li>Changed Chinese localisation of Tetr.js piece sounds</li>  
+    <li>Tetr.js B2B sound is now in the source code</li>
+  </ul>
+  
+  <h4>2019-10-10 v0.7.6</h4>
+  <ul>
+    <li>New Soundbanks
+      <ul>
+        <li>Tetr.js (Gameplay and Next)</li>
+        <li>Ace</li>
+      </ul>
+    </li>
+      <li>Fixed issue with spin sounds not working correctly.</li>
+      <li>Tetr.js Soundbanks are now the defaults</li>
+  </ul>
+  
+  <h4>2019-09-29 v0.7.5</h4>
+  <ul>
+    <li>Sounds
+      <ul>
+        <li>Added TGM1 Next Sound</li>
+        <li>Added a visual progress bar for sound effect loading</li>
+        <li>Sounds now load once until the settings for them are changed</li>
+        <li>Sounds will preload upon menu interaction</li>
+        <li>Volume settings now take effect immediately</li>
+      </ul>
+    </li>
+    <li>Removed video background for Strict Master mode since it's a data-eater</li>
+  </ul>
+  
+  <h4>2019-09-27 v0.7.4</h4>
+  <ul>
+    <li>
+      Skins
+      <ul>
+        <li>PPT Skin</li>
+        <li>Bone Skin now uses colours</li>
+      </ul>
+    </li>
+    <li>
+      Soundbanks
+      <ul>
+        <li>Retro
+          <ul>
+            <li>Changed
+              <ul>
+                Hold
+              </ul>
+            </li>
+            <li>Added
+             <ul>
+               <li>Hard Drop</li>
+               <li>Initial Rotate</li>
+               <li>Initial Hold</li>
+             </ul>
+            </li>
+          </ul>
+        </li>
+        <li>
+          PPT now has an individual spin sound
+        </li>
+        <li>You can now make any skin monochrome</li>
+        <li>The animations no longer reset on size, but as a result, next side was removed</li>
+      </ul>
+    </li>
+    <li>
+     New initial settings
+      <ul>
+        <li>Inital Rotation; off, tap, hold, additive</li>
+        <li>Initial Hold; off, tap, hold</li>
+        <li>Visual Settings Toggle</li>
+      </ul>
+    </li>
+    <li>The alarm no longer triggers if there's a clear path to the floor</li>
+  </ul>
+
+  <h4>2019-09-23 v0.7.3</h4>
+  <ul>
+    <li>Retro Mode Changes/Fixes
+      <ul>
+        <li>Starting level now selectable!</li>
+        <li>Tetris rate formula has been fixed to match <a href="https://www.reddit.com/r/Tetris/comments/b4prj7/tetris_rate_calculation/ej8v403?utm_source=share&utm_medium=web2x">this</a></li>
+        <li>Flashing can now be disabled</li>
+      </ul>
+    </li>
+  </ul>
+  <h4>2019-09-23 v0.7.2</h4>
+  <ul>
+    <li>New Soundbanks/Changes
+      <ul>
+        <li>Tetris Ultimate</li>
+        <li>Puyo Puyo Tetris
+          <ul>
+            <li>Added initial sounds</li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li>You can now see a little preview of block skins</li>
+    <li>Slightly modified the Retro skin to make the black area more like a drop shadow</li>
+  </ul>
+
+  <h4>2019-09-19 v0.7.1</h4>
+  <ul>
+    <li>Strict Master mode now has a new background and music track</li>
+    <li>Retro's wall charge code actually works now, meaning tucking pieces should work like console</li>
+    <li>Retro mode now shows the piece correctly on block out</li>
+    <li>Added synchronisation code for music tracks with stems</li>
+  </ul>
+
+  <h4>2019-08-17 v0.7</h4>
+  <ul>
+    <li>Reworked piece spawn mechanics
+      <ul>
+        <li>Pieces now spawn below the ceiling, and if the position is blocked, can offset upward up to two times before block out.</li>
+      </ul>
+    </li>
+    <li>Rewrote spin detection
+      <ul>
+        <li>Spin detection now uses the 3 corner method</li>
+        <li>Minis added (about time, right?!)</li>
+        <li>All spin kept</li>
+      </ul>
+    </li>
+    <li>Visual Enhancements
+      <ul>
+        <li>The hold piece now turns grey when hold isn't available</li>
+        <li>Pieces now flash briefly when locking</li>
+        <li>The Matrix can now sway; toggleable in settings</li>
+        <li>Level-ups now have a visual effect</li>
+        <li>Back-to-Back streak is now shown</li>
+      </ul>
+    </li>
+    <li>Gameplay Tweaks
+      <ul>
+        <li>Marathon speed curve finalised</li>
+        <li>0G Marathon now has infinite lock delay</li>
+
+        <li>As per guideline rules, the combo counter now starts at 1 instead of 2.</li>
+        <li>Added top out to Survival to prevent exploiting level 1000</li>
+        <li>Hard drop now awards points in Retro mode</li>
+      </ul>
+    </li>
+    <li>Quality of Life
+      <ul>
+        <li>The alarm no longer plays when in background (finally)</li>
+      </ul>
+    </li>
+    <li>New Sounds
+      <ul>
+        <li>.com</li>
+        <li>Party</li>
+      </ul>
+    </li>
+    <li>New Skins
+      <ul>
+        <li>.com</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h4>2019-06-09 v0.6.1</h4>
+  <ul>
+    <li>Updated visual design</li>
+    <li>Added all spins to action text</li>
+    <li>Reworked non-retro scoring system to use more guideline standards</li>
+  </ul>
+
+
+  <h4>2019-05-31 v0.6</h4>
+  <ul>
+    <li>Complete menu overhaul <br> (Thanks for the suggestion! It was a really positive impact on the future of the game!)
+      <ul>
+        <li>Gamemodes are now general and open a settings menu to configure how they play</li>
+        <li>Settings menu has become less annoying to use, like, at all
+          <ul>
+            Options are split up into different categories with their controls being context-specific. For example, some options have sliders, others have switches and some have button menus
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li>Announcer
+      <ul>
+        <li>Toggleable, Configurable</li>
+        <li>Off by default</li>
+        <li>Announces actions like "DOUBLE" and "TETRIS"</li>
+        <li>Three different choices at this moment in time:
+          <ul>
+            <li>TOJ</li>
+            <li>Friends</li>
+            <li>Alexey</li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li>Action Text
+      <ul>
+        <li>Displays text for actions like "DOUBLE" and "TETRIS"</li>
+        <li>On by default</li>
+        <li>Combo and B2B counter included</li>
+      </ul>
+    </li>
+    <li>New Mode Settings
+      <ul>
+        <li>Marathon
+          <ul>
+            <li>Level Cap</li>
+            <li>Entry Delay</li>
+            <li>Invisible bonus</li>
+          </ul>
+        </li>
+        <li>Master
+          <ul>
+            <li>Lockdown Mode</li>
+          </ul>
+        </li>
+        <li>Retro
+          <ul>
+            <li>Retro Skin</li>
+            <li>Hard Drop</li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li>Grades
+      <ul>
+        <li>Added music</li>
+        <li>Changed level counter to show goal</li>
+      </ul>
+    </li>
+    <li>Added line delay (if you don't know what that means, just know that line clears with delays now have a 'falling' animation)</li>
+    <li>New sound effects
+      <ul>
+        <li>Back-to-Back</li>
+        <li>Line fall</li>
+        <li>Combo/REN</li>
+      </ul>
+    </li>
+    <li>Added T99 Skin</li>
+    <li>Changed default DAS to 10F and ARR to 2F</li>
+  </ul>
+
+  <h4>2019-05-28 v0.5</h4>
+  <ul>
+    <li>Added new marathon modes
+      <ul>
+        <li>Marathon Endless is a rename of the original Marathon mode</li>
+        <li>Marathon 150/200 have the stated line limits</li>
+        <li>0G Marathon, highly requested, is an endless Marathon where the blocks don't fall</li>
+      </ul>
+    </li>
+    <li>Menu font has been ensquishened</li>
+    <li>Colour-changing background for master mode has been temporarily removed due to performance issues</li>
+    <li>Added a feedback status button</li>
+  </ul>
+
+  <h4>2019-05-20 v0.4.3</h4>
+  <ul>
+    <li>Added feedback button</li>
+  </ul>
+
+  <h4>2019-05-16 v0.4.2</h4>
+  <ul>
+    <li>Made it so that only relevant music is loaded, thus cutting down on the superlag and ram usage</li>
+  </ul>
+
+  <h4>2019-05-16 v0.4.1</h4>
+  <ul>
+    <li>Fixed a bug with b-type where the I piece stats and the level don't display correctly</li>
+  </ul>
+
+  <h4>2019-05-16 v0.4</h4>
+  <ul>
+    <li>New Sound Engine!
+      <ul>
+        <li>Should be less garbage</li>
+        <li>Music loops are easier to do</li>
+        <li>Disabling sound in settings prevents loading them, so RAM is saved</li>
+        <li>Music now mutes when the tab is out of focus</li>
+      </ul>
+    </li>
+    <li>New Music
+      <ul>
+        <li>Sprint</li>
+        <li>Marathon</li>
+        <li>Retro Mode (Pro)
+          <ul>
+            <li>Ramps up during drought</li>
+          </ul>
+        </li>
+        <li>Survival
+          <ul>
+            <li>Ramps up when high</li>
+          </ul>
+        </li>
+        <li><a href="https://soundcloud.com/dr-ocelot/sets/tetr-js-soundtrack">Custom soundtrack available here</a></li>
+      </ul>
+    </li>
+    <li>New Soundbanks
+      <ul>
+        <li>Tetris Friends</li>
+        <li>Tetris 99</li>
+      </ul>
+    </li>
+    <li>New Skins
+      <ul>Tetris Friends</ul>
+    </li>
+    <li>Retro Mode
+      <ul>
+        <li>Added B-Type
+          <ul>
+            <li>Clear 25 lines to win</li>
+            <li>Pro mode starts at level 19</li>
+          </ul>
+        </li>
+        <li>Added Tetris Rate indicator</li>
+      </ul>
+    </li>
+    <li>Added alarm when stack is high</li>
+    <li>Added button hover animation</li>
+    <li>Made it so that replays can't override volume</li>
+  </ul>
+
+  <h4>2019-04-26 v0.3.7</h4>
+  <ul>
+    <li>Fixed PB's saving</li>
+  </ul>
+
+  <h4>2019-04-26 v0.3.6</h4>
+  <ul>
+    <li>
+      Added PB tracker for Sprint 40
+      <ul>
+        <li>Sprint timer now flashes red when time is over PB</li>
+      </ul>
+    </li>
+    <li>
+      Made IRS and IHS more visual
+      <ul>
+        <li>Initial rotation now visually displays in the next queue</li>
+        <li>Initial holding now visually displays in the next and hold queues</li>
+        <li>When IRS or IHS is engaged, "INITIAL" will flash over the respective queue</li>
+        <li>Rotation and hold sounds now play the moment their initials are engaged, followed by initial sounds when the piece spawns</li>
+      </ul>
+    </li>
+    <li>Hold queue now has a flash animation upon use</li>
+  </ul>
+
+  <h4>2019-02-13 v0.3.5</h4>
+  <ul>
+    <li>Made level counter in modern modes visually start at 1</li>
+    <li>
+      Retro Mode Updates
+      <ul>
+        <li>New drought animation</li>
+        <li>Generator changed to be a little more accurate</li>
+        <li>Wall charge</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h4>2019-02-12 v0.3.4</h4>
+  <ul>
+    <li>Removal of leftover testing stuff (oops!)</li>
+  </ul>
+
+  <h4>2019-02-12 v0.3.3</h4>
+  <ul>
+    <li>New mode, "Grades", is now accessible, but heavily unfinished.</li>
+    <li>
+      Retro Mode Updates
+      <ul>
+        <li>180 rotation enabled</li>
+        <li>
+          I Tetrimino counter added for Retro Mode
+          <ul>
+            <li>Counts amount of I pieces spawned</li>
+            <li>After 13 pieces without an I, starts counting the drought until it's over</li>
+          </ul>
+        </li>
+        <li>Added flashing effect on Tetris line clear</li>
+      </ul>
+    </li>
+    <li>Replaced Tetris line clear sound in the Retro soundbank</li>
+    <li>Master mode now has a rainbow background</li>
+    <li>Menu changes! More categories and organistion!</li>
+    <li>Added step sound</li>
+  </ul>
+
+  <h4>2019-02-11 v0.3.2</h4>
+  <ul>
+    <li>Forced Retro Mode's gravity setting</li>
+  </ul>
+
+  <h4>2019-02-11 v0.3.1</h4>
+  <ul>
+    <li>Modified Retro Mode's soft drop lock checking</li>
+  </ul>
+
+  <h4>2019-02-11 v0.3.0</h4>
+  <ul>
+    <li>
+      Added Retro Mode!
+      <ul>
+        <li>Classic scoring system</li>
+        <li>No hard drop, hold, grid, 180 rotation</li>
+        <li>1 Next Queue</li>
+        <li>Color Changing Skin</li>
+        <li>NES-like DAS</li>
+        <li>NES speed ramps</li>
+        <li>Force Nintendo rotation system</li>
+        <li>Instant lockdown</li>
+        <li>NES randomiser</li>
+      </ul>
+    </li>
+    <li>Added Retro soundbank</li>
+    <li>
+      New Skins
+      <ul>
+        <li>Bone</li>
+        <li>Retro</li>
+      </ul>
+    </li>
+    <li>
+      Music enabled for 3 modes
+      <ul>
+        <li>Marathon</li>
+        <li>Master</li>
+        <li>Retro</li>
+      </ul>
+    </li>
+    <li>Removed stock sound effects (Downfall clips)</li>
+  </ul>
+
+  <h4>2019-02-09 v0.2.0</h4>
+  <ul>
+    <li>Removed rankings (it was busted to begin with)</li>
+    <li>Added Tetris Online Japan soundbank</li>
+    <li>
+      New Skins
+      <ul>
+        <li>Aqua</li>
+        <li>Arcade</li>
+        <li>N-Blox</li>
+      </ul>
+    </li>
+    <li>Updated UI</li>
+  </ul>
+
+  <h4>2019-02-08 v0.1.1</h4>
+  <ul>
+    <li>Updated UI</li>
+    <li>New Logo</li>
+    <li>Squished Menus</li>
+  </ul>
+
+  <h4>2019-02-08 v0.1.0</h4>
+  <ul>
+    <li>Removed most Chinese</li>
+    <li>
+      Replaced SE functionality
+      <ul>
+        <li>Sound is now on be default</li>
+        <li>Default volume reduced to 50</li>
+        <li>Added option to choose game soundbank</li>
+        <li>Added option to choose next piece soundbank</li>
+        <li>
+          Added new sound effects
+          <ul>
+            <li>Hard Drop</li>
+            <li>Move</li>
+            <li>Hold</li>
+            <li>Rotate</li>
+            <li>Initial Hold</li>
+            <li>Initial Rotate</li>
+            <li>Next Piece Sound Indicators</li>
+            <li>Ready/Go</li>
+          </ul>
+        </li>
+        <li>
+          Added four game soundbanks
+          <ul>
+            <li>Puyo Puyo Tetris</li>
+            <li>Tetris: The Grand Master 3 - Terror‑Instinct</li>
+            <li>NullpoMino</li>
+            <li>Yotipo's Sound Effects</li>
+          </ul>
+        </li>
+        <li>
+          Added two next piece indicator soundbanks
+          <ul>
+            <li>Tetris: The Grand Master 3 - Terror‑Instinct</li>
+            <li>NullpoMino</li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</body></html>

@@ -13,7 +13,10 @@ const ids = {
 	"rot-180": <>&#xE5D5;</>,
 	retry: <>&#xE040;</>,
 	pause: <>&#xE034;</>,
+	save: <>&#xE161;</>
 } as const;
+
+export type iconIds = keyof typeof ids;
 
 export function Icon({ id }: { id: keyof typeof ids }) {
 	return <i class="material-icons">{ids[id]}</i>;

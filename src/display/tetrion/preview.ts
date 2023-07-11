@@ -4,13 +4,12 @@ import { draw } from "../../logic/view";
 import { settings } from "../../settings";
 import { guideline } from "../../utils/blackjack";
 import { pieces, PieceData, Elements } from "../../utils/data";
-import { GameState, GameType } from "../../utils/enums";
-import { rng } from "../../utils/randomizer";
+import { GameState } from "../../utils/enums";
 import { clear, $ } from "../../utils/utils";
 import { piece } from "./piece";
 
 class Preview {
-	grabBag = [];
+	grabBag: number[] = [];
 
 	randomizer = guideline;
 
@@ -52,9 +51,9 @@ class Preview {
 			const r = initInfo[2];
 			const rect = pieces[p].rect;
 			const rotSysColor = settings.RotSys.color[p];
-			if (i == 0) {
-				if (piece.ihs == true) {
-					if (hold.piece == null) {
+			if (i === 0) {
+				if (piece.ihs === true) {
+					if (hold.piece === null) {
 						p = this.grabBag[i + 1];
 					} else {
 						p = hold.piece;
@@ -108,7 +107,7 @@ class Preview {
 						break;
 				}
 			} else {
-				if (piece.ihs == true && hold.piece == null) {
+				if (piece.ihs === true && hold.piece === null) {
 					p = this.grabBag[i + 1];
 				}
 				draw(

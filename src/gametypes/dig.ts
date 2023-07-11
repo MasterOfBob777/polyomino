@@ -10,8 +10,14 @@ import { range, $setText } from "../utils/utils";
 import { GameType } from "./base";
 
 export class Dig extends GameType {
+	zen: boolean;
+
+	checkWin(): boolean {
+		return !this.zen && Mutable.digLines.length === 0;
+	}
+
 	update(): void {
-		if (Game.params.zen) {
+		if (this.zen) {
 			while (Mutable.lastPiecesSet < Mutable.piecesSet) {
 				Mutable.digZenBuffer++;
 				const piecePerRise = [
@@ -49,7 +55,7 @@ export class Dig extends GameType {
 		Mutable.lastPiecesSet = 0;
 		Mutable.digZenBuffer = 0;
 
-		if (Game.settings.dig.checker.val == 1) {
+		if (Game.settings.dig.checker.val === 1) {
 			Game.params.digraceType = "checker";
 		} else {
 			Game.params.digraceType = "easy";
@@ -65,7 +71,7 @@ export class Dig extends GameType {
 			for (let y = stack.height - 1; y > stack.height - 10 - 1; y--) {
 				const r = randomIntExcept(0, stack.width - 1, last);
 				for (let x = 0; x < stack.width; x++) {
-					stack.grid[x][y] = x == r ? 0 : 8;
+					stack.grid[x][y] = x === r ? 0 : 8;
 				}
 				last = r;
 			}
@@ -76,28 +82,19 @@ export class Dig extends GameType {
 			for (let y = stack.height - 1; y > stack.height - 10 - 1; y--) {
 				const m = mod(begin++, stack.width);
 				for (let x = 0; x < stack.width; x++) {
-					stack.grid[x][y] = m == x ? 0 : 8;
+					stack.grid[x][y] = m === x ? 0 : 8;
 				}
 			}
 		}
 
-		Game.params.zen = Game.settings.dig.zen.val == 1;
-
-		//stack.draw(); //resize
+		this.zen = Game.settings.dig.zen.val === 1;
 	}
 
-	pbKey = "dig10pb";
+	get pbKey() {
+		return `dig10pb${Game.params.digraceType === "checker" ? "c" : ""}`;
+	}
 
-	savePB = true;
-
-	win() {
-		const digPB = getPB("dig10pb");
-		if (
-			(!digPB || Mutable.scoreTime < digPB) &&
-			Mutable.watchingReplay == false &&
-			Game.params.digraceType == "easy"
-		) {
-			setPB("dig10pb", Mutable.scoreTime);
-		}
+	isPBValid(dead: boolean): boolean {
+		return !dead;
 	}
 }

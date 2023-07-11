@@ -1,14 +1,39 @@
-import { getPB, setPB } from "../components/utils/PBView";
 import { sound } from "../display/sound/sound";
+import { piece } from "../display/tetrion/piece";
 import { preview } from "../display/tetrion/preview";
 import { Game } from "../game";
 import { guideline, iOnly, noI } from "../utils/blackjack";
-import { Mutable } from "../utils/data";
-import { timeString } from "../utils/string";
-import { $setText, $ } from "../utils/utils";
+import { Mutable, sprintRanks } from "../utils/data";
+import { Nullable } from "../utils/types";
 import { GameType } from "./base";
 
 export class Sprint extends GameType {
+	checkWin(): boolean {
+		return Mutable.lines >= Mutable.lineLimit;
+	}
+
+	customWinMessage() {
+		if (Game.params?.backFire) {
+			return "GREAT!";
+		} else {
+			let rank: Nullable<{
+				t: number;
+				u: string;
+				b: string;
+			}>;
+			const time =
+				(Date.now() - Mutable.scoreStartTime - Game.pauseTime) / 1000;
+
+			for (let i = 0; i < sprintRanks.length; i++) {
+				if (time > sprintRanks[i].t) {
+					rank = sprintRanks[i];
+					break;
+				}
+			}
+			return rank?.b ?? "";
+		}
+	}
+
 	update(): void {
 		// TODO: figure out if any code needs to go here
 	}
@@ -48,20 +73,22 @@ export class Sprint extends GameType {
 		}
 	}
 
-	pbKey = "sprint40pb";
+	get pbKey() {
+		return `sprint${Mutable.lineLimit}pb`;
+	}
 
-	savePB = true;
+	isPBValid(dead: boolean): boolean {
+		return (
+			Game.params.pieceSet === 0 &&
+			Game.params.backFire === 0 &&
+			Mutable.lineLimit === 40 &&
+			!dead
+		);
+	}
 
-	win() {
-		const sprintPB = getPB("sprint40pb");
-		if (
-			(!sprintPB || Mutable.scoreTime < sprintPB) &&
-			Mutable.watchingReplay == false &&
-			Game.params.pieceSet == 0 &&
-			Game.params.backFire == 0 &&
-			Mutable.lineLimit == 40
-		) {
-			setPB("sprint40pb", Mutable.scoreTime);
+	lockDelayFunc(): Nullable<number> {
+		if (piece.lockDelayLimit < 8) {
+			return 8;
 		}
 	}
 }
